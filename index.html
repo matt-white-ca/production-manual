@@ -1,0 +1,927 @@
+<title>Elevation Toronto East — Signal Flow &amp; Diagnostic Reference</title>
+<style>
+  :root {
+    --bg: #10141a;
+    --surface: #1a2029;
+    --surface-2: #212836;
+    --border: #2d3542;
+    --text: #e6e9ee;
+    --text-dim: #8993a4;
+    --accent: #f2a71b;
+    --accent-soft: rgba(242,167,27,0.14);
+    --good: #3ddc97;
+    --caution: #ff6b5e;
+    --unknown: #7c8797;
+    --lane-a: #4fa8f2;
+    --lane-b: #f2a71b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #eef0f2;
+      --surface: #ffffff;
+      --surface-2: #f4f6f8;
+      --border: #d7dce2;
+      --text: #161a20;
+      --text-dim: #59626f;
+      --accent: #b5760a;
+      --accent-soft: rgba(181,118,10,0.10);
+      --good: #1f9c73;
+      --caution: #c93f32;
+      --unknown: #7a8290;
+      --lane-a: #1c6fc9;
+      --lane-b: #b5760a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141a; --surface: #1a2029; --surface-2: #212836; --border: #2d3542;
+    --text: #e6e9ee; --text-dim: #8993a4; --accent: #f2a71b; --accent-soft: rgba(242,167,27,0.14);
+    --good: #3ddc97; --caution: #ff6b5e; --unknown: #7c8797; --lane-a: #4fa8f2; --lane-b: #f2a71b;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef0f2; --surface: #ffffff; --surface-2: #f4f6f8; --border: #d7dce2;
+    --text: #161a20; --text-dim: #59626f; --accent: #b5760a; --accent-soft: rgba(181,118,10,0.10);
+    --good: #1f9c73; --caution: #c93f32; --unknown: #7a8290; --lane-a: #1c6fc9; --lane-b: #b5760a;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+  h1, h2, h3 {
+    font-stretch: 75%;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: 28px; letter-spacing: 0.01em; }
+  h2 { font-size: 20px; letter-spacing: 0.04em; color: var(--accent); }
+  h3 { font-size: 14px; letter-spacing: 0.06em; color: var(--text-dim); }
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  header.page {
+    padding: 40px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  header.page .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  header.page .meta {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  header.page .meta span::before { content: "· "; color: var(--border); }
+  header.page .meta span:first-child::before { content: ""; }
+
+  nav.jump {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    padding: 12px 0;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+  nav.jump a {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  nav.jump a:hover { color: var(--text); border-color: var(--accent); }
+
+  section { margin-bottom: 52px; scroll-margin-top: 60px; }
+  section > h2 { margin-bottom: 6px; }
+  section > .lede { color: var(--text-dim); font-size: 14px; max-width: 65ch; margin-bottom: 20px; }
+
+  /* Signal flow diagram */
+  .lane {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .lane-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lane-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .lane-a .lane-dot { background: var(--lane-a); }
+  .lane-b .lane-dot { background: var(--lane-b); }
+  .lane-head strong { font-size: 13px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .lane-head span { font-size: 12px; color: var(--text-dim); }
+  .lane-body { padding: 14px 16px 16px; min-width: 720px; }
+  .flow-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0;
+  }
+  .flow-row + .flow-row { border-top: 1px dashed var(--border); }
+  .node {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+  .node b { display: block; font-size: 13px; }
+  .node small { color: var(--text-dim); font-size: 11px; }
+  .flow-row .arrow { color: var(--text-dim); text-align: center; font-size: 14px; }
+  .lane-a .node.bus { border-color: var(--lane-a); }
+  .lane-b .node.bus { border-color: var(--lane-b); }
+
+  /* Tables */
+  .twrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    background: var(--surface-2);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.dim, span.dim { color: var(--text-dim); }
+  .pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .pill.a { background: color-mix(in srgb, var(--lane-a) 18%, transparent); color: var(--lane-a); }
+  .pill.b { background: color-mix(in srgb, var(--lane-b) 18%, transparent); color: var(--lane-b); }
+
+  /* Diagnostics */
+  details.symptom {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  details.symptom[open] { border-color: var(--accent); }
+  details.symptom summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 14.5px;
+  }
+  details.symptom summary::-webkit-details-marker { display: none; }
+  details.symptom summary::before {
+    content: "+";
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 16px;
+    width: 16px;
+    flex: none;
+  }
+  details.symptom[open] summary::before { content: "–"; }
+  .symptom-body { padding: 0 16px 16px 44px; }
+  .path-chip-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
+  .chip {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 8px;
+  }
+  .path-chip-row .sep { color: var(--text-dim); font-size: 12px; }
+  ol.checklist { margin: 0; padding-left: 20px; font-size: 13.5px; }
+  ol.checklist li { margin-bottom: 6px; }
+  ol.checklist li:last-child { margin-bottom: 0; }
+  .escalate {
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    border-left: 2px solid var(--caution);
+    padding-left: 10px;
+  }
+
+  .callout {
+    display: flex;
+    gap: 10px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .callout b { color: var(--accent); }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 11.5px;
+    font-weight: 800;
+    flex: none;
+  }
+  table.rundown td:first-child { white-space: nowrap; }
+  table.rundown td.seg { font-weight: 700; }
+  .loop-note { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; }
+
+  /* Startup procedure */
+  .startup-wrap {
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: linear-gradient(180deg, var(--accent-soft), transparent 60%);
+    padding: 4px;
+  }
+  .startup-step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding: 18px 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .startup-step:last-child { border-bottom: none; }
+  .startup-step .idx {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #10141a;
+    font-size: 18px;
+    font-weight: 800;
+    flex: none;
+    font-stretch: 75%;
+  }
+  .startup-step h3 { color: var(--text); font-size: 15px; margin-bottom: 2px; }
+  .startup-step .device { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+  .press-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 4px; }
+  .btnkey {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 5px 9px;
+    white-space: nowrap;
+  }
+  .btnkey.green { border-color: var(--good); color: var(--good); }
+  .btnkey.take { border-color: var(--accent); color: var(--accent); }
+  .press-seq .then { color: var(--text-dim); font-size: 12px; }
+  .press-seq .label { font-size: 12px; color: var(--text-dim); margin-right: 2px; }
+  ol.startup-list { margin: 4px 0 0; padding-left: 20px; font-size: 13.5px; }
+  ol.startup-list li { margin-bottom: 5px; }
+  .cond {
+    margin-top: 14px;
+    border-left: 3px solid var(--lane-a);
+    background: color-mix(in srgb, var(--lane-a) 8%, transparent);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 12px;
+    font-size: 12.5px;
+  }
+  .cond b { color: var(--lane-a); }
+
+  .gap-list { display: flex; flex-direction: column; gap: 8px; }
+  .gap-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--unknown);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .gap-item b { display: block; font-size: 13.5px; }
+  .gap-item span { color: var(--text-dim); }
+
+  footer.page {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  @media (max-width: 640px) {
+    .flow-row { grid-template-columns: 1fr; }
+    .flow-row .arrow { transform: rotate(90deg); padding: 2px 0; }
+  }
+</style>
+
+<header class="page">
+  <div class="eyebrow">Production Redesign · Startup · Signal Flow · Diagnostics</div>
+  <h1>Elevation Toronto East — Signal Flow &amp; Diagnostic Reference</h1>
+  <div class="meta">
+    <span>Compiled 2026-07-04</span>
+    <span>Sources: Routing Cross Points, ME/Key notes, ATEM &amp; Videohub 12G manuals</span>
+    <span>Start of service: run the Startup Procedure. Mid-service issue: jump to Diagnose a Symptom</span>
+  </div>
+</header>
+
+<nav class="jump">
+  <a href="#startup">Startup</a>
+  <a href="#overview">Overview</a>
+  <a href="#rundown">Sunday Run of Show</a>
+  <a href="#diagnostics">Diagnose a Symptom</a>
+  <a href="#me-bus">M/E Bus Map</a>
+  <a href="#keys">Key Layers</a>
+  <a href="#inputs">Input Cross-Points</a>
+  <a href="#outputs">Output Cross-Points</a>
+  <a href="#gaps">Unverified / Gaps</a>
+</nav>
+
+<section id="startup">
+  <h2>Startup Procedure</h2>
+  <p class="lede">Run these steps in order at the start of a service: power the racks, connect the desk computers, set the panel, recall the routing, then verify. Each step assumes the one before it is done.</p>
+
+  <div class="startup-wrap">
+    <div class="startup-step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Power on the racks &amp; the ATEM panel</h3>
+        <div class="device">Brings up venue devices, rack gear, and the switcher panel</div>
+        <ol class="startup-list">
+          <li>Power on the <b>Furman</b> in the rack — this powers up all of the venue devices.</li>
+          <li>Power on the <b>Middle Atlantic</b> rack-mount power conditioner.</li>
+          <li>Boot up the <b>Resi decoder</b> and the <b>console interface</b> in the rack.</li>
+          <li><b>Physically reconnect power to the ATEM Advanced Panel.</b> The venue disconnects its power between services, and the panel has <b>no power switch</b> — it boots as soon as the power cable is connected. Do this early so it's fully up by Step&nbsp;3.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="startup-step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Connect the desk computers to the AJA ROI converters</h3>
+        <div class="device">Stacked AJA ROI converters underneath the desk · match by SDI cable colour</div>
+        <p style="font-size:13.5px;margin:0 0 10px;">Connect an HDMI cable from each Elevation Macbook to its AJA ROI converter in the stack under the desk. Until the boxes are labelled, use the <b>coloured SDI cables</b> as the reference for which converter belongs to which computer:</p>
+        <div class="twrap" style="border:none;">
+          <table style="font-size:12.5px;">
+            <thead><tr><th>SDI cable</th><th>Computer</th><th>Lands on</th></tr></thead>
+            <tbody>
+              <tr><td>White</td><td>Resolume Mac (EC2)</td><td class="mono">Videohub IN 35</td></tr>
+              <tr><td>Yellow</td><td>CG2 Mac (EC3)</td><td class="mono">Videohub IN 36</td></tr>
+              <tr><td>Orange</td><td>CG1 Mac (EC4)</td><td class="mono">Videohub IN 37</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cond" style="border-left-color:var(--accent);background:var(--accent-soft);">
+          Box labels are <b>pending</b> — the colour match is the interim reference. Verify the result in Step 5.
+        </div>
+      </div>
+    </div>
+
+    <div class="startup-step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Restore ATEM Profile 44</h3>
+        <div class="device">ATEM 2 M/E Advanced Panel 20 · reloads Elevation panel mapping, preferences &amp; macros</div>
+        <ol class="startup-list">
+          <li>Press the soft <span class="btnkey">PROFILE</span> button above the LCD, then the <b>right arrow</b> in system control to reach the profiles page.</li>
+          <li>Turn the <b>soft control knob</b> to <b>Profile 44</b>.</li>
+          <li>Press the soft <span class="btnkey">RESTORE</span> button above the LCD.</li>
+        </ol>
+        <div class="cond">
+          Orange text above the slot confirms Profile 44 is now in use. The published manual lists a 10-profile limit, but the panel firmware holds more and <b>44 was saved on the physical panel</b> — trust it's there. If the slot ever reads empty, it needs re-saving.
+        </div>
+      </div>
+    </div>
+
+    <div class="startup-step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Recall Videohub Routing Macros</h3>
+        <div class="device">Videohub 40x40 12G front panel · each macro button lights green, then TAKE applies it</div>
+
+        <div class="press-seq"><span class="label">Standard startup — Elevation macros (×2):</span></div>
+        <div class="press-seq">
+          <span class="btnkey green">STREAM</span><span class="then">→</span><span class="btnkey take">TAKE</span>
+          <span class="then" style="margin:0 6px;">then</span>
+          <span class="btnkey green">CAM</span><span class="then">→</span><span class="btnkey take">TAKE</span>
+        </div>
+        <p style="font-size:12.5px;color:var(--text-dim);margin:8px 0 0;">Press each macro button (illuminates green), then press <span class="btnkey take" style="padding:2px 6px;">TAKE</span> to confirm that macro's crosspoints before moving to the next. If a macro can't be performed the button flashes.</p>
+
+        <div class="cond">
+          <b>After a dicey rental — run River first.</b> If the venue was left in an unknown state, restore River's general functionality before honing in on ours. Fire the River macros (×3), then run the Elevation macros above on top:
+          <div class="press-seq" style="margin-top:8px;">
+            <span class="btnkey green">MON</span><span class="then">→</span><span class="btnkey take">TAKE</span>
+            <span class="then" style="margin:0 4px;">·</span>
+            <span class="btnkey green">DECK</span><span class="then">→</span><span class="btnkey take">TAKE</span>
+            <span class="then" style="margin:0 4px;">·</span>
+            <span class="btnkey green">EDIT</span><span class="then">→</span><span class="btnkey take">TAKE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="startup-step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Verify inputs on the Videohub display</h3>
+        <div class="device">Videohub 40x40 12G front-panel video preview · do this after firing the macros</div>
+        <p style="font-size:13.5px;margin:0 0 4px;">Use the video display on the Videohub front panel to confirm each Elevation Macbook landed on the right input — check that the picture on <span class="mono">IN 35 / 36 / 37</span> matches the expected computer (white → Resolume, yellow → CG2, orange → CG1). If two are swapped, re-seat the HDMI at the AJA ROI stack per the colour reference in Step 2, then re-check.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <h2>Signal Flow Overview</h2>
+  <p class="lede">Every path on this system falls into one of two lanes. Knowing which lane a destination is on tells you immediately whether the ATEM is even in play — the most common wasted troubleshooting step is chasing an M/E problem on a destination that never touches the switcher.</p>
+
+  <div class="lane lane-a">
+    <div class="lane-head">
+      <div class="lane-dot"></div>
+      <strong>Lane A — Switched Program Paths</strong>
+      <span>Source → ATEM M/E → Videohub loopback → destination</span>
+    </div>
+    <div class="lane-body">
+      <div class="flow-row">
+        <div class="node bus"><b>ME1</b><small>capture bus</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 21<br><small>loopback</small></div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 19<br><small>Makito Encoder</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Playback capture</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>ME2</b><small>top bus</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 22<br><small>loopback</small></div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 31<br><small>Lobby distribution</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Lobby TVs</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>ME3</b><small>bottom bus · live switch</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 23<br><small>loopback</small></div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 22<br><small>LED Controller</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Main Screen</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>ME4</b><small>utility bus, not a destination</small></div>
+        <div class="arrow">→</div>
+        <div class="node">DVE Key 1<br><small>expands raw Resolume</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Selectable as source<br><small>on ME1 / ME2 / ME3</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Full-screen "Resolume"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lane lane-b">
+    <div class="lane-head">
+      <div class="lane-dot"></div>
+      <strong>Lane B — Direct Crosspoint Paths</strong>
+      <span>Source → Videohub crosspoint directly → destination (ATEM is not involved)</span>
+    </div>
+    <div class="lane-body">
+      <div class="flow-row">
+        <div class="node bus"><b>Resolume Mac</b><small>EC2 · white AJA ROI</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 35</div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 23</div>
+        <div class="arrow">→</div>
+        <div class="node">Ground Panels<br><small>raw / untreated</small></div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>CG2 Mac</b><small>EC3 · yellow AJA ROI</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 36</div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 24</div>
+        <div class="arrow">→</div>
+        <div class="node">Top Confidence Monitor</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>Clock Mac</b><small>BMD Mini Converter, Sun. hijack</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 13<br><small>"Resolume 1"</small></div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 25</div>
+        <div class="arrow">→</div>
+        <div class="node">Bottom Confidence Monitor</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>Resi Decoder</b><small>EC1</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 34</div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 18 → DEMBED 1</div>
+        <div class="arrow">→</div>
+        <div class="node">Console Dante 1–12</div>
+      </div>
+      <div class="flow-row">
+        <div class="node bus"><b>CG1 Mac</b><small>EC4 · orange AJA ROI</small></div>
+        <div class="arrow">→</div>
+        <div class="node">Videohub IN 37</div>
+        <div class="arrow">→</div>
+        <div class="node">OUT 20 → DEMBED 2</div>
+        <div class="arrow">→</div>
+        <div class="node">Console Dante 25/26</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rundown">
+  <h2>Sunday Run of Show — Expected Signal State</h2>
+  <p class="lede">What each bus should be showing at each point in a normal service. Useful for telling "that's wrong" apart from "that's just where we are right now."</p>
+
+  <div class="callout">
+    <span>⚠</span>
+    <span><b>Terminology:</b> in show calling, "Resolume" always means <b>ME4</b> (the full-screen DVE-expanded version) — never the raw EC2 source. "Uplink" is the broadcast join with the North Carolina main campus, carried on <b>Resi</b>, cut in full-screen with no DVE step needed. "CG1 full screen" means CG1 cut directly as the ME3 source, not keyed.</span>
+  </div>
+
+  <div class="twrap">
+    <table class="rundown">
+      <thead><tr><th>#</th><th>Segment</th><th>ME1 · Makito</th><th>ME2 · Lobby</th><th>ME3 · Main Screen</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="step-num">1</span></td>
+          <td class="seg">Pre-Experience Slides</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 (slides)</td>
+          <td class="mono">CG1 (slides)</td>
+          <td>Baseline resting state before the experience starts.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">2</span></td>
+          <td class="seg">Experience Start / Countdown</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" (countdown)</td>
+          <td>ME3 transitions CG1 → ME4. ME2 transitions CG1 → Cam 1 for the lobby feed.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">3</span></td>
+          <td class="seg">Countdown → Worship Visuals</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" + Key 1 (centre lyrics)</td>
+          <td>Resolume transitions countdown → visuals internally — no ATEM cut needed. Key on ME3 Key 1 for local lyrics.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">4</span></td>
+          <td class="seg">Welcome</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 full screen (hosting slides)</td>
+          <td>Key off Key 1, then background-transition ME4 → CG1 on ME3.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">5</span></td>
+          <td class="seg">Back to Local Worship</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" + Key 1 (centre lyrics)</td>
+          <td>Transition CG1 → ME4, key on Key 1 again.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">6</span></td>
+          <td class="seg">Uplink — song through sermon</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Uplink (Resi) full screen</td>
+          <td class="mono">Resi full screen + Key 2 (top-right lyrics)</td>
+          <td>ME3 transitions ME4 → Resi (no DVE step for Resi); Key 1 → Key 2. ME2 switches to Uplink full screen on the lobby top bus at some point in this window — stays this way through the sermon.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">7</span></td>
+          <td class="seg">Coming Out of Sermon</td>
+          <td class="mono">Cam 1</td>
+          <td class="dim">Not specified</td>
+          <td class="mono">ME4 "Resolume" or CG1</td>
+          <td>Director's call on ME3 depending on the look/visual needed for that moment.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">8</span></td>
+          <td class="seg">Hosting Support / Closing</td>
+          <td class="mono">Cam 1</td>
+          <td class="dim">Not specified</td>
+          <td class="mono">CG1 full screen</td>
+          <td>Eventually lands on CG1 for hosting support through the closing elements.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">1</span></td>
+          <td class="seg">Pre-Experience Slides (loop)</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 (slides)</td>
+          <td class="mono">CG1 (slides)</td>
+          <td>Cycle repeats for the next service.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="loop-note">ME1 stays on Camera 1 for the entire service — never changes for Makito capture. ME2's state between the end of Uplink and the next Pre-Experience Slides wasn't specified; confirm with the director.</p>
+</section>
+
+<section id="diagnostics">
+  <h2>Diagnose a Symptom</h2>
+  <p class="lede">Open the symptom that matches what you're seeing. Each one lists the exact hop sequence and where to look first — worked top to bottom in order.</p>
+
+  <details class="symptom" open>
+    <summary>Main Screen — black, frozen, or wrong source <span class="pill a">Lane A</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">ME3 PGM</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 23</span><span class="sep">→</span>
+        <span class="chip">OUT 22</span><span class="sep">→</span>
+        <span class="chip">LED Controller</span><span class="sep">→</span>
+        <span class="chip">Main Screen</span>
+      </div>
+      <ol class="checklist">
+        <li>Confirm ME3 is actually delegated to the panel's <b>bottom bus</b> and the intended source is taken on PGM.</li>
+        <li>Check the ATEM multiview for ME3 PGM — if it's correct there, the fault is downstream of the switcher.</li>
+        <li>Verify the Videohub crosspoint OUT 22 is still patched from IN 23 (not accidentally re-routed).</li>
+        <li>Check LED Controller input status/signal lock, then cabling from Videohub to controller.</li>
+      </ol>
+      <div class="escalate">If ME3 PGM itself is wrong on the multiview, the problem is upstream — check whichever source is cut in (see Input Cross-Points).</div>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lyrics missing, wrong, or mispositioned on Main Screen <span class="pill a">Lane A</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">CG1 Mac / ProPresenter</span><span class="sep">→</span>
+        <span class="chip">AJA ROI (orange)</span><span class="sep">→</span>
+        <span class="chip">ATEM IN 9</span><span class="sep">→</span>
+        <span class="chip">ME3 Key 1 (centre) / Key 2 (top, Link)</span><span class="sep">→</span>
+        <span class="chip">ME3 PGM</span>
+      </div>
+      <ol class="checklist">
+        <li>Confirm ProPresenter is actually outputting on the CG1 Macbook.</li>
+        <li>Check the orange-tagged AJA ROI link status for that run.</li>
+        <li>Confirm ATEM IN 9 shows signal on the multiview.</li>
+        <li>On ME3: centre lyrics use <b>Key 1</b>, top/"Link" lyrics use <b>Key 2</b> — confirm the correct key is enabled and its luma clip/gain and mask haven't drifted.</li>
+        <li>Confirm key layer priority still sits above fill in the ME3 keyer stack.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Ground Panels — wrong image, frozen, or dark <span class="pill b">Lane B</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">Resolume Mac / EC2</span><span class="sep">→</span>
+        <span class="chip">AJA ROI (white)</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 35</span><span class="sep">→</span>
+        <span class="chip">OUT 23</span><span class="sep">→</span>
+        <span class="chip">Ground Panels</span>
+      </div>
+      <ol class="checklist">
+        <li><b>The ATEM is not in this path</b> — don't spend time on ME3/ME4, this feed is a direct crosspoint.</li>
+        <li>Confirm Resolume is actually outputting on the Resolume Macbook and it's the raw/untreated composition (not a full-screen DVE version — that's ME4's job, not this feed's).</li>
+        <li>Check the white-tagged AJA ROI link status.</li>
+        <li>Confirm Videohub crosspoint OUT 23 is still patched from IN 35.</li>
+        <li>Check the LED Controller's input for the ground panels and cabling from Videohub.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Resolume graphic looks small or wrong size when used elsewhere <span class="pill a">Lane A</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">Raw Resolume (ATEM IN 12)</span><span class="sep">→</span>
+        <span class="chip">ME4 DVE Key 1</span><span class="sep">→</span>
+        <span class="chip">cut in as "ME4" on ME1/2/3</span>
+      </div>
+      <ol class="checklist">
+        <li>This symptom means the operator likely cut to the <b>raw EC2/Resolume source</b> directly instead of <b>ME4</b>.</li>
+        <li>ME4's only job is to take that raw feed and expand it full-screen via its DVE Key 1 — confirm Key 1 is enabled on ME4.</li>
+        <li>On whichever M/E needs the full-screen graphic, confirm the source selected is <b>ME4</b>, labelled "Resolume" — not the raw input.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lobby TVs — wrong image or dark <span class="pill a">Lane A</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">ME2 PGM</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 22</span><span class="sep">→</span>
+        <span class="chip">OUT 31</span><span class="sep">→</span>
+        <span class="chip">Lobby TVs</span>
+      </div>
+      <ol class="checklist">
+        <li>Confirm ME2 is delegated to the panel's <b>top bus</b> and has the intended source on PGM.</li>
+        <li>Check ME2 PGM on the multiview.</li>
+        <li>Confirm Videohub crosspoint OUT 31 is still patched from IN 22.</li>
+        <li>Check the lobby TV distribution path and individual sets.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Recording / Makito capture blank or wrong <span class="pill a">Lane A</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">ME1 PGM</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 21</span><span class="sep">→</span>
+        <span class="chip">OUT 19</span><span class="sep">→</span>
+        <span class="chip">Makito Encoder</span>
+      </div>
+      <ol class="checklist">
+        <li>Confirm ME1 PGM on the multiview shows the intended capture source.</li>
+        <li>Confirm Videohub crosspoint OUT 19 is still patched from IN 21.</li>
+        <li>Check Makito encoder status/link independently of the video path.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Top Confidence Monitor wrong <span class="pill b">Lane B</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">CG2 Mac / EC3</span><span class="sep">→</span>
+        <span class="chip">AJA ROI (yellow)</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 36</span><span class="sep">→</span>
+        <span class="chip">OUT 24</span><span class="sep">→</span>
+        <span class="chip">Top Confidence Monitor</span>
+      </div>
+      <ol class="checklist">
+        <li>This bypasses the ATEM entirely — check CG2's own output first.</li>
+        <li>Check the yellow-tagged AJA ROI link status.</li>
+        <li>Confirm Videohub crosspoint OUT 24 is still patched from IN 36.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Bottom Confidence Monitor wrong / clock not showing Sunday <span class="pill b">Lane B</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">Clock Mac + BMD Mini Converter</span><span class="sep">→</span>
+        <span class="chip">Videohub IN 13 ("Resolume 1")</span><span class="sep">→</span>
+        <span class="chip">OUT 25</span><span class="sep">→</span>
+        <span class="chip">Bottom Confidence Monitor</span>
+      </div>
+      <ol class="checklist">
+        <li>This port is dual-purpose: it's labelled "Resolume 1" but is <b>hijacked by the Clock Macbook on Sundays</b>. On other days this monitor reflects the actual River Resolume 1 SDI at FOH, not a clock.</li>
+        <li>If the clock isn't showing on a Sunday, confirm the BMD Mini Converter is connected and the Clock Macbook is set to that output.</li>
+        <li>Confirm Videohub crosspoint OUT 25 is still patched from IN 13.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>No console audio from Resi or CG1 <span class="pill b">Lane B</span></summary>
+    <div class="symptom-body">
+      <div class="path-chip-row">
+        <span class="chip">Resi Decoder (EC1) → IN 34 → OUT 18 → DEMBED 1 → Dante 1–12</span>
+      </div>
+      <div class="path-chip-row">
+        <span class="chip">CG1 Mac (EC4) → IN 37 → OUT 20 → DEMBED 2 → Dante 25/26</span>
+      </div>
+      <ol class="checklist">
+        <li>These audio paths de-embed from the same SDI feeds used for video — if picture is fine but audio is missing, the fault is isolated to the Sonifex AVN DIO 2 embedder/de-embedder stage or the Dante routing, not the SDI path.</li>
+        <li>Check Sonifex AVN DIO 2 channel assignment and status for DEMBED 1 (Resi) or DEMBED 2 (CG1).</li>
+        <li>Confirm the console's Dante patch still has channels 1–12 (Resi) / 25–26 (CG1) assigned to the correct input strip.</li>
+      </ol>
+    </div>
+  </details>
+</section>
+
+<section id="me-bus">
+  <h2>M/E Bus Map</h2>
+  <p class="lede">What each M/E is for and where its program feed physically ends up.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Bus</th><th>Panel Position</th><th>Routed To</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>ME1</b></td><td class="dim">—</td><td>Makito Encoder</td><td>Playback capture / recording feed</td></tr>
+        <tr><td class="mono"><b>ME2</b></td><td>Top bus</td><td>Lobby TVs</td><td>Lobby program</td></tr>
+        <tr><td class="mono"><b>ME3</b></td><td>Bottom bus</td><td>Main Screen</td><td>Live switching — primary operator surface</td></tr>
+        <tr><td class="mono"><b>ME4</b></td><td class="dim">—</td><td>Not a destination — utility bus only</td><td>Expands the raw Resolume output full-screen via DVE Key&nbsp;1; exposed to ME1–3 as a "Resolume" source. Ground Panels always get the raw feed directly (see Lane B), never ME4.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="keys">
+  <h2>Key Layers</h2>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Bus</th><th>Key</th><th>Type</th><th>Source</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">ME3</td><td class="mono">Key 1</td><td>Luma</td><td>CG1 (ATEM IN 9)</td><td>Lyrics, masked to <b>centre</b> of screen</td></tr>
+        <tr><td class="mono">ME3</td><td class="mono">Key 2</td><td>Luma</td><td>CG1 (ATEM IN 9)</td><td>Lyrics repositioned <b>top-right</b> of screen, used while <b>Uplink</b> (Resi) is full-screen so lyrics stay visible over the incoming feed</td></tr>
+        <tr><td class="mono">ME4</td><td class="mono">Key 1</td><td>DVE</td><td>Resolume, raw (ATEM IN 12)</td><td>Expands image to full screen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="inputs">
+  <h2>Input Cross-Points</h2>
+  <p class="lede">From the Routing Cross Points sheet — physical sources landing on the Videohub / ATEM.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>SDI Loc</th><th>Device</th><th>Label</th><th>Destination</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">IN 13</td><td>Clock Macbook + BMD Mini Converter</td><td class="mono">Resolume</td><td class="mono">ATEM IN 14</td><td>Hijacks the River Resolume 1 SDI at FOH for clock, Sundays only</td></tr>
+        <tr><td class="mono">IN 34</td><td>Resi Decoder</td><td class="mono">EC1</td><td class="mono">ATEM IN 13</td><td>Resi input</td></tr>
+        <tr><td class="mono">IN 35</td><td>Resolume Macbook + AJA ROI (white)</td><td class="mono">EC2</td><td class="mono">ATEM IN 12</td><td>Raw/untreated — also feeds Ground Panels directly</td></tr>
+        <tr><td class="mono">IN 36</td><td>CG2 Macbook + AJA ROI (yellow)</td><td class="mono">EC3</td><td class="mono">ATEM IN 11</td><td>—</td></tr>
+        <tr><td class="mono">IN 37</td><td>CG1 Macbook + AJA ROI (orange)</td><td class="mono">EC4</td><td class="mono">ATEM IN 9</td><td>Source for ME3 Key 1 / Key 2 lyrics</td></tr>
+        <tr><td class="mono">IN 38</td><td>Sonifex AVN DIO 2</td><td class="mono">EC5</td><td class="dim mono">—</td><td>Return feed from Sonifex 2, no ATEM destination</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="outputs">
+  <h2>Output Cross-Points</h2>
+  <p class="lede">Where each Videohub output physically goes.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>SDI Loc</th><th>Destination</th><th>Device</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">OUT 18</td><td>DEMBED 1 (Resi audio)</td><td>Sonifex AVN DIO 2</td><td>Input 34 (Resi) → console Dante 1–12</td></tr>
+        <tr><td class="mono">OUT 19</td><td>Makito Encoder</td><td>Makito</td><td>Input 21 (ME1)</td></tr>
+        <tr><td class="mono">OUT 20</td><td>DEMBED 2 (CG1 T2 audio)</td><td>Sonifex AVN DIO 2</td><td>Input 37 (EC CG1) → console Dante 25/26</td></tr>
+        <tr><td class="mono">OUT 21</td><td>Side Screens</td><td>LED Controller</td><td class="dim">Not filled in — see Gaps</td></tr>
+        <tr><td class="mono">OUT 22</td><td>Main Screen</td><td>LED Controller</td><td>Input 23 (ME3)</td></tr>
+        <tr><td class="mono">OUT 23</td><td>Ground Panels</td><td>LED Controller</td><td>Input 35 (EC Resolume, raw)</td></tr>
+        <tr><td class="mono">OUT 24</td><td>Top Confidence Monitor</td><td>TV</td><td>Input 36 (EC CG2)</td></tr>
+        <tr><td class="mono">OUT 25</td><td>Bottom Confidence Monitor</td><td>TV</td><td>Input 13 (EC Clock, labelled "Resolume 1")</td></tr>
+        <tr><td class="mono">OUT 31</td><td>Lobby</td><td>TVs in Lobby</td><td>Input 22 (ME2)</td></tr>
+        <tr><td class="mono">OUT 32–37</td><td>Control Room TV 1–6</td><td>TV</td><td class="dim">Not filled in — see Gaps</td></tr>
+        <tr><td class="mono">OUT 38</td><td>ASUS ProArt Screen</td><td>Monitor at TD1</td><td class="dim">Not filled in — see Gaps</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="gaps">
+  <h2>Unverified / Gaps</h2>
+  <p class="lede">Not yet documented in the cross-point sheet — this reference can't be used to diagnose these paths until they're filled in.</p>
+  <div class="gap-list">
+    <div class="gap-item"><span class="dim mono">OUT 21</span><div><b>Side Screens</b><br><span>Source crosspoint not filled in.</span></div></div>
+    <div class="gap-item"><span class="dim mono">OUT 32–37</span><div><b>Control Room TVs 1–6</b><br><span>Sources not filled in — likely fed from a multiview output, unconfirmed.</span></div></div>
+    <div class="gap-item"><span class="dim mono">OUT 38</span><div><b>ASUS ProArt Screen (TD1)</b><br><span>Source not filled in.</span></div></div>
+  </div>
+</section>
+
+<footer class="page">
+  Built from "Routing Cross Points – Fill In", ME Assignment notes, and Key Assignment notes. Next up: startup sequence doc.
+</footer>
