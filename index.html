@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Elevation Toronto East — Signal Flow &amp; Diagnostic Reference</title>
 <style>
   :root {
@@ -356,8 +357,88 @@
   @media (max-width: 640px) {
     .flow-row { grid-template-columns: 1fr; }
     .flow-row .arrow { transform: rotate(90deg); padding: 2px 0; }
+    .lane-body { min-width: 0; }
+    body { padding: 0 14px 60px; }
+    h1 { font-size: 22px; }
+    header.page { padding: 26px 0 16px; }
+    .subpage-nav { flex-wrap: wrap; }
+    .subpage-nav a { flex: 1 1 auto; text-align: center; }
   }
+
+  /* View / subpage routing */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  nav.crumb {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    padding: 12px 0;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  nav.crumb a.crumb-home {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+  nav.crumb.sub a.crumb-home { color: var(--accent); border-color: var(--accent); }
+  nav.crumb a.crumb-home:hover { color: var(--text); border-color: var(--accent); }
+  nav.crumb .crumb-sep { color: var(--text-dim); font-size: 13px; display: none; }
+  nav.crumb.sub .crumb-sep { display: inline; }
+  nav.crumb .crumb-current { font-weight: 700; font-size: 13px; }
+
+  .subpage-menu-wrap { margin-top: 44px; }
+  .subpage-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  a.subpage-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  a.subpage-card:hover { border-color: var(--accent); }
+  a.subpage-card b { display: block; font-size: 14px; margin-bottom: 4px; }
+  a.subpage-card span { display: block; font-size: 12.5px; color: var(--text-dim); }
+
+  .subpage-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .subpage-nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 12px;
+    white-space: nowrap;
+  }
+  .subpage-nav a:hover { color: var(--text); border-color: var(--accent); }
+  .subpage-nav .spacer { flex: 1; }
 </style>
+<noscript><style>.view { display: block !important; }</style></noscript>
 
 <header class="page">
   <div class="eyebrow">Production Redesign · Startup · Signal Flow · Diagnostics</div>
@@ -365,23 +446,17 @@
   <div class="meta">
     <span>Compiled 2026-07-04</span>
     <span>Sources: Routing Cross Points, ME/Key notes, ATEM &amp; Videohub 12G manuals</span>
-    <span>Start of service: run the Startup Procedure. Mid-service issue: jump to Diagnose a Symptom</span>
+    <span>Start of service: run the Startup Procedure. Mid-service issue: jump to <a href="#diagnostics" style="color:inherit;">Diagnose a Symptom</a></span>
   </div>
 </header>
 
-<nav class="jump">
-  <a href="#startup">Startup</a>
-  <a href="#overview">Overview</a>
-  <a href="#rundown">Sunday Run of Show</a>
-  <a href="#diagnostics">Diagnose a Symptom</a>
-  <a href="#me-bus">M/E Bus Map</a>
-  <a href="#keys">Key Layers</a>
-  <a href="#inputs">Input Cross-Points</a>
-  <a href="#outputs">Output Cross-Points</a>
-  <a href="#gaps">Unverified / Gaps</a>
+<nav class="crumb" id="crumb">
+  <a href="#startup" class="crumb-home">⌂ Startup</a>
+  <span class="crumb-sep">▸</span>
+  <span class="crumb-current" id="crumb-current"></span>
 </nav>
 
-<section id="startup">
+<section id="startup" class="view active">
   <h2>Startup Procedure</h2>
   <p class="lede">Run these steps in order at the start of a service: power the racks, connect the desk computers, set the panel, recall the routing, then verify. Each step assumes the one before it is done.</p>
 
@@ -474,9 +549,24 @@
       </div>
     </div>
   </div>
+
+  <div class="subpage-menu-wrap">
+    <h2>Reference &amp; Diagnostics</h2>
+    <p class="lede">Once the service is running, jump into any of these for signal flow, run of show, or troubleshooting.</p>
+    <div class="subpage-menu">
+      <a class="subpage-card" href="#overview"><b>Signal Flow Overview</b><span>Lane A/B — which paths touch the ATEM, which don't</span></a>
+      <a class="subpage-card" href="#rundown"><b>Sunday Run of Show</b><span>Expected ME1/2/3 state at each point in the service</span></a>
+      <a class="subpage-card" href="#diagnostics"><b>Diagnose a Symptom</b><span>Symptom-based checklists, worked top to bottom</span></a>
+      <a class="subpage-card" href="#me-bus"><b>M/E Bus Map</b><span>What each M/E is for and where it routes</span></a>
+      <a class="subpage-card" href="#keys"><b>Key Layers</b><span>ME3 / ME4 keyer assignments</span></a>
+      <a class="subpage-card" href="#inputs"><b>Input Cross-Points</b><span>Physical sources landing on the Videohub / ATEM</span></a>
+      <a class="subpage-card" href="#outputs"><b>Output Cross-Points</b><span>Where each Videohub output physically goes</span></a>
+      <a class="subpage-card" href="#gaps"><b>Unverified / Gaps</b><span>Not yet documented — can't diagnose these paths yet</span></a>
+    </div>
+  </div>
 </section>
 
-<section id="overview">
+<section id="overview" class="view" data-title="Signal Flow Overview">
   <h2>Signal Flow Overview</h2>
   <p class="lede">Every path on this system falls into one of two lanes. Knowing which lane a destination is on tells you immediately whether the ATEM is even in play — the most common wasted troubleshooting step is chasing an M/E problem on a destination that never touches the switcher.</p>
 
@@ -580,9 +670,17 @@
       </div>
     </div>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#gaps">← Unverified / Gaps</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#rundown">Sunday Run of Show →</a>
+  </div>
 </section>
 
-<section id="rundown">
+<section id="rundown" class="view" data-title="Sunday Run of Show">
   <h2>Sunday Run of Show — Expected Signal State</h2>
   <p class="lede">What each bus should be showing at each point in a normal service. Useful for telling "that's wrong" apart from "that's just where we are right now."</p>
 
@@ -671,9 +769,17 @@
     </table>
   </div>
   <p class="loop-note">ME1 stays on Camera 1 for the entire service — never changes for Makito capture. ME2's state between the end of Uplink and the next Pre-Experience Slides wasn't specified; confirm with the director.</p>
+
+  <div class="subpage-nav">
+    <a href="#overview">← Signal Flow Overview</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#diagnostics">Diagnose a Symptom →</a>
+  </div>
 </section>
 
-<section id="diagnostics">
+<section id="diagnostics" class="view" data-title="Diagnose a Symptom">
   <h2>Diagnose a Symptom</h2>
   <p class="lede">Open the symptom that matches what you're seeing. Each one lists the exact hop sequence and where to look first — worked top to bottom in order.</p>
 
@@ -839,9 +945,17 @@
       </ol>
     </div>
   </details>
+
+  <div class="subpage-nav">
+    <a href="#rundown">← Sunday Run of Show</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#me-bus">M/E Bus Map →</a>
+  </div>
 </section>
 
-<section id="me-bus">
+<section id="me-bus" class="view" data-title="M/E Bus Map">
   <h2>M/E Bus Map</h2>
   <p class="lede">What each M/E is for and where its program feed physically ends up.</p>
   <div class="twrap">
@@ -855,9 +969,17 @@
       </tbody>
     </table>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#diagnostics">← Diagnose a Symptom</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#keys">Key Layers →</a>
+  </div>
 </section>
 
-<section id="keys">
+<section id="keys" class="view" data-title="Key Layers">
   <h2>Key Layers</h2>
   <div class="twrap">
     <table>
@@ -869,9 +991,17 @@
       </tbody>
     </table>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#me-bus">← M/E Bus Map</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#inputs">Input Cross-Points →</a>
+  </div>
 </section>
 
-<section id="inputs">
+<section id="inputs" class="view" data-title="Input Cross-Points">
   <h2>Input Cross-Points</h2>
   <p class="lede">From the Routing Cross Points sheet — physical sources landing on the Videohub / ATEM.</p>
   <div class="twrap">
@@ -887,9 +1017,17 @@
       </tbody>
     </table>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#keys">← Key Layers</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#outputs">Output Cross-Points →</a>
+  </div>
 </section>
 
-<section id="outputs">
+<section id="outputs" class="view" data-title="Output Cross-Points">
   <h2>Output Cross-Points</h2>
   <p class="lede">Where each Videohub output physically goes.</p>
   <div class="twrap">
@@ -910,9 +1048,17 @@
       </tbody>
     </table>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#inputs">← Input Cross-Points</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#gaps">Unverified / Gaps →</a>
+  </div>
 </section>
 
-<section id="gaps">
+<section id="gaps" class="view" data-title="Unverified / Gaps">
   <h2>Unverified / Gaps</h2>
   <p class="lede">Not yet documented in the cross-point sheet — this reference can't be used to diagnose these paths until they're filled in.</p>
   <div class="gap-list">
@@ -920,8 +1066,47 @@
     <div class="gap-item"><span class="dim mono">OUT 32–37</span><div><b>Control Room TVs 1–6</b><br><span>Sources not filled in — likely fed from a multiview output, unconfirmed.</span></div></div>
     <div class="gap-item"><span class="dim mono">OUT 38</span><div><b>ASUS ProArt Screen (TD1)</b><br><span>Source not filled in.</span></div></div>
   </div>
+
+  <div class="subpage-nav">
+    <a href="#outputs">← Output Cross-Points</a>
+    <span class="spacer"></span>
+    <a href="#startup">↑ Startup</a>
+    <span class="spacer"></span>
+    <a href="#overview">Signal Flow Overview →</a>
+  </div>
 </section>
 
 <footer class="page">
   Built from "Routing Cross Points – Fill In", ME Assignment notes, and Key Assignment notes. Next up: startup sequence doc.
 </footer>
+
+<script>
+(function () {
+  var sections = document.querySelectorAll('section.view');
+  var crumb = document.getElementById('crumb');
+  var crumbCurrent = document.getElementById('crumb-current');
+
+  function render() {
+    var id = (location.hash || '#startup').slice(1);
+    var target = document.getElementById(id);
+    if (!target || !target.classList.contains('view')) {
+      id = 'startup';
+      target = document.getElementById('startup');
+    }
+    sections.forEach(function (s) {
+      s.classList.toggle('active', s === target);
+    });
+    if (id === 'startup') {
+      crumb.classList.remove('sub');
+      crumbCurrent.textContent = '';
+    } else {
+      crumb.classList.add('sub');
+      crumbCurrent.textContent = target.dataset.title || '';
+    }
+    window.scrollTo(0, 0);
+  }
+
+  window.addEventListener('hashchange', render);
+  render();
+})();
+</script>
