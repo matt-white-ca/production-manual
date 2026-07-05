@@ -1,0 +1,906 @@
+/* ==========================================================================
+   elevation.css — v1.0.0 (2026-07-04)
+   Elevation-native stylesheet for self-contained HTML artifacts.
+
+   Distilled from elevationchurch.org (see tokens.json + NOTES.md for
+   provenance). Self-contained: no external fonts, images, CSS, or JS.
+
+   v1 ships SYSTEM-FONT FALLBACKS. Brand faces (DM Sans / EB Garamond) are
+   listed first in the stacks so they engage where locally installed, but
+   are NOT embedded — see NOTES.md "Fonts & licensing".
+
+   Usage: inline this file in <style>, write plain HTML, reach for the
+   class vocabulary when needed:
+     .container .container--wide .container--prose .section .section--inverse
+     .eyebrow .btn .btn--primary .btn--tonal .btn--ghost .chip
+     .card .card--inverse .card--media .hero .nav .footer .field
+   Theme: automatic via prefers-color-scheme; force with
+   <html data-theme="dark"> or <html data-theme="light">.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Type families */
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "EB Garamond", Georgia, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Type scale (observed at 1440px; see tokens.json) */
+  --fs-0: 12px;   /* form labels, fine print   */
+  --fs-1: 14px;   /* small, chips, bylines     */
+  --fs-2: 16px;   /* body, buttons, nav        */
+  --fs-3: 20px;   /* h5 / minor card titles    */
+  --fs-4: 21px;   /* h4 / inverse-card titles  */
+  --fs-5: 24px;   /* h3 / feature titles       */
+  --fs-6: 34px;   /* h2 / page sub-display     */
+  --fs-7: 48px;   /* h1 / section display      */
+  --fs-8: 60px;   /* hero display              */
+
+  --lh-tight: 1.1;
+  --lh-heading: 1.25;
+  --lh-body: 1.5;
+  --ls-body: 0.15px;      /* MUI default tracking observed site-wide */
+  --ls-display: -1.5px;   /* 60px display only */
+  --ls-h2: -0.5px;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;          /* the only heading weight on the site */
+
+  /* Color — light (default) */
+  --color-bg: #ffffff;
+  --color-fg: rgba(0, 0, 0, 0.87);
+  --color-fg-strong: #000000;
+  --color-muted: rgba(0, 0, 0, 0.6);
+  --color-disabled: rgba(0, 0, 0, 0.38);
+  --color-surface: #f5f5f5;
+  --color-surface-alt: #eeeeee;
+  --color-inverse-surface: #1a1a1a;
+  --color-inverse-surface-raised: #424242;
+  --color-inverse-fg: #ffffff;
+  --color-inverse-muted: rgba(255, 255, 255, 0.7);
+  --color-border: rgba(0, 0, 0, 0.12);
+  --color-brand: #ff671f;          /* logo-mark orange: accents only, never CTAs */
+  --color-brand-contrast: #ffffff;
+  --color-accent-cream: #f7ebda;
+  --color-success: #2e7d32;
+  --color-error: #f44336;
+  --color-scrim: rgba(0, 0, 0, 0.45);
+
+  /* Buttons (primary flips black/white with theme) */
+  --btn-primary-bg: #000000;
+  --btn-primary-bg-hover: #1d1d1d;
+  --btn-primary-fg: #ffffff;
+  --btn-tonal-bg: #eeeeee;
+  --btn-tonal-bg-hover: #e0e0e0;
+  --btn-tonal-fg: #000000;
+  --btn-ghost-hover: rgba(0, 0, 0, 0.06);
+
+  /* Spacing (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Layout */
+  --container: 1200px;
+  --container-wide: 1680px;
+  --container-prose: 900px;
+  --gutter: 16px;
+  --header-h: 80px;
+  --section-y: clamp(var(--space-8), 8vw, var(--space-9));
+
+  /* Shape */
+  --radius: 16px;          /* the signature radius: cards, buttons, inputs */
+  --radius-sm: 12px;
+  --radius-xs: 4px;
+  --radius-pill: 9999px;
+
+  /* Depth (used sparingly — most surfaces are flat) */
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  --shadow-lifted: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+  /* Motion */
+  --duration: 150ms;
+  --duration-slow: 300ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark theme tokens (system preference, unless data-theme="light" pins it) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0a0a0a;
+    --color-fg: #ffffff;
+    --color-fg-strong: #ffffff;
+    --color-muted: rgba(255, 255, 255, 0.7);
+    --color-disabled: rgba(255, 255, 255, 0.38);
+    --color-surface: #1e1e1e;
+    --color-surface-alt: #1a1a1a;
+    --color-inverse-surface: #f5f5f5;
+    --color-inverse-surface-raised: #eeeeee;
+    --color-inverse-fg: rgba(0, 0, 0, 0.87);
+    --color-inverse-muted: rgba(0, 0, 0, 0.6);
+    --color-border: rgba(255, 255, 255, 0.12);
+
+    --btn-primary-bg: #ffffff;
+    --btn-primary-bg-hover: #ebebeb;
+    --btn-primary-fg: #000000;
+    --btn-tonal-bg: #424242;
+    --btn-tonal-bg-hover: #616161;
+    --btn-tonal-fg: #ffffff;
+    --btn-ghost-hover: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Explicit override always wins (viewer theme toggles stamp data-theme) */
+:root[data-theme="dark"] {
+  --color-bg: #0a0a0a;
+  --color-fg: #ffffff;
+  --color-fg-strong: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.7);
+  --color-disabled: rgba(255, 255, 255, 0.38);
+  --color-surface: #1e1e1e;
+  --color-surface-alt: #1a1a1a;
+  --color-inverse-surface: #f5f5f5;
+  --color-inverse-surface-raised: #eeeeee;
+  --color-inverse-fg: rgba(0, 0, 0, 0.87);
+  --color-inverse-muted: rgba(0, 0, 0, 0.6);
+  --color-border: rgba(255, 255, 255, 0.12);
+
+  --btn-primary-bg: #ffffff;
+  --btn-primary-bg-hover: #ebebeb;
+  --btn-primary-fg: #000000;
+  --btn-tonal-bg: #424242;
+  --btn-tonal-bg-hover: #616161;
+  --btn-tonal-fg: #ffffff;
+  --btn-ghost-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base — plain HTML looks Elevation-native with zero classes
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em;
+  font-weight: var(--fw-bold); /* every heading on-site is w700, sentence case */
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-body);
+  color: var(--color-fg);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(34px, 3.4vw + 20px, var(--fs-7));
+  line-height: 1.167;
+  letter-spacing: 0;
+}
+
+h2 {
+  font-size: clamp(28px, 2vw + 18px, var(--fs-6));
+  line-height: 1.2;
+  letter-spacing: var(--ls-h2);
+}
+
+h3 {
+  font-size: var(--fs-5);
+  line-height: 1.333;
+}
+
+h4 {
+  font-size: var(--fs-4);
+  line-height: 1.333;
+}
+
+h5 {
+  font-size: var(--fs-3);
+  line-height: 1.334;
+}
+
+h6 {
+  font-size: var(--fs-2);
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+small {
+  font-size: var(--fs-1);
+  line-height: 1.43;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--duration) var(--ease);
+}
+
+a:hover {
+  color: var(--color-fg-strong);
+}
+
+strong,
+b {
+  font-weight: var(--fw-bold);
+}
+
+ul,
+ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.375em;
+}
+
+blockquote {
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--color-fg-strong);
+  font-family: var(--font-serif);
+  font-size: var(--fs-3);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+blockquote cite {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-1);
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-6) 0;
+}
+
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface);
+  border-radius: var(--radius-xs);
+  padding: 0.15em 0.4em;
+}
+
+pre {
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: var(--fs-1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+  font-size: var(--fs-1);
+}
+
+th {
+  text-align: left;
+  font-weight: var(--fw-bold);
+  border-bottom: 2px solid var(--color-fg-strong);
+  padding: var(--space-3) var(--space-4);
+}
+
+td {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-4);
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0 0 1em;
+}
+
+figcaption {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  margin-top: var(--space-2);
+}
+
+::selection {
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-fg-strong);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout
+   -------------------------------------------------------------------------- */
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--wide {
+  max-width: var(--container-wide);
+}
+
+.container--prose {
+  max-width: var(--container-prose);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--surface {
+  background: var(--color-surface);
+}
+
+.section--inverse {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-fg);
+}
+
+.section--inverse h1,
+.section--inverse h2,
+.section--inverse h3,
+.section--inverse h4,
+.section--inverse h5,
+.section--inverse h6 {
+  color: var(--color-inverse-fg);
+}
+
+.section--inverse .muted {
+  color: var(--color-inverse-muted);
+}
+
+@media (min-width: 900px) {
+  .container {
+    padding-inline: var(--space-5);
+  }
+}
+
+/* Section header: [eyebrow] + display heading + muted subline */
+.section-head {
+  max-width: 720px;
+  margin-bottom: var(--space-7);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-head .muted {
+  font-weight: var(--fw-bold);
+}
+
+/* --------------------------------------------------------------------------
+   4. Utilities
+   -------------------------------------------------------------------------- */
+.muted {
+  color: var(--color-muted);
+}
+
+/* Eyebrow: small bold sentence-case label above a display heading.
+   NOTE: the real site does NOT use uppercase/tracked eyebrows. */
+.eyebrow {
+  display: block;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
+}
+
+.serif {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons & chips
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+
+.btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn--primary:hover {
+  background: var(--btn-primary-bg-hover);
+  color: var(--btn-primary-fg);
+}
+
+.btn--tonal {
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+}
+
+.btn--tonal:hover {
+  background: var(--btn-tonal-bg-hover);
+  color: var(--btn-tonal-fg);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: currentColor;
+  padding-inline: var(--space-3);
+}
+
+.btn--ghost:hover {
+  background: var(--btn-ghost-hover);
+  color: currentColor;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background: var(--color-border);
+  color: var(--color-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Chevron affordance for ghost/"Learn more" actions: <span class="chev"> */
+.chev::after {
+  content: "›";
+  font-weight: var(--fw-bold);
+  margin-left: 0.15em;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 6px var(--space-4);
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-bold);
+  line-height: 1.43;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+
+.chip:hover {
+  background: var(--btn-tonal-bg-hover);
+  color: var(--btn-tonal-fg);
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  color: var(--color-fg);
+}
+
+.card--padded {
+  padding: var(--space-5) var(--space-6);
+}
+
+.card--outline {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.card--raised {
+  box-shadow: var(--shadow-card);
+}
+
+.card--inverse {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-muted);
+}
+
+.card--inverse h1,
+.card--inverse h2,
+.card--inverse h3,
+.card--inverse h4,
+.card--inverse h5,
+.card--inverse h6 {
+  color: var(--color-inverse-fg);
+}
+
+/* Media card: rounded 16:9 image, title BELOW the media (site pattern) */
+.card--media {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+.card--media .card__media {
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface);
+  margin-bottom: var(--space-3);
+}
+
+.card--media .card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card--media .card__title {
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  margin: 0 0 2px;
+}
+
+.card--media .card__byline {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.card--media a {
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Hero
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end; /* content anchors bottom-left on-site */
+  min-height: min(100vh, 900px);
+  /* hero is always a dark stage regardless of theme */
+  color: #ffffff;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__media img,
+.hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__media::after {
+  /* the signature scrim */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-block: var(--space-7);
+}
+
+.hero__content h1,
+.hero__content h2,
+.hero__content h3 {
+  color: #ffffff;
+}
+
+.hero__content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* On the dark hero stage, primary buttons are white-on-black (site pattern) */
+.hero .btn--primary {
+  background: #ffffff;
+  color: #000000;
+}
+
+.hero .btn--primary:hover {
+  background: #ebebeb;
+}
+
+.hero .btn--ghost {
+  color: #ffffff;
+}
+
+.hero .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Shorter variant for sub-pages */
+.hero--short {
+  min-height: 420px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Nav bar
+   -------------------------------------------------------------------------- */
+.nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* narrow screens wrap instead of overflowing (site uses a hamburger) */
+  gap: var(--space-3) var(--space-5);
+  min-height: var(--header-h);
+  padding-inline: var(--gutter);
+  padding-block: var(--space-2);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.nav__brand {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3);
+  text-decoration: none;
+  letter-spacing: -0.25px;
+  margin-right: auto;
+}
+
+.nav a:not(.btn) {
+  text-decoration: none;
+  font-weight: var(--fw-regular);
+}
+
+.nav a:not(.btn):hover {
+  text-decoration: underline; /* verified hover behavior */
+  text-underline-offset: 4px;
+}
+
+/* Overlay variant: transparent over a hero, white text (top-of-page state) */
+.nav--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: transparent;
+  color: #ffffff;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    padding-inline: var(--space-6);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Footer
+   NOTE: the live site has NO traditional footer (pages end in a CTA band).
+   This minimal footer is an extrapolation — see NOTES.md.
+   -------------------------------------------------------------------------- */
+.footer {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-muted);
+  padding-block: var(--space-7);
+  font-size: var(--fs-1);
+}
+
+.footer a {
+  color: var(--color-inverse-fg);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-5);
+}
+
+/* CTA band — how site pages actually end */
+.cta-band {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-fg);
+  border-radius: var(--radius);
+  padding: var(--space-7) var(--space-6);
+  text-align: center;
+}
+
+.cta-band h2,
+.cta-band h3 {
+  color: var(--color-inverse-fg);
+}
+
+.cta-band .muted {
+  color: var(--color-inverse-muted);
+}
+
+/* --------------------------------------------------------------------------
+   10. Forms
+   Simplified from the site's MUI outlined fields: same 16px radius +
+   hairline border; static labels instead of floating (judgment call).
+   -------------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.field > label {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-body);
+  color: var(--color-fg);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4) 14px;
+  width: 100%;
+  transition: border-color var(--duration) var(--ease);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-disabled);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-fg); /* focus = border darkens to fg, no glow */
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+select {
+  appearance: none;
+  /* inline chevron, CSP-safe data URI */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.field--error input,
+.field--error textarea,
+.field--error select {
+  border-color: var(--color-error);
+}
+
+.field--error .field__msg {
+  color: var(--color-error);
+  font-size: var(--fs-0);
+}
+
+.field--success input,
+.field--success textarea,
+.field--success select {
+  border-color: var(--color-success);
+}
+
+fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  margin: 0 0 1em;
+}
+
+legend {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-1);
+  padding-inline: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   11. Motion preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

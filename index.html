@@ -1,444 +1,1285 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Elevation Toronto East — Signal Flow &amp; Diagnostic Reference</title>
 <style>
-  :root {
-    --bg: #10141a;
-    --surface: #1a2029;
-    --surface-2: #212836;
-    --border: #2d3542;
-    --text: #e6e9ee;
-    --text-dim: #8993a4;
-    --accent: #f2a71b;
-    --accent-soft: rgba(242,167,27,0.14);
-    --good: #3ddc97;
-    --caution: #ff6b5e;
-    --unknown: #7c8797;
-    --lane-a: #4fa8f2;
-    --lane-b: #f2a71b;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #eef0f2;
-      --surface: #ffffff;
-      --surface-2: #f4f6f8;
-      --border: #d7dce2;
-      --text: #161a20;
-      --text-dim: #59626f;
-      --accent: #b5760a;
-      --accent-soft: rgba(181,118,10,0.10);
-      --good: #1f9c73;
-      --caution: #c93f32;
-      --unknown: #7a8290;
-      --lane-a: #1c6fc9;
-      --lane-b: #b5760a;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #10141a; --surface: #1a2029; --surface-2: #212836; --border: #2d3542;
-    --text: #e6e9ee; --text-dim: #8993a4; --accent: #f2a71b; --accent-soft: rgba(242,167,27,0.14);
-    --good: #3ddc97; --caution: #ff6b5e; --unknown: #7c8797; --lane-a: #4fa8f2; --lane-b: #f2a71b;
-  }
-  :root[data-theme="light"] {
-    --bg: #eef0f2; --surface: #ffffff; --surface-2: #f4f6f8; --border: #d7dce2;
-    --text: #161a20; --text-dim: #59626f; --accent: #b5760a; --accent-soft: rgba(181,118,10,0.10);
-    --good: #1f9c73; --caution: #c93f32; --unknown: #7a8290; --lane-a: #1c6fc9; --lane-b: #b5760a;
-  }
+/* ==========================================================================
+   elevation.css — v1.0.0 (2026-07-04)
+   Elevation-native stylesheet for self-contained HTML artifacts.
 
-  * { box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-  }
-  h1, h2, h3 {
-    font-stretch: 75%;
-    font-weight: 800;
-    text-transform: uppercase;
-    text-wrap: balance;
-    margin: 0;
-  }
-  h1 { font-size: 28px; letter-spacing: 0.01em; }
-  h2 { font-size: 20px; letter-spacing: 0.04em; color: var(--accent); }
-  h3 { font-size: 14px; letter-spacing: 0.06em; color: var(--text-dim); }
-  .mono {
-    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
-    font-variant-numeric: tabular-nums;
-  }
+   Distilled from elevationchurch.org (see tokens.json + NOTES.md for
+   provenance). Self-contained: no external fonts, images, CSS, or JS.
 
-  header.page {
-    padding: 40px 0 24px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
-  }
-  header.page .eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  header.page .meta {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--text-dim);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 18px;
-  }
-  header.page .meta span::before { content: "· "; color: var(--border); }
-  header.page .meta span:first-child::before { content: ""; }
+   v1 ships SYSTEM-FONT FALLBACKS. Brand faces (DM Sans / EB Garamond) are
+   listed first in the stacks so they engage where locally installed, but
+   are NOT embedded — see NOTES.md "Fonts & licensing".
 
-  nav.jump {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--bg);
-    padding: 12px 0;
-    margin-bottom: 32px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    overflow-x: auto;
-  }
-  nav.jump a {
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--text-dim);
-    text-decoration: none;
-    padding: 7px 12px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  nav.jump a:hover { color: var(--text); border-color: var(--accent); }
+   Usage: inline this file in <style>, write plain HTML, reach for the
+   class vocabulary when needed:
+     .container .container--wide .container--prose .section .section--inverse
+     .eyebrow .btn .btn--primary .btn--tonal .btn--ghost .chip
+     .card .card--inverse .card--media .hero .nav .footer .field
+   Theme: automatic via prefers-color-scheme; force with
+   <html data-theme="dark"> or <html data-theme="light">.
+   ========================================================================== */
 
-  section { margin-bottom: 52px; scroll-margin-top: 60px; }
-  section > h2 { margin-bottom: 6px; }
-  section > .lede { color: var(--text-dim); font-size: 14px; max-width: 65ch; margin-bottom: 20px; }
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
 
-  /* Signal flow diagram */
-  .lane {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    margin-bottom: 16px;
-    overflow-x: auto;
-  }
-  .lane-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .lane-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .lane-a .lane-dot { background: var(--lane-a); }
-  .lane-b .lane-dot { background: var(--lane-b); }
-  .lane-head strong { font-size: 13px; letter-spacing: 0.03em; text-transform: uppercase; }
-  .lane-head span { font-size: 12px; color: var(--text-dim); }
-  .lane-body { padding: 14px 16px 16px; min-width: 720px; }
-  .flow-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 0;
-  }
-  .flow-row + .flow-row { border-top: 1px dashed var(--border); }
-  .node {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 12.5px;
-  }
-  .node b { display: block; font-size: 13px; }
-  .node small { color: var(--text-dim); font-size: 11px; }
-  .flow-row .arrow { color: var(--text-dim); text-align: center; font-size: 14px; }
-  .lane-a .node.bus { border-color: var(--lane-a); }
-  .lane-b .node.bus { border-color: var(--lane-b); }
+  /* Type families */
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "EB Garamond", Georgia, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 
-  /* Tables */
-  .twrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  thead th {
-    background: var(--surface-2);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  tbody tr:last-child td { border-bottom: none; }
-  td.dim, span.dim { color: var(--text-dim); }
-  .pill {
-    display: inline-block;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 20px;
-  }
-  .pill.a { background: color-mix(in srgb, var(--lane-a) 18%, transparent); color: var(--lane-a); }
-  .pill.b { background: color-mix(in srgb, var(--lane-b) 18%, transparent); color: var(--lane-b); }
+  /* Type scale (observed at 1440px; see tokens.json) */
+  --fs-0: 12px;   /* form labels, fine print   */
+  --fs-1: 14px;   /* small, chips, bylines     */
+  --fs-2: 16px;   /* body, buttons, nav        */
+  --fs-3: 20px;   /* h5 / minor card titles    */
+  --fs-4: 21px;   /* h4 / inverse-card titles  */
+  --fs-5: 24px;   /* h3 / feature titles       */
+  --fs-6: 34px;   /* h2 / page sub-display     */
+  --fs-7: 48px;   /* h1 / section display      */
+  --fs-8: 60px;   /* hero display              */
 
-  /* Diagnostics */
-  details.symptom {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-  details.symptom[open] { border-color: var(--accent); }
-  details.symptom summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 700;
-    font-size: 14.5px;
-  }
-  details.symptom summary::-webkit-details-marker { display: none; }
-  details.symptom summary::before {
-    content: "+";
-    color: var(--accent);
-    font-weight: 800;
-    font-size: 16px;
-    width: 16px;
-    flex: none;
-  }
-  details.symptom[open] summary::before { content: "–"; }
-  .symptom-body { padding: 0 16px 16px 44px; }
-  .path-chip-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
-  .chip {
-    font-family: ui-monospace, "SF Mono", Consolas, monospace;
-    font-size: 12px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 4px 8px;
-  }
-  .path-chip-row .sep { color: var(--text-dim); font-size: 12px; }
-  ol.checklist { margin: 0; padding-left: 20px; font-size: 13.5px; }
-  ol.checklist li { margin-bottom: 6px; }
-  ol.checklist li:last-child { margin-bottom: 0; }
-  .escalate {
-    margin-top: 10px;
-    font-size: 12.5px;
-    color: var(--text-dim);
-    border-left: 2px solid var(--caution);
-    padding-left: 10px;
-  }
+  --lh-tight: 1.1;
+  --lh-heading: 1.25;
+  --lh-body: 1.5;
+  --ls-body: 0.15px;      /* MUI default tracking observed site-wide */
+  --ls-display: -1.5px;   /* 60px display only */
+  --ls-h2: -0.5px;
 
-  .callout {
-    display: flex;
-    gap: 10px;
-    background: var(--accent-soft);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    margin-bottom: 18px;
-  }
-  .callout b { color: var(--accent); }
-  .step-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    font-size: 11.5px;
-    font-weight: 800;
-    flex: none;
-  }
-  table.rundown td:first-child { white-space: nowrap; }
-  table.rundown td.seg { font-weight: 700; }
-  .loop-note { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; }
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;          /* the only heading weight on the site */
 
-  /* Startup procedure */
-  .startup-wrap {
-    border: 1px solid var(--accent);
-    border-radius: 10px;
-    background: linear-gradient(180deg, var(--accent-soft), transparent 60%);
-    padding: 4px;
-  }
-  .startup-step {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 16px;
-    padding: 18px 18px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  .startup-step:last-child { border-bottom: none; }
-  .startup-step .idx {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #10141a;
-    font-size: 18px;
-    font-weight: 800;
-    flex: none;
-    font-stretch: 75%;
-  }
-  .startup-step h3 { color: var(--text); font-size: 15px; margin-bottom: 2px; }
-  .startup-step .device { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
-  .press-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 4px; }
-  .btnkey {
-    font-family: ui-monospace, "SF Mono", Consolas, monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-bottom-width: 2px;
-    border-radius: 5px;
-    padding: 5px 9px;
-    white-space: nowrap;
-  }
-  .btnkey.green { border-color: var(--good); color: var(--good); }
-  .btnkey.take { border-color: var(--accent); color: var(--accent); }
-  .press-seq .then { color: var(--text-dim); font-size: 12px; }
-  .press-seq .label { font-size: 12px; color: var(--text-dim); margin-right: 2px; }
-  ol.startup-list { margin: 4px 0 0; padding-left: 20px; font-size: 13.5px; }
-  ol.startup-list li { margin-bottom: 5px; }
-  .cond {
-    margin-top: 14px;
-    border-left: 3px solid var(--lane-a);
-    background: color-mix(in srgb, var(--lane-a) 8%, transparent);
-    border-radius: 0 6px 6px 0;
-    padding: 10px 12px;
-    font-size: 12.5px;
-  }
-  .cond b { color: var(--lane-a); }
+  /* Color — light (default) */
+  --color-bg: #ffffff;
+  --color-fg: rgba(0, 0, 0, 0.87);
+  --color-fg-strong: #000000;
+  --color-muted: rgba(0, 0, 0, 0.6);
+  --color-disabled: rgba(0, 0, 0, 0.38);
+  --color-surface: #f5f5f5;
+  --color-surface-alt: #eeeeee;
+  --color-inverse-surface: #1a1a1a;
+  --color-inverse-surface-raised: #424242;
+  --color-inverse-fg: #ffffff;
+  --color-inverse-muted: rgba(255, 255, 255, 0.7);
+  --color-border: rgba(0, 0, 0, 0.12);
+  --color-brand: #ff671f;          /* logo-mark orange: accents only, never CTAs */
+  --color-brand-contrast: #ffffff;
+  --color-accent-cream: #f7ebda;
+  --color-success: #2e7d32;
+  --color-error: #f44336;
+  --color-scrim: rgba(0, 0, 0, 0.45);
 
-  .gap-list { display: flex; flex-direction: column; gap: 8px; }
-  .gap-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--unknown);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-  .gap-item b { display: block; font-size: 13.5px; }
-  .gap-item span { color: var(--text-dim); }
+  /* Buttons (primary flips black/white with theme) */
+  --btn-primary-bg: #000000;
+  --btn-primary-bg-hover: #1d1d1d;
+  --btn-primary-fg: #ffffff;
+  --btn-tonal-bg: #eeeeee;
+  --btn-tonal-bg-hover: #e0e0e0;
+  --btn-tonal-fg: #000000;
+  --btn-ghost-hover: rgba(0, 0, 0, 0.06);
 
-  footer.page {
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
+  /* Spacing (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
 
-  @media (max-width: 640px) {
-    .flow-row { grid-template-columns: 1fr; }
-    .flow-row .arrow { transform: rotate(90deg); padding: 2px 0; }
-    .lane-body { min-width: 0; }
-    body { padding: 0 14px 60px; }
-    h1 { font-size: 22px; }
-    header.page { padding: 26px 0 16px; }
-    .subpage-nav { flex-wrap: wrap; }
-    .subpage-nav a { flex: 1 1 auto; text-align: center; }
-  }
+  /* Layout */
+  --container: 1200px;
+  --container-wide: 1680px;
+  --container-prose: 900px;
+  --gutter: 16px;
+  --header-h: 80px;
+  --section-y: clamp(var(--space-8), 8vw, var(--space-9));
 
-  /* View / subpage routing */
-  .view { display: none; }
-  .view.active { display: block; }
+  /* Shape */
+  --radius: 16px;          /* the signature radius: cards, buttons, inputs */
+  --radius-sm: 12px;
+  --radius-xs: 4px;
+  --radius-pill: 9999px;
 
-  nav.crumb {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--bg);
-    padding: 12px 0;
-    margin-bottom: 32px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  nav.crumb a.crumb-home {
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--text-dim);
-    text-decoration: none;
-    padding: 7px 12px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-  }
-  nav.crumb.sub a.crumb-home { color: var(--accent); border-color: var(--accent); }
-  nav.crumb a.crumb-home:hover { color: var(--text); border-color: var(--accent); }
-  nav.crumb .crumb-sep { color: var(--text-dim); font-size: 13px; display: none; }
-  nav.crumb.sub .crumb-sep { display: inline; }
-  nav.crumb .crumb-current { font-weight: 700; font-size: 13px; }
+  /* Depth (used sparingly — most surfaces are flat) */
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  --shadow-lifted: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.55);
 
-  .subpage-menu-wrap { margin-top: 44px; }
-  .subpage-menu {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-  }
-  a.subpage-card {
-    display: block;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    text-decoration: none;
-    color: var(--text);
-  }
-  a.subpage-card:hover { border-color: var(--accent); }
-  a.subpage-card b { display: block; font-size: 14px; margin-bottom: 4px; }
-  a.subpage-card span { display: block; font-size: 12.5px; color: var(--text-dim); }
+  /* Motion */
+  --duration: 150ms;
+  --duration-slow: 300ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .subpage-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    font-size: 12.5px;
-    margin-top: 8px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
+/* Dark theme tokens (system preference, unless data-theme="light" pins it) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0a0a0a;
+    --color-fg: #ffffff;
+    --color-fg-strong: #ffffff;
+    --color-muted: rgba(255, 255, 255, 0.7);
+    --color-disabled: rgba(255, 255, 255, 0.38);
+    --color-surface: #1e1e1e;
+    --color-surface-alt: #1a1a1a;
+    --color-inverse-surface: #f5f5f5;
+    --color-inverse-surface-raised: #eeeeee;
+    --color-inverse-fg: rgba(0, 0, 0, 0.87);
+    --color-inverse-muted: rgba(0, 0, 0, 0.6);
+    --color-border: rgba(255, 255, 255, 0.12);
+
+    --btn-primary-bg: #ffffff;
+    --btn-primary-bg-hover: #ebebeb;
+    --btn-primary-fg: #000000;
+    --btn-tonal-bg: #424242;
+    --btn-tonal-bg-hover: #616161;
+    --btn-tonal-fg: #ffffff;
+    --btn-ghost-hover: rgba(255, 255, 255, 0.08);
   }
-  .subpage-nav a {
-    color: var(--text-dim);
-    text-decoration: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 7px 12px;
-    white-space: nowrap;
+}
+
+/* Explicit override always wins (viewer theme toggles stamp data-theme) */
+:root[data-theme="dark"] {
+  --color-bg: #0a0a0a;
+  --color-fg: #ffffff;
+  --color-fg-strong: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.7);
+  --color-disabled: rgba(255, 255, 255, 0.38);
+  --color-surface: #1e1e1e;
+  --color-surface-alt: #1a1a1a;
+  --color-inverse-surface: #f5f5f5;
+  --color-inverse-surface-raised: #eeeeee;
+  --color-inverse-fg: rgba(0, 0, 0, 0.87);
+  --color-inverse-muted: rgba(0, 0, 0, 0.6);
+  --color-border: rgba(255, 255, 255, 0.12);
+
+  --btn-primary-bg: #ffffff;
+  --btn-primary-bg-hover: #ebebeb;
+  --btn-primary-fg: #000000;
+  --btn-tonal-bg: #424242;
+  --btn-tonal-bg-hover: #616161;
+  --btn-tonal-fg: #ffffff;
+  --btn-ghost-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base — plain HTML looks Elevation-native with zero classes
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em;
+  font-weight: var(--fw-bold); /* every heading on-site is w700, sentence case */
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-body);
+  color: var(--color-fg);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(34px, 3.4vw + 20px, var(--fs-7));
+  line-height: 1.167;
+  letter-spacing: 0;
+}
+
+h2 {
+  font-size: clamp(28px, 2vw + 18px, var(--fs-6));
+  line-height: 1.2;
+  letter-spacing: var(--ls-h2);
+}
+
+h3 {
+  font-size: var(--fs-5);
+  line-height: 1.333;
+}
+
+h4 {
+  font-size: var(--fs-4);
+  line-height: 1.333;
+}
+
+h5 {
+  font-size: var(--fs-3);
+  line-height: 1.334;
+}
+
+h6 {
+  font-size: var(--fs-2);
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+small {
+  font-size: var(--fs-1);
+  line-height: 1.43;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--duration) var(--ease);
+}
+
+a:hover {
+  color: var(--color-fg-strong);
+}
+
+strong,
+b {
+  font-weight: var(--fw-bold);
+}
+
+ul,
+ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.375em;
+}
+
+blockquote {
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--color-fg-strong);
+  font-family: var(--font-serif);
+  font-size: var(--fs-3);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+blockquote cite {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-1);
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-6) 0;
+}
+
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface);
+  border-radius: var(--radius-xs);
+  padding: 0.15em 0.4em;
+}
+
+pre {
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: var(--fs-1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+  font-size: var(--fs-1);
+}
+
+th {
+  text-align: left;
+  font-weight: var(--fw-bold);
+  border-bottom: 2px solid var(--color-fg-strong);
+  padding: var(--space-3) var(--space-4);
+}
+
+td {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-4);
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0 0 1em;
+}
+
+figcaption {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  margin-top: var(--space-2);
+}
+
+::selection {
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-fg-strong);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout
+   -------------------------------------------------------------------------- */
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--wide {
+  max-width: var(--container-wide);
+}
+
+.container--prose {
+  max-width: var(--container-prose);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--surface {
+  background: var(--color-surface);
+}
+
+.section--inverse {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-fg);
+}
+
+.section--inverse h1,
+.section--inverse h2,
+.section--inverse h3,
+.section--inverse h4,
+.section--inverse h5,
+.section--inverse h6 {
+  color: var(--color-inverse-fg);
+}
+
+.section--inverse .muted {
+  color: var(--color-inverse-muted);
+}
+
+@media (min-width: 900px) {
+  .container {
+    padding-inline: var(--space-5);
   }
-  .subpage-nav a:hover { color: var(--text); border-color: var(--accent); }
-  .subpage-nav .spacer { flex: 1; }
+}
+
+/* Section header: [eyebrow] + display heading + muted subline */
+.section-head {
+  max-width: 720px;
+  margin-bottom: var(--space-7);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-head .muted {
+  font-weight: var(--fw-bold);
+}
+
+/* --------------------------------------------------------------------------
+   4. Utilities
+   -------------------------------------------------------------------------- */
+.muted {
+  color: var(--color-muted);
+}
+
+/* Eyebrow: small bold sentence-case label above a display heading.
+   NOTE: the real site does NOT use uppercase/tracked eyebrows. */
+.eyebrow {
+  display: block;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
+}
+
+.serif {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons & chips
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+
+.btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn--primary:hover {
+  background: var(--btn-primary-bg-hover);
+  color: var(--btn-primary-fg);
+}
+
+.btn--tonal {
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+}
+
+.btn--tonal:hover {
+  background: var(--btn-tonal-bg-hover);
+  color: var(--btn-tonal-fg);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: currentColor;
+  padding-inline: var(--space-3);
+}
+
+.btn--ghost:hover {
+  background: var(--btn-ghost-hover);
+  color: currentColor;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background: var(--color-border);
+  color: var(--color-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Chevron affordance for ghost/"Learn more" actions: <span class="chev"> */
+.chev::after {
+  content: "›";
+  font-weight: var(--fw-bold);
+  margin-left: 0.15em;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 6px var(--space-4);
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-bold);
+  line-height: 1.43;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+
+.chip:hover {
+  background: var(--btn-tonal-bg-hover);
+  color: var(--btn-tonal-fg);
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  color: var(--color-fg);
+}
+
+.card--padded {
+  padding: var(--space-5) var(--space-6);
+}
+
+.card--outline {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.card--raised {
+  box-shadow: var(--shadow-card);
+}
+
+.card--inverse {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-muted);
+}
+
+.card--inverse h1,
+.card--inverse h2,
+.card--inverse h3,
+.card--inverse h4,
+.card--inverse h5,
+.card--inverse h6 {
+  color: var(--color-inverse-fg);
+}
+
+/* Media card: rounded 16:9 image, title BELOW the media (site pattern) */
+.card--media {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+.card--media .card__media {
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface);
+  margin-bottom: var(--space-3);
+}
+
+.card--media .card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card--media .card__title {
+  font-size: var(--fs-2);
+  font-weight: var(--fw-bold);
+  margin: 0 0 2px;
+}
+
+.card--media .card__byline {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.card--media a {
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Hero
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end; /* content anchors bottom-left on-site */
+  min-height: min(100vh, 900px);
+  /* hero is always a dark stage regardless of theme */
+  color: #ffffff;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__media img,
+.hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__media::after {
+  /* the signature scrim */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-block: var(--space-7);
+}
+
+.hero__content h1,
+.hero__content h2,
+.hero__content h3 {
+  color: #ffffff;
+}
+
+.hero__content p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* On the dark hero stage, primary buttons are white-on-black (site pattern) */
+.hero .btn--primary {
+  background: #ffffff;
+  color: #000000;
+}
+
+.hero .btn--primary:hover {
+  background: #ebebeb;
+}
+
+.hero .btn--ghost {
+  color: #ffffff;
+}
+
+.hero .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Shorter variant for sub-pages */
+.hero--short {
+  min-height: 420px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Nav bar
+   -------------------------------------------------------------------------- */
+.nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* narrow screens wrap instead of overflowing (site uses a hamburger) */
+  gap: var(--space-3) var(--space-5);
+  min-height: var(--header-h);
+  padding-inline: var(--gutter);
+  padding-block: var(--space-2);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.nav__brand {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3);
+  text-decoration: none;
+  letter-spacing: -0.25px;
+  margin-right: auto;
+}
+
+.nav a:not(.btn) {
+  text-decoration: none;
+  font-weight: var(--fw-regular);
+}
+
+.nav a:not(.btn):hover {
+  text-decoration: underline; /* verified hover behavior */
+  text-underline-offset: 4px;
+}
+
+/* Overlay variant: transparent over a hero, white text (top-of-page state) */
+.nav--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: transparent;
+  color: #ffffff;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    padding-inline: var(--space-6);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Footer
+   NOTE: the live site has NO traditional footer (pages end in a CTA band).
+   This minimal footer is an extrapolation — see NOTES.md.
+   -------------------------------------------------------------------------- */
+.footer {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-muted);
+  padding-block: var(--space-7);
+  font-size: var(--fs-1);
+}
+
+.footer a {
+  color: var(--color-inverse-fg);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-5);
+}
+
+/* CTA band — how site pages actually end */
+.cta-band {
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-fg);
+  border-radius: var(--radius);
+  padding: var(--space-7) var(--space-6);
+  text-align: center;
+}
+
+.cta-band h2,
+.cta-band h3 {
+  color: var(--color-inverse-fg);
+}
+
+.cta-band .muted {
+  color: var(--color-inverse-muted);
+}
+
+/* --------------------------------------------------------------------------
+   10. Forms
+   Simplified from the site's MUI outlined fields: same 16px radius +
+   hairline border; static labels instead of floating (judgment call).
+   -------------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.field > label {
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+  font-family: var(--font-sans);
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-body);
+  color: var(--color-fg);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4) 14px;
+  width: 100%;
+  transition: border-color var(--duration) var(--ease);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-disabled);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-fg); /* focus = border darkens to fg, no glow */
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+select {
+  appearance: none;
+  /* inline chevron, CSP-safe data URI */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.field--error input,
+.field--error textarea,
+.field--error select {
+  border-color: var(--color-error);
+}
+
+.field--error .field__msg {
+  color: var(--color-error);
+  font-size: var(--fs-0);
+}
+
+.field--success input,
+.field--success textarea,
+.field--success select {
+  border-color: var(--color-success);
+}
+
+fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  margin: 0 0 1em;
+}
+
+legend {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-1);
+  padding-inline: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   11. Motion preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   Site layer — Toronto East production reference
+   Page-specific components, built on the elevation.css tokens above.
+   ========================================================================== */
+
+/* Functional lane coding (semantic, not brand palette):
+   Lane A = switched (ATEM) paths, Lane B = direct crosspoint paths. */
+:root {
+  --lane-a: #1c6fc9;
+  --lane-b: var(--color-brand);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --lane-a: #64a9e8; }
+}
+:root[data-theme="dark"] { --lane-a: #64a9e8; }
+
+body { padding-bottom: var(--space-9); }
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.dim { color: var(--color-muted); }
+
+/* View / subpage routing */
+.view { display: none; }
+.view.active { display: block; }
+
+/* Page header */
+header.page {
+  padding: var(--space-7) 0 var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-5);
+}
+header.page .eyebrow { color: var(--color-brand); }
+header.page h1 { margin-bottom: 0; }
+header.page .meta {
+  margin-top: var(--space-3);
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+header.page .meta span::before { content: "· "; color: var(--color-border); }
+header.page .meta span:first-child::before { content: ""; }
+
+/* Breadcrumb bar */
+nav.crumb {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg);
+  padding: var(--space-3) 0;
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+nav.crumb a.crumb-home {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-pill);
+  padding: 6px var(--space-4);
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration) var(--ease);
+}
+nav.crumb a.crumb-home:hover { background: var(--btn-tonal-bg-hover); color: var(--btn-tonal-fg); }
+nav.crumb.sub a.crumb-home { background: var(--btn-primary-bg); color: var(--btn-primary-fg); }
+nav.crumb.sub a.crumb-home:hover { background: var(--btn-primary-bg-hover); }
+nav.crumb .crumb-sep { color: var(--color-muted); font-size: var(--fs-1); display: none; }
+nav.crumb.sub .crumb-sep { display: inline; }
+nav.crumb .crumb-current { font-weight: var(--fw-bold); font-size: var(--fs-1); }
+
+/* Sections */
+section.view { margin-bottom: var(--space-8); scroll-margin-top: 72px; }
+section.view > h2 { margin-bottom: var(--space-1); }
+.lede { color: var(--color-muted); max-width: 65ch; margin-bottom: var(--space-5); }
+
+/* Signal flow diagram */
+.lane {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-4);
+  overflow-x: auto;
+}
+.lane-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+.lane-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.lane-a .lane-dot { background: var(--lane-a); }
+.lane-b .lane-dot { background: var(--lane-b); }
+.lane-head strong { font-size: var(--fs-1); }
+.lane-head span { font-size: var(--fs-1); color: var(--color-muted); }
+.lane-body { padding: var(--space-4) var(--space-5) var(--space-5); min-width: 720px; }
+.flow-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-2) 0;
+}
+.flow-row + .flow-row { border-top: 1px dashed var(--color-border); }
+.node {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 13px;
+}
+.node b { display: block; }
+.node small { color: var(--color-muted); font-size: var(--fs-0); line-height: 1.35; }
+.flow-row .arrow { color: var(--color-muted); text-align: center; font-size: var(--fs-1); }
+.lane-a .node.bus { border-color: var(--lane-a); }
+.lane-b .node.bus { border-color: var(--lane-b); }
+
+/* Tables */
+.twrap { overflow-x: auto; }
+.twrap table { min-width: 560px; margin-bottom: 0; }
+thead th { white-space: nowrap; }
+table.rundown { min-width: 900px; }
+table.rundown td:first-child { white-space: nowrap; }
+table.rundown td.seg { font-weight: var(--fw-bold); }
+.loop-note { font-size: var(--fs-1); color: var(--color-muted); margin-top: var(--space-3); }
+
+.pill {
+  display: inline-block;
+  font-size: var(--fs-0);
+  font-weight: var(--fw-bold);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+.pill.a { background: color-mix(in srgb, var(--lane-a) 15%, transparent); color: var(--lane-a); }
+.pill.b { background: color-mix(in srgb, var(--lane-b) 15%, transparent); color: var(--lane-b); }
+
+/* Diagnostics */
+details.symptom {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+details.symptom summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-2);
+}
+details.symptom summary::-webkit-details-marker { display: none; }
+details.symptom summary::before {
+  content: "+";
+  color: var(--color-brand);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3);
+  width: 16px;
+  flex: none;
+}
+details.symptom[open] summary::before { content: "–"; }
+.symptom-body { padding: 0 var(--space-5) var(--space-5) 52px; }
+.path-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+.hop {
+  font-family: var(--font-mono);
+  font-size: var(--fs-0);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  padding: 3px 8px;
+}
+.path-chip-row .sep { color: var(--color-muted); font-size: var(--fs-0); }
+ol.checklist { margin: 0; padding-left: 20px; font-size: var(--fs-1); }
+ol.checklist li { margin-bottom: var(--space-2); }
+ol.checklist li:last-child { margin-bottom: 0; }
+.escalate {
+  margin-top: var(--space-3);
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+  border-left: 2px solid var(--color-error);
+  padding-left: var(--space-3);
+}
+
+/* Callout (brand cream stays cream in both themes) */
+.callout {
+  display: flex;
+  gap: var(--space-3);
+  background: var(--color-accent-cream);
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--fs-1);
+  margin-bottom: var(--space-4);
+}
+.callout b { color: #000000; }
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  font-size: var(--fs-0);
+  font-weight: var(--fw-bold);
+  flex: none;
+}
+
+/* Startup procedure */
+.startup-wrap {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+.startup-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+.startup-step:last-child { border-bottom: none; }
+.startup-step > div:last-child { min-width: 0; }
+.startup-step .idx {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  flex: none;
+}
+.startup-step h3 { font-size: 18px; line-height: var(--lh-heading); margin-bottom: 2px; }
+.startup-step .device { font-size: var(--fs-1); color: var(--color-muted); margin-bottom: var(--space-3); }
+.press-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 4px; }
+.btnkey {
+  font-family: var(--font-mono);
+  font-size: var(--fs-0);
+  font-weight: var(--fw-bold);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-xs);
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+.btnkey.green { border-color: var(--color-success); color: var(--color-success); }
+.btnkey.take { border-color: var(--color-brand); color: var(--color-brand); }
+.press-seq .then { color: var(--color-muted); font-size: var(--fs-0); }
+.press-seq .label { font-size: var(--fs-1); color: var(--color-muted); margin-right: 2px; }
+ol.startup-list { margin: 4px 0 0; padding-left: 20px; font-size: var(--fs-1); }
+ol.startup-list li { margin-bottom: var(--space-1); }
+.cond {
+  margin-top: var(--space-4);
+  border-left: 3px solid var(--lane-a);
+  background: color-mix(in srgb, var(--lane-a) 8%, transparent);
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-1);
+}
+.cond b { color: var(--lane-a); }
+.cond--note {
+  border-left-color: var(--color-brand);
+  background: color-mix(in srgb, var(--color-brand) 8%, transparent);
+}
+.cond--note b { color: var(--color-brand); }
+
+/* Gaps */
+.gap-list { display: flex; flex-direction: column; gap: var(--space-2); }
+.gap-item {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  background: var(--color-surface);
+  border-left: 3px solid var(--color-disabled);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-1);
+}
+.gap-item b { display: block; }
+.gap-item span { color: var(--color-muted); }
+
+footer.page {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+  font-size: var(--fs-1);
+  color: var(--color-muted);
+}
+
+/* Subpage menu & prev/next nav */
+.subpage-menu-wrap { margin-top: var(--space-7); }
+.subpage-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--space-3);
+}
+a.subpage-card {
+  display: block;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5);
+  text-decoration: none;
+  color: var(--color-fg);
+  transition: box-shadow var(--duration) var(--ease);
+}
+a.subpage-card:hover { box-shadow: var(--shadow-card); color: var(--color-fg); }
+a.subpage-card b { display: block; margin-bottom: 4px; }
+a.subpage-card span { display: block; font-size: var(--fs-1); color: var(--color-muted); }
+
+.subpage-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+.subpage-nav .spacer { flex: 1; }
+.subpage-nav a {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 6px var(--space-4);
+  background: var(--btn-tonal-bg);
+  color: var(--btn-tonal-fg);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration) var(--ease);
+}
+.subpage-nav a:hover { background: var(--btn-tonal-bg-hover); color: var(--btn-tonal-fg); }
+
+@media (max-width: 640px) {
+  .flow-row { grid-template-columns: 1fr; }
+  .flow-row .arrow { transform: rotate(90deg); padding: 2px 0; }
+  .lane-body { min-width: 0; }
+  header.page { padding: var(--space-5) 0 var(--space-4); }
+  .symptom-body { padding-left: var(--space-5); }
+  .subpage-nav { flex-wrap: wrap; }
+  .subpage-nav a { flex: 1 1 auto; justify-content: center; }
+}
 </style>
 <noscript><style>.view { display: block !important; }</style></noscript>
+
+<div class="container">
 
 <header class="page">
   <div class="eyebrow">Production Redesign · Startup · Signal Flow · Diagnostics</div>
@@ -491,7 +1332,7 @@
             </tbody>
           </table>
         </div>
-        <div class="cond" style="border-left-color:var(--accent);background:var(--accent-soft);">
+        <div class="cond cond--note">
           Box labels are <b>pending</b> — the colour match is the interim reference. Verify the result in Step 5.
         </div>
       </div>
@@ -525,7 +1366,7 @@
           <span class="then" style="margin:0 6px;">then</span>
           <span class="btnkey green">CAM</span><span class="then">→</span><span class="btnkey take">TAKE</span>
         </div>
-        <p style="font-size:12.5px;color:var(--text-dim);margin:8px 0 0;">Press each macro button (illuminates green), then press <span class="btnkey take" style="padding:2px 6px;">TAKE</span> to confirm that macro's crosspoints before moving to the next. If a macro can't be performed the button flashes.</p>
+        <p style="font-size:13px;color:var(--color-muted);margin:8px 0 0;">Press each macro button (illuminates green), then press <span class="btnkey take" style="padding:2px 6px;">TAKE</span> to confirm that macro's crosspoints before moving to the next. If a macro can't be performed the button flashes.</p>
 
         <div class="cond">
           <b>After a dicey rental — run River first.</b> If the venue was left in an unknown state, restore River's general functionality before honing in on ours. Fire the River macros (×3), then run the Elevation macros above on top:
@@ -787,11 +1628,11 @@
     <summary>Main Screen — black, frozen, or wrong source <span class="pill a">Lane A</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">ME3 PGM</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 23</span><span class="sep">→</span>
-        <span class="chip">OUT 22</span><span class="sep">→</span>
-        <span class="chip">LED Controller</span><span class="sep">→</span>
-        <span class="chip">Main Screen</span>
+        <span class="hop">ME3 PGM</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 23</span><span class="sep">→</span>
+        <span class="hop">OUT 22</span><span class="sep">→</span>
+        <span class="hop">LED Controller</span><span class="sep">→</span>
+        <span class="hop">Main Screen</span>
       </div>
       <ol class="checklist">
         <li>Confirm ME3 is actually delegated to the panel's <b>bottom bus</b> and the intended source is taken on PGM.</li>
@@ -807,11 +1648,11 @@
     <summary>Lyrics missing, wrong, or mispositioned on Main Screen <span class="pill a">Lane A</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">CG1 Mac / ProPresenter</span><span class="sep">→</span>
-        <span class="chip">AJA ROI (orange)</span><span class="sep">→</span>
-        <span class="chip">ATEM IN 9</span><span class="sep">→</span>
-        <span class="chip">ME3 Key 1 (centre) / Key 2 (top, Link)</span><span class="sep">→</span>
-        <span class="chip">ME3 PGM</span>
+        <span class="hop">CG1 Mac / ProPresenter</span><span class="sep">→</span>
+        <span class="hop">AJA ROI (orange)</span><span class="sep">→</span>
+        <span class="hop">ATEM IN 9</span><span class="sep">→</span>
+        <span class="hop">ME3 Key 1 (centre) / Key 2 (top, Link)</span><span class="sep">→</span>
+        <span class="hop">ME3 PGM</span>
       </div>
       <ol class="checklist">
         <li>Confirm ProPresenter is actually outputting on the CG1 Macbook.</li>
@@ -827,11 +1668,11 @@
     <summary>Ground Panels — wrong image, frozen, or dark <span class="pill b">Lane B</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">Resolume Mac / EC2</span><span class="sep">→</span>
-        <span class="chip">AJA ROI (white)</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 35</span><span class="sep">→</span>
-        <span class="chip">OUT 23</span><span class="sep">→</span>
-        <span class="chip">Ground Panels</span>
+        <span class="hop">Resolume Mac / EC2</span><span class="sep">→</span>
+        <span class="hop">AJA ROI (white)</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 35</span><span class="sep">→</span>
+        <span class="hop">OUT 23</span><span class="sep">→</span>
+        <span class="hop">Ground Panels</span>
       </div>
       <ol class="checklist">
         <li><b>The ATEM is not in this path</b> — don't spend time on ME3/ME4, this feed is a direct crosspoint.</li>
@@ -847,9 +1688,9 @@
     <summary>Resolume graphic looks small or wrong size when used elsewhere <span class="pill a">Lane A</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">Raw Resolume (ATEM IN 12)</span><span class="sep">→</span>
-        <span class="chip">ME4 DVE Key 1</span><span class="sep">→</span>
-        <span class="chip">cut in as "ME4" on ME1/2/3</span>
+        <span class="hop">Raw Resolume (ATEM IN 12)</span><span class="sep">→</span>
+        <span class="hop">ME4 DVE Key 1</span><span class="sep">→</span>
+        <span class="hop">cut in as "ME4" on ME1/2/3</span>
       </div>
       <ol class="checklist">
         <li>This symptom means the operator likely cut to the <b>raw EC2/Resolume source</b> directly instead of <b>ME4</b>.</li>
@@ -863,10 +1704,10 @@
     <summary>Lobby TVs — wrong image or dark <span class="pill a">Lane A</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">ME2 PGM</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 22</span><span class="sep">→</span>
-        <span class="chip">OUT 31</span><span class="sep">→</span>
-        <span class="chip">Lobby TVs</span>
+        <span class="hop">ME2 PGM</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 22</span><span class="sep">→</span>
+        <span class="hop">OUT 31</span><span class="sep">→</span>
+        <span class="hop">Lobby TVs</span>
       </div>
       <ol class="checklist">
         <li>Confirm ME2 is delegated to the panel's <b>top bus</b> and has the intended source on PGM.</li>
@@ -881,10 +1722,10 @@
     <summary>Recording / Makito capture blank or wrong <span class="pill a">Lane A</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">ME1 PGM</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 21</span><span class="sep">→</span>
-        <span class="chip">OUT 19</span><span class="sep">→</span>
-        <span class="chip">Makito Encoder</span>
+        <span class="hop">ME1 PGM</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 21</span><span class="sep">→</span>
+        <span class="hop">OUT 19</span><span class="sep">→</span>
+        <span class="hop">Makito Encoder</span>
       </div>
       <ol class="checklist">
         <li>Confirm ME1 PGM on the multiview shows the intended capture source.</li>
@@ -898,11 +1739,11 @@
     <summary>Top Confidence Monitor wrong <span class="pill b">Lane B</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">CG2 Mac / EC3</span><span class="sep">→</span>
-        <span class="chip">AJA ROI (yellow)</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 36</span><span class="sep">→</span>
-        <span class="chip">OUT 24</span><span class="sep">→</span>
-        <span class="chip">Top Confidence Monitor</span>
+        <span class="hop">CG2 Mac / EC3</span><span class="sep">→</span>
+        <span class="hop">AJA ROI (yellow)</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 36</span><span class="sep">→</span>
+        <span class="hop">OUT 24</span><span class="sep">→</span>
+        <span class="hop">Top Confidence Monitor</span>
       </div>
       <ol class="checklist">
         <li>This bypasses the ATEM entirely — check CG2's own output first.</li>
@@ -916,10 +1757,10 @@
     <summary>Bottom Confidence Monitor wrong / clock not showing Sunday <span class="pill b">Lane B</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">Clock Mac + BMD Mini Converter</span><span class="sep">→</span>
-        <span class="chip">Videohub IN 13 ("Resolume 1")</span><span class="sep">→</span>
-        <span class="chip">OUT 25</span><span class="sep">→</span>
-        <span class="chip">Bottom Confidence Monitor</span>
+        <span class="hop">Clock Mac + BMD Mini Converter</span><span class="sep">→</span>
+        <span class="hop">Videohub IN 13 ("Resolume 1")</span><span class="sep">→</span>
+        <span class="hop">OUT 25</span><span class="sep">→</span>
+        <span class="hop">Bottom Confidence Monitor</span>
       </div>
       <ol class="checklist">
         <li>This port is dual-purpose: it's labelled "Resolume 1" but is <b>hijacked by the Clock Macbook on Sundays</b>. On other days this monitor reflects the actual River Resolume 1 SDI at FOH, not a clock.</li>
@@ -933,10 +1774,10 @@
     <summary>No console audio from Resi or CG1 <span class="pill b">Lane B</span></summary>
     <div class="symptom-body">
       <div class="path-chip-row">
-        <span class="chip">Resi Decoder (EC1) → IN 34 → OUT 18 → DEMBED 1 → Dante 1–12</span>
+        <span class="hop">Resi Decoder (EC1) → IN 34 → OUT 18 → DEMBED 1 → Dante 1–12</span>
       </div>
       <div class="path-chip-row">
-        <span class="chip">CG1 Mac (EC4) → IN 37 → OUT 20 → DEMBED 2 → Dante 25/26</span>
+        <span class="hop">CG1 Mac (EC4) → IN 37 → OUT 20 → DEMBED 2 → Dante 25/26</span>
       </div>
       <ol class="checklist">
         <li>These audio paths de-embed from the same SDI feeds used for video — if picture is fine but audio is missing, the fault is isolated to the Sonifex AVN DIO 2 embedder/de-embedder stage or the Dante routing, not the SDI path.</li>
@@ -1079,6 +1920,8 @@
 <footer class="page">
   Built from "Routing Cross Points – Fill In", ME Assignment notes, and Key Assignment notes. Next up: startup sequence doc.
 </footer>
+
+</div>
 
 <script>
 (function () {
