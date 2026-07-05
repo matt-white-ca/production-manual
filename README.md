@@ -8,9 +8,9 @@ Video production reference for **Elevation Toronto East** — the permanent inst
 
 ## Published page
 
-This repo publishes `index.html` as a static site (GitHub Pages). The live URL is the single, no-login link operators can open on any device in the venue.
+This repo publishes `index.html` as a static site (GitHub Pages). The live URL is the single, no-login link operators can open on any device in the venue:
 
-_(URL added once Pages is enabled.)_
+**https://matt-white-ca.github.io/tea-production-redesign/**
 
 ## Related
 
