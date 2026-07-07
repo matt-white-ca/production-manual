@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en" data-depth="1" data-disc="video">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>Video Engineering — production · Elevation Toronto East</title>
+<link rel="stylesheet" href="../assets/production.css">
+<noscript><style>.view{display:block!important}.rail,.tabbar{display:none!important}</style></noscript>
+</head>
+<body>
+
+<button class="theme-btn" id="theme-btn" type="button" aria-label="Switch background">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+</button>
+
+<div class="app">
+<aside class="rail" id="rail"></aside>
+
+<main>
+
+<!-- ═══════════════════════════════ HUB ═══════════════════════════════ -->
+<section class="view" id="video" data-disc="video">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Video Engineering</span>
+    <h1>Switch, Route, Capture</h1>
+    <p class="lead">The permanent install in River's master control room. Fire the saved Elevation state, then run the service.</p>
+  </div>
+
+  <a class="start-here" href="#video-startup">
+    <span class="num">1</span>
+    <span><b>Startup Procedure</b><span>Run this first, every service — power, connect, Profile 44, macros, verify.</span></span>
+  </a>
+
+  <div class="card-grid">
+    <a class="page-card" href="#video-flow"><b>Signal Flow</b><span>Lane A / Lane B — which paths touch the ATEM, which never do.</span></a>
+    <a class="page-card" href="#video-rundown"><b>Sunday Run of Show</b><span>Expected ME1/2/3 state at each point in the service.</span></a>
+    <a class="page-card" href="#video-diagnostics"><b>Diagnose a Symptom</b><span>Symptom-based checklists, worked top to bottom.</span></a>
+    <a class="page-card" href="#video-me-bus"><b>M/E Bus Map</b><span>What each M/E is for and where it routes.</span></a>
+    <a class="page-card" href="#video-keys"><b>Key Layers</b><span>ME3 / ME4 keyer assignments.</span></a>
+    <a class="page-card" href="#video-inputs"><b>Input Cross-Points</b><span>Physical sources landing on the Videohub / ATEM.</span></a>
+    <a class="page-card" href="#video-outputs"><b>Output Cross-Points</b><span>Where each Videohub output physically goes.</span></a>
+    <a class="page-card" href="#video-gaps"><b>Unverified / Gaps</b><span>Not yet documented — can't diagnose these paths yet.</span></a>
+  </div>
+</section>
+
+<!-- ═════════════════════════════ STARTUP ══════════════════════════════ -->
+<section class="view" id="video-startup" data-disc="video" data-crumb="Video Engineering / Startup">
+  <h1>Startup Procedure</h1>
+  <p class="lead">Run these in order at the start of a service. Each step assumes the one before it is done.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Power the Racks &amp; the ATEM Panel</h3>
+        <div class="where">Rack · brings up venue devices, rack gear, and the switcher panel</div>
+        <ol>
+          <li>Power on the <b>Furman</b> — this powers all the venue devices.</li>
+          <li>Power on the <b>Middle Atlantic</b> power conditioner.</li>
+          <li>Boot the <b>Resi decoder</b> and the <b>console interface</b>.</li>
+          <li><b>Physically reconnect power to the ATEM Advanced Panel.</b> The venue unplugs it between services and it has no power switch — it boots on connection. Do it early so it's up by step 3.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Connect the Elevation Macbooks</h3>
+        <div class="where">AJA ROI stack under the desk · match by SDI cable colour</div>
+        <div class="twrap">
+          <table>
+            <thead><tr><th>SDI cable</th><th>Computer</th><th>Lands on</th></tr></thead>
+            <tbody>
+              <tr><td><span class="swatch" style="background:#fff"></span>White</td><td>Resolume Mac (EC2)</td><td class="mono">IN 35</td></tr>
+              <tr><td><span class="swatch" style="background:#ffd400"></span>Yellow</td><td>CG2 Mac (EC3)</td><td class="mono">IN 36</td></tr>
+              <tr><td><span class="swatch" style="background:#ff7a1a"></span>Orange</td><td>CG1 Mac (EC4)</td><td class="mono">IN 37</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">Box labels are <b>pending</b> — cable colour is the interim reference. Verify in step 5.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Restore ATEM Profile 44</h3>
+        <div class="where">ATEM 2 M/E Advanced Panel 20 · reloads Elevation mapping, prefs &amp; macros</div>
+        <ol>
+          <li>Press <span class="btnkey">PROFILE</span>, then the <b>right arrow</b> to the profiles page.</li>
+          <li>Turn the soft knob to <b>Profile 44</b>.</li>
+          <li>Press <span class="btnkey">RESTORE</span>.</li>
+        </ol>
+        <div class="note">Orange text above the slot confirms it loaded. The manual claims a 10-profile limit; the firmware holds more and <b>44 was saved on this panel</b> — trust it's there.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Recall Videohub Macros</h3>
+        <div class="where">Videohub 40×40 12G front panel · macro lights green, TAKE applies</div>
+        <p style="margin-bottom:8px;">Standard startup — Elevation macros, one at a time:</p>
+        <p style="margin-bottom:6px;"><span class="btnkey g">STREAM</span> → <span class="btnkey t">TAKE</span> &nbsp;then&nbsp; <span class="btnkey g">CAM</span> → <span class="btnkey t">TAKE</span></p>
+        <div class="note"><b>After a dicey rental — River first.</b> Restore the venue's general state before ours: <span class="btnkey g">MON</span> → <span class="btnkey t">TAKE</span> · <span class="btnkey g">DECK</span> → <span class="btnkey t">TAKE</span> · <span class="btnkey g">EDIT</span> → <span class="btnkey t">TAKE</span>, then run the Elevation macros on top.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Verify on the Videohub Display</h3>
+        <div class="where">Front-panel video preview · after firing the macros</div>
+        <p>Confirm each Macbook landed on the right input — the picture on <span class="mono">IN 35 / 36 / 37</span> matches white → Resolume, yellow → CG2, orange → CG1. If two are swapped, re-seat the HDMI at the AJA stack per step 2 and re-check.</p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video">‹ Video overview</a>
+    <a href="#video-flow">Signal Flow ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ SIGNAL FLOW ═════════════════════════ -->
+<section class="view" id="video-flow" data-disc="video" data-crumb="Video Engineering / Signal Flow">
+  <h1>Signal Flow</h1>
+  <p class="lead">Every path is in one of two lanes. Which lane the broken destination is on tells you whether the ATEM is even in play.</p>
+
+  <div class="lane">
+    <div class="lane-head"><span class="tally"></span>Lane A — Switched Program Paths</div>
+    <p>Source → ATEM M/E → Videohub loopback → destination. An M/E problem can only ever break a Lane A destination.</p>
+
+    <div class="path-row">
+      <div class="path-label">ME1 · capture bus</div>
+      <div class="path">ME1 PGM → Videohub IN 21 (loopback) → OUT 19 → Makito Encoder → Playback capture</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">ME2 · top bus</div>
+      <div class="path">ME2 PGM → Videohub IN 22 (loopback) → OUT 31 → Lobby distribution → Lobby TVs</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">ME3 · bottom bus, live switch</div>
+      <div class="path">ME3 PGM → Videohub IN 23 (loopback) → OUT 22 → LED Controller → Main Screen</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">ME4 · utility bus, not a destination</div>
+      <div class="path">Raw Resolume (ATEM IN 12) → ME4 DVE Key 1 → selectable as "Resolume" source on ME1 / ME2 / ME3 → full-screen</div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="lane-head"><span class="tally" style="--acc: var(--ink-2)"></span>Lane B — Direct Crosspoint Paths</div>
+    <p>Source → Videohub crosspoint directly → destination. The ATEM is not involved.</p>
+
+    <div class="path-row">
+      <div class="path-label">Resolume Mac · EC2, white AJA ROI</div>
+      <div class="path">Resolume Mac → Videohub IN 35 → OUT 23 → Ground Panels (raw / untreated)</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">CG2 Mac · EC3, yellow AJA ROI</div>
+      <div class="path">CG2 Mac → Videohub IN 36 → OUT 24 → Top Confidence Monitor</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">Clock Mac · BMD Mini Converter, Sunday hijack</div>
+      <div class="path">Clock Mac → Videohub IN 13 ("Resolume 1") → OUT 25 → Bottom Confidence Monitor</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">Resi Decoder · EC1</div>
+      <div class="path">Resi Decoder → Videohub IN 34 → OUT 18 → DEMBED 1 → Console Dante 1–12</div>
+    </div>
+    <div class="path-row">
+      <div class="path-label">CG1 Mac · EC4, orange AJA ROI</div>
+      <div class="path">CG1 Mac → Videohub IN 37 → OUT 20 → DEMBED 2 → Console Dante 25/26</div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:16px;"><b>Fastest triage question:</b> is the broken destination Lane A or Lane B? Lane B rules out the switcher instantly — go straight to the crosspoint.</div>
+
+  <nav class="page-nav">
+    <a href="#video-startup">‹ Startup</a>
+    <a href="#video-rundown">Sunday Run of Show ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ RUN OF SHOW ═════════════════════════ -->
+<section class="view" id="video-rundown" data-disc="video" data-crumb="Video Engineering / Sunday Run of Show">
+  <h1>Sunday Run of Show — Expected Signal State</h1>
+  <p class="lead">What each bus should be showing at each point in a normal service. Useful for telling "that's wrong" apart from "that's just where we are right now."</p>
+
+  <div class="note"><b>Terminology:</b> "Resolume" always means <b>ME4</b> (the full-screen DVE-expanded version) — never the raw EC2 source. "Uplink" is the broadcast join with the North Carolina main campus, carried on <b>Resi</b>, cut in full-screen with no DVE step needed. "CG1 full screen" means CG1 cut directly as the ME3 source, not keyed.</div>
+
+  <div class="twrap">
+    <table class="rundown">
+      <thead><tr><th>#</th><th>Segment</th><th>ME1 · Makito</th><th>ME2 · Lobby</th><th>ME3 · Main Screen</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="step-num">1</span></td>
+          <td class="seg">Pre-Experience Slides</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 (slides)</td>
+          <td class="mono">CG1 (slides)</td>
+          <td>Baseline resting state before the experience starts.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">2</span></td>
+          <td class="seg">Experience Start / Countdown</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" (countdown)</td>
+          <td>ME3 transitions CG1 → ME4. ME2 transitions CG1 → Cam 1 for the lobby feed.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">3</span></td>
+          <td class="seg">Countdown → Worship Visuals</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" + Key 1 (centre lyrics)</td>
+          <td>Resolume transitions countdown → visuals internally — no ATEM cut needed. Key on ME3 Key 1 for local lyrics.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">4</span></td>
+          <td class="seg">Welcome</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 full screen (hosting slides)</td>
+          <td>Key off Key 1, then background-transition ME4 → CG1 on ME3.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">5</span></td>
+          <td class="seg">Back to Local Worship</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">ME4 "Resolume" + Key 1 (centre lyrics)</td>
+          <td>Transition CG1 → ME4, key on Key 1 again.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">6</span></td>
+          <td class="seg">Uplink — song through sermon</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">Uplink (Resi) full screen</td>
+          <td class="mono">Resi full screen + Key 2 (top-right lyrics)</td>
+          <td>ME3 transitions ME4 → Resi (no DVE step for Resi); Key 1 → Key 2. ME2 switches to Uplink full screen on the lobby top bus at some point in this window — stays this way through the sermon.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">7</span></td>
+          <td class="seg">Coming Out of Sermon</td>
+          <td class="mono">Cam 1</td>
+          <td class="dim">Not specified</td>
+          <td class="mono">ME4 "Resolume" or CG1</td>
+          <td>Director's call on ME3 depending on the look/visual needed for that moment.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">8</span></td>
+          <td class="seg">Hosting Support / Closing</td>
+          <td class="mono">Cam 1</td>
+          <td class="dim">Not specified</td>
+          <td class="mono">CG1 full screen</td>
+          <td>Eventually lands on CG1 for hosting support through the closing elements.</td>
+        </tr>
+        <tr>
+          <td><span class="step-num">1</span></td>
+          <td class="seg">Pre-Experience Slides (loop)</td>
+          <td class="mono">Cam 1</td>
+          <td class="mono">CG1 (slides)</td>
+          <td class="mono">CG1 (slides)</td>
+          <td>Cycle repeats for the next service.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="loop-note">ME1 stays on Camera 1 for the entire service — never changes for Makito capture. ME2's state between the end of Uplink and the next Pre-Experience Slides wasn't specified; confirm with the director.</p>
+
+  <nav class="page-nav">
+    <a href="#video-flow">‹ Signal Flow</a>
+    <a href="#video-diagnostics">Diagnose a Symptom ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ DIAGNOSTICS ═════════════════════════ -->
+<section class="view" id="video-diagnostics" data-disc="video" data-crumb="Video Engineering / Diagnose">
+  <h1>Diagnose a Symptom</h1>
+  <p class="lead">Open the symptom that matches what you're seeing. Each one lists the exact hop sequence and where to look first — worked top to bottom in order.</p>
+
+  <details class="symptom" open>
+    <summary>Main Screen — black, frozen, or wrong source <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <div class="path">ME3 PGM → Videohub IN 23 → OUT 22 → LED Controller → Main Screen</div>
+      <ol>
+        <li>Confirm ME3 is actually delegated to the panel's <b>bottom bus</b> and the intended source is taken on PGM.</li>
+        <li>Check the ATEM multiview for ME3 PGM — if it's correct there, the fault is downstream of the switcher.</li>
+        <li>Verify the Videohub crosspoint OUT 22 is still patched from IN 23 (not accidentally re-routed).</li>
+        <li>Check LED Controller input status/signal lock, then cabling from Videohub to controller.</li>
+      </ol>
+      <div class="note">If ME3 PGM itself is wrong on the multiview, the problem is upstream — check whichever source is cut in (see <a href="#video-inputs">Input Cross-Points</a>).</div>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lyrics missing, wrong, or mispositioned on Main Screen <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <div class="path">CG1 Mac / ProPresenter → AJA ROI (orange) → ATEM IN 9 → ME3 Key 1 (centre) / Key 2 (top, Link) → ME3 PGM</div>
+      <ol>
+        <li>Confirm ProPresenter is actually outputting on the CG1 Macbook.</li>
+        <li>Check the orange-tagged AJA ROI link status for that run.</li>
+        <li>Confirm ATEM IN 9 shows signal on the multiview.</li>
+        <li>On ME3: centre lyrics use <b>Key 1</b>, top/"Link" lyrics use <b>Key 2</b> — confirm the correct key is enabled and its luma clip/gain and mask haven't drifted.</li>
+        <li>Confirm key layer priority still sits above fill in the ME3 keyer stack.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Ground Panels — wrong image, frozen, or dark <span class="lane-tag">Lane B</span></summary>
+    <div class="body">
+      <div class="path">Resolume Mac / EC2 → AJA ROI (white) → Videohub IN 35 → OUT 23 → Ground Panels</div>
+      <ol>
+        <li><b>The ATEM is not in this path</b> — don't spend time on ME3/ME4, this feed is a direct crosspoint.</li>
+        <li>Confirm Resolume is actually outputting on the Resolume Macbook and it's the raw/untreated composition (not a full-screen DVE version — that's ME4's job, not this feed's).</li>
+        <li>Check the white-tagged AJA ROI link status.</li>
+        <li>Confirm Videohub crosspoint OUT 23 is still patched from IN 35.</li>
+        <li>Check the LED Controller's input for the ground panels and cabling from Videohub.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Resolume graphic looks small or wrong size when used elsewhere <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <div class="path">Raw Resolume (ATEM IN 12) → ME4 DVE Key 1 → cut in as "ME4" on ME1/2/3</div>
+      <ol>
+        <li>This symptom means the operator likely cut to the <b>raw EC2/Resolume source</b> directly instead of <b>ME4</b>.</li>
+        <li>ME4's only job is to take that raw feed and expand it full-screen via its DVE Key 1 — confirm Key 1 is enabled on ME4.</li>
+        <li>On whichever M/E needs the full-screen graphic, confirm the source selected is <b>ME4</b>, labelled "Resolume" — not the raw input.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lobby TVs — wrong image or dark <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <div class="path">ME2 PGM → Videohub IN 22 → OUT 31 → Lobby TVs</div>
+      <ol>
+        <li>Confirm ME2 is delegated to the panel's <b>top bus</b> and has the intended source on PGM.</li>
+        <li>Check ME2 PGM on the multiview.</li>
+        <li>Confirm Videohub crosspoint OUT 31 is still patched from IN 22.</li>
+        <li>Check the lobby TV distribution path and individual sets.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Recording / Makito capture blank or wrong <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <div class="path">ME1 PGM → Videohub IN 21 → OUT 19 → Makito Encoder</div>
+      <ol>
+        <li>Confirm ME1 PGM on the multiview shows the intended capture source.</li>
+        <li>Confirm Videohub crosspoint OUT 19 is still patched from IN 21.</li>
+        <li>Check Makito encoder status/link independently of the video path.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Top Confidence Monitor wrong <span class="lane-tag">Lane B</span></summary>
+    <div class="body">
+      <div class="path">CG2 Mac / EC3 → AJA ROI (yellow) → Videohub IN 36 → OUT 24 → Top Confidence Monitor</div>
+      <ol>
+        <li>This bypasses the ATEM entirely — check CG2's own output first.</li>
+        <li>Check the yellow-tagged AJA ROI link status.</li>
+        <li>Confirm Videohub crosspoint OUT 24 is still patched from IN 36.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Bottom Confidence Monitor wrong / clock not showing Sunday <span class="lane-tag">Lane B</span></summary>
+    <div class="body">
+      <div class="path">Clock Mac + BMD Mini Converter → Videohub IN 13 ("Resolume 1") → OUT 25 → Bottom Confidence Monitor</div>
+      <ol>
+        <li>This port is dual-purpose: it's labelled "Resolume 1" but is <b>hijacked by the Clock Macbook on Sundays</b>. On other days this monitor reflects the actual River Resolume 1 SDI at FOH, not a clock.</li>
+        <li>If the clock isn't showing on a Sunday, confirm the BMD Mini Converter is connected and the Clock Macbook is set to that output.</li>
+        <li>Confirm Videohub crosspoint OUT 25 is still patched from IN 13.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>No console audio from Resi or CG1 <span class="lane-tag">Lane B</span></summary>
+    <div class="body">
+      <div class="path">Resi Decoder (EC1) → IN 34 → OUT 18 → DEMBED 1 → Dante 1–12</div>
+      <div class="path" style="margin-top:6px;">CG1 Mac (EC4) → IN 37 → OUT 20 → DEMBED 2 → Dante 25/26</div>
+      <ol>
+        <li>These audio paths de-embed from the same SDI feeds used for video — if picture is fine but audio is missing, the fault is isolated to the Sonifex AVN DIO 2 embedder/de-embedder stage or the Dante routing, not the SDI path.</li>
+        <li>Check Sonifex AVN DIO 2 channel assignment and status for DEMBED 1 (Resi) or DEMBED 2 (CG1).</li>
+        <li>Confirm the console's Dante patch still has channels 1–12 (Resi) / 25–26 (CG1) assigned to the correct input strip.</li>
+      </ol>
+    </div>
+  </details>
+
+  <nav class="page-nav">
+    <a href="#video-rundown">‹ Sunday Run of Show</a>
+    <a href="#video-me-bus">M/E Bus Map ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ M/E BUS MAP ═════════════════════════ -->
+<section class="view" id="video-me-bus" data-disc="video" data-crumb="Video Engineering / M/E Bus Map">
+  <h1>M/E Bus Map</h1>
+  <p class="lead">What each M/E is for and where its program feed physically ends up.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Bus</th><th>Panel Position</th><th>Routed To</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>ME1</b></td><td class="dim">—</td><td>Makito Encoder</td><td>Playback capture / recording feed</td></tr>
+        <tr><td class="mono"><b>ME2</b></td><td>Top bus</td><td>Lobby TVs</td><td>Lobby program</td></tr>
+        <tr><td class="mono"><b>ME3</b></td><td>Bottom bus</td><td>Main Screen</td><td>Live switching — primary operator surface</td></tr>
+        <tr><td class="mono"><b>ME4</b></td><td class="dim">—</td><td>Not a destination — utility bus only</td><td>Expands the raw Resolume output full-screen via DVE Key&nbsp;1; exposed to ME1–3 as a "Resolume" source. Ground Panels always get the raw feed directly (see Lane B), never ME4.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-diagnostics">‹ Diagnose a Symptom</a>
+    <a href="#video-keys">Key Layers ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ KEY LAYERS ══════════════════════════ -->
+<section class="view" id="video-keys" data-disc="video" data-crumb="Video Engineering / Key Layers">
+  <h1>Key Layers</h1>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Bus</th><th>Key</th><th>Type</th><th>Source</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">ME3</td><td class="mono">Key 1</td><td>Luma</td><td>CG1 (ATEM IN 9)</td><td>Lyrics, masked to <b>centre</b> of screen</td></tr>
+        <tr><td class="mono">ME3</td><td class="mono">Key 2</td><td>Luma</td><td>CG1 (ATEM IN 9)</td><td>Lyrics repositioned <b>top-right</b> of screen, used while <b>Uplink</b> (Resi) is full-screen so lyrics stay visible over the incoming feed</td></tr>
+        <tr><td class="mono">ME4</td><td class="mono">Key 1</td><td>DVE</td><td>Resolume, raw (ATEM IN 12)</td><td>Expands image to full screen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-me-bus">‹ M/E Bus Map</a>
+    <a href="#video-inputs">Input Cross-Points ›</a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════════ INPUT CROSS-POINTS ═════════════════════ -->
+<section class="view" id="video-inputs" data-disc="video" data-crumb="Video Engineering / Input Cross-Points">
+  <h1>Input Cross-Points</h1>
+  <p class="lead">From the Routing Cross Points sheet — physical sources landing on the Videohub / ATEM.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>SDI Loc</th><th>Device</th><th>Label</th><th>Destination</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">IN 13</td><td>Clock Macbook + BMD Mini Converter</td><td class="mono">Resolume</td><td class="mono">ATEM IN 14</td><td>Hijacks the River Resolume 1 SDI at FOH for clock, Sundays only</td></tr>
+        <tr><td class="mono">IN 34</td><td>Resi Decoder</td><td class="mono">EC1</td><td class="mono">ATEM IN 13</td><td>Resi input</td></tr>
+        <tr><td class="mono">IN 35</td><td>Resolume Macbook + AJA ROI (white)</td><td class="mono">EC2</td><td class="mono">ATEM IN 12</td><td>Raw/untreated — also feeds Ground Panels directly</td></tr>
+        <tr><td class="mono">IN 36</td><td>CG2 Macbook + AJA ROI (yellow)</td><td class="mono">EC3</td><td class="mono">ATEM IN 11</td><td>—</td></tr>
+        <tr><td class="mono">IN 37</td><td>CG1 Macbook + AJA ROI (orange)</td><td class="mono">EC4</td><td class="mono">ATEM IN 9</td><td>Source for ME3 Key 1 / Key 2 lyrics</td></tr>
+        <tr><td class="mono">IN 38</td><td>Sonifex AVN DIO 2</td><td class="mono">EC5</td><td class="dim mono">—</td><td>Return feed from Sonifex 2, no ATEM destination</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-keys">‹ Key Layers</a>
+    <a href="#video-outputs">Output Cross-Points ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════ OUTPUT CROSS-POINTS ═════════════════════ -->
+<section class="view" id="video-outputs" data-disc="video" data-crumb="Video Engineering / Output Cross-Points">
+  <h1>Output Cross-Points</h1>
+  <p class="lead">Where each Videohub output physically goes.</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>SDI Loc</th><th>Destination</th><th>Device</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">OUT 18</td><td>DEMBED 1 (Resi audio)</td><td>Sonifex AVN DIO 2</td><td>Input 34 (Resi) → console Dante 1–12</td></tr>
+        <tr><td class="mono">OUT 19</td><td>Makito Encoder</td><td>Makito</td><td>Input 21 (ME1)</td></tr>
+        <tr><td class="mono">OUT 20</td><td>DEMBED 2 (CG1 T2 audio)</td><td>Sonifex AVN DIO 2</td><td>Input 37 (EC CG1) → console Dante 25/26</td></tr>
+        <tr><td class="mono">OUT 21</td><td>Side Screens</td><td>LED Controller</td><td class="dim">Not filled in — see Gaps</td></tr>
+        <tr><td class="mono">OUT 22</td><td>Main Screen</td><td>LED Controller</td><td>Input 23 (ME3)</td></tr>
+        <tr><td class="mono">OUT 23</td><td>Ground Panels</td><td>LED Controller</td><td>Input 35 (EC Resolume, raw)</td></tr>
+        <tr><td class="mono">OUT 24</td><td>Top Confidence Monitor</td><td>TV</td><td>Input 36 (EC CG2)</td></tr>
+        <tr><td class="mono">OUT 25</td><td>Bottom Confidence Monitor</td><td>TV</td><td>Input 13 (EC Clock, labelled "Resolume 1")</td></tr>
+        <tr><td class="mono">OUT 31</td><td>Lobby</td><td>TVs in Lobby</td><td>Input 22 (ME2)</td></tr>
+        <tr><td class="mono">OUT 32–37</td><td>Control Room TV 1–6</td><td>TV</td><td class="dim">Not filled in — see Gaps</td></tr>
+        <tr><td class="mono">OUT 38</td><td>ASUS ProArt Screen</td><td>Monitor at TD1</td><td class="dim">Not filled in — see Gaps</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-inputs">‹ Input Cross-Points</a>
+    <a href="#video-gaps">Unverified / Gaps ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════ UNVERIFIED / GAPS ═══════════════════════ -->
+<section class="view" id="video-gaps" data-disc="video" data-crumb="Video Engineering / Unverified">
+  <h1>Unverified / Gaps</h1>
+  <p class="lead">Not yet documented in the cross-point sheet — this reference can't be used to diagnose these paths until they're filled in.</p>
+  <div class="gap-list">
+    <div class="gap-item"><span class="dim mono">OUT 21</span><div><b>Side Screens</b><span>Source crosspoint not filled in.</span></div></div>
+    <div class="gap-item"><span class="dim mono">OUT 32–37</span><div><b>Control Room TVs 1–6</b><span>Sources not filled in — likely fed from a multiview output, unconfirmed.</span></div></div>
+    <div class="gap-item"><span class="dim mono">OUT 38</span><div><b>ASUS ProArt Screen (TD1)</b><span>Source not filled in.</span></div></div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-outputs">‹ Output Cross-Points</a>
+    <a href="#video">Video overview ›</a>
+  </nav>
+</section>
+
+</main>
+</div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+<script src="../assets/app.js"></script>
+</body>
+</html>

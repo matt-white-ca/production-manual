@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-depth="1" data-disc="cameras">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>Cameras — production · Elevation Toronto East</title>
+<link rel="stylesheet" href="../assets/production.css">
+<noscript><style>.view{display:block!important}.rail,.tabbar{display:none!important}</style></noscript>
+</head>
+<body>
+
+<button class="theme-btn" id="theme-btn" type="button" aria-label="Switch background">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+</button>
+
+<div class="app">
+<aside class="rail" id="rail"></aside>
+
+<main>
+<section class="view" id="cameras" data-disc="cameras">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Cameras</span>
+    <h1>Builds, Shots, Comms</h1>
+    <p class="lead">Camera settings, positions and shot language, tally and talkback.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="page-card"><b>Builds &amp; Settings</b><span>Per-camera build: lens, paint, frame rate, and SDI return.</span></div>
+    <div class="page-card"><b>Positions &amp; Shot Sheet</b><span>Where each op stands and the shot vocabulary the director calls.</span></div>
+    <div class="page-card"><b>Tally &amp; Comms</b><span>Tally source, talkback channels, and who hears whom.</span></div>
+    <div class="page-card"><b>Diagnose a Symptom</b><span>No signal, no tally, no comms — checklists.</span></div>
+  </div>
+
+  <div class="scaffold-note">
+    <b>Scaffold — structure agreed, content pending.</b> One anchor already exists in video: <b>Cam 1 is always the ME1 → Makito capture source</b>, documented in <a href="../video/index.html#video-flow">Video Signal Flow</a> — builds here must stay consistent with that path. Bring: camera models &amp; counts, build cards, comms plan, and the op quick-reference you want new volunteers reading.
+  </div>
+</section>
+</main>
+</div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+<script src="../assets/app.js"></script>
+</body>
+</html>

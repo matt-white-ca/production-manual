@@ -1,0 +1,37 @@
+<!-- TEMPLATE: whole subpage view — paste inside <main>, right before the
+     closing </main> tag of the discipline's own index.html (e.g.
+     video/index.html for a video page). Then:
+       1. unique id, pattern <disc>-<slug> (e.g. audio-wireless)
+       2. data-disc set to the discipline
+       3. data-crumb "Discipline Name / Page Title" (must contain " / " —
+          that's what tells app.js to render a breadcrumb)
+       4. a hub card linking to it (templates/page-card.html)
+       5. one NAV entry in the NAV array near the top of assets/app.js
+       6. wire prev/next below, and update the neighbouring views' page-nav
+     No overline here — only hub views get the "eyebrow" label; the rail
+     and breadcrumb already say which discipline you're in. -->
+<section class="view" id="disc-slug" data-disc="disc" data-crumb="Discipline Name / Page Title">
+  <h1>Page Title</h1>
+  <p class="lead">One sentence: what this page is for and when to open it.</p>
+
+  <!-- Body: one of the three shapes —
+       procedure  → <div class="steps"> + templates/startup-step.html
+       diagnose   → templates/symptom.html accordions
+       reference  → the table block below (delete what you don't use) -->
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Column</th><th>Column</th><th>Column</th></tr></thead>
+      <tbody>
+        <tr><td>Value</td><td>Value</td><td class="mono">IN 00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Same-file link: just "#hash". Linking to a DIFFERENT discipline's
+       file needs the relative path, e.g. "../video/index.html#video-flow" —
+       see templates/symptom.html for a worked example of both. -->
+  <nav class="page-nav">
+    <a href="#disc-previous">‹ Previous Page</a>
+    <a href="#disc">Discipline overview ›</a>
+  </nav>
+</section>

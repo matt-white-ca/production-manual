@@ -13,21 +13,49 @@ setups cleanly separated.
 The switcher (ATEM) and Videohub router both support saved-state recall, so the operating
 model is: **fire a saved "Elevation start here" configuration, then run the service.**
 
-## What's in this repo
+## What's in this repo (v2 — the production platform)
 
-- **`index.html`** — the deliverable. A self-contained (no external deps, works offline)
-  operator reference covering: **startup procedure, signal flow, Sunday run of show, and
-  symptom-based diagnostics**. This file **is the single source of truth** for the
-  published page.
+The site is a four-discipline team platform (Video Engineering · Audio · Lighting ·
+Cameras), shipped 2026-07-07. One HTML file per discipline, hash-routed to its own
+subpages, sharing one stylesheet and one JS shell — never a single monolithic file again.
+
+- **`index.html`** — home / platform launcher.
+- **`video/index.html`** — Video Engineering. Fully ported, 9 real pages: Startup,
+  Signal Flow, Sunday Run of Show, Diagnose a Symptom, M/E Bus Map, Key Layers, Input
+  Cross-Points, Output Cross-Points, Unverified/Gaps.
+- **`audio/index.html`, `lighting/index.html`, `cameras/index.html`** — scaffolds: one
+  real hub page each, listing planned subpages and what Matt needs to bring. Not yet
+  live content.
+- **`assets/production.css`** — the one shared stylesheet. Content edits never touch it.
+- **`assets/app.js`** — the shared shell: a `NAV` array (add a page = one entry here),
+  the rail/tab-bar renderer, the hash router, breadcrumbs, and the light/dark toggle.
+  Content edits touch only the `NAV` array in this file, nothing else in it.
+- **`docs/MAINTENANCE.md`** — **read this before touching content.** The content-editing
+  contract: what's safe to edit, recipes for common changes, writing rules, verify steps.
+- **`templates/`** — copy-paste-verbatim blocks for every repeating pattern (procedure
+  step, symptom accordion, hub page-card, whole subpage). New content starts here.
+- **`design/mockup-v2.html`** — the frozen design reference. Never edited; the approved
+  direction ("lights down": dark default with a switchable light background, one
+  brand-neon tally per discipline, Eina semibold headings over Helvetica Now/Neue body
+  at regular weight — never Avenir — and the three-square logomark) is realized in the
+  real site above, not in this file.
+- **`ROADMAP.md`** — phases, target architecture, and the design-decisions log with the
+  reasoning behind each call.
+- **`v1/index.html`** — the retired single-file site, kept verbatim for history.
+- **`Production_Logo_Square.png`, `Production_Logo-01.png`** — source logo assets; the
+  site reproduces the mark as inline SVG rather than loading these.
+- **`ElevationProduction_BrandGuide_v1.pdf`** — inspiration, not law.
 - **`README.md`** — short repo readme with the live URL.
 
 ## Publish workflow (important)
 
-The page is served by **GitHub Pages** from `index.html` on `main`. To publish a change:
+The site is served by **GitHub Pages** from the repo root on `main` — every HTML file
+above is a real path Pages serves directly (`/video/`, `/audio/`, etc. all resolve via
+their `index.html`). To publish a change:
 
-1. Edit `index.html`
-2. Commit + push to `main`
-3. Pages redeploys automatically (~1 min), same URL
+1. Edit the file(s) — see `docs/MAINTENANCE.md` for what's safe to touch and how.
+2. Commit + push to `main`.
+3. Pages redeploys automatically (~1 min), same URL.
 
 **Live URL:** https://matt-white-ca.github.io/tea-production-redesign/
 **GitHub repo:** https://github.com/matt-white-ca/tea-production-redesign (public)
@@ -42,8 +70,10 @@ Only commit/push when the user asks.
 This page began life as a claude.ai Artifact (URL:
 https://claude.ai/code/artifact/109f4847-39e6-443d-8167-80d4e241fae6) and there was once
 a copy of the HTML in the Drive folder. Both are now **downstream / superseded** — the
-repo `index.html` is authoritative. The Drive folder holds a `.webloc` shortcut that just
-points at the live Pages URL. Don't try to keep the old artifact in sync unless asked.
+repo is authoritative (see `v1/index.html` for the single-file version that superseded
+the Artifact, and the file map above for the current v2 platform). The Drive folder
+holds a `.webloc` shortcut that just points at the live Pages URL. Don't try to keep the
+old artifact in sync unless asked.
 
 ## Related locations (outside the repo)
 
@@ -67,7 +97,7 @@ python3 -m venv /tmp/pdfvenv && /tmp/pdfvenv/bin/pip install pymupdf
 
 ## Domain reference (so you understand what you're editing)
 
-Full detail is in `index.html`. Quick primer:
+Full detail is in `video/index.html`. Quick primer:
 
 ### Terminology (show-calling shorthand)
 - **"Resolume"** always means **ME4** — the full-screen DVE-expanded version of the raw
@@ -91,7 +121,7 @@ Full detail is in `index.html`. Quick primer:
 - ME3 **Key 2** = luma, CG1 lyrics top-right (used during Uplink so lyrics stay visible).
 - ME4 **Key 1** = DVE, expands raw Resolume to full screen.
 
-### Startup procedure (5 steps, in `index.html`)
+### Startup procedure (5 steps, in `video/index.html#video-startup`)
 1. **Power** — Furman (venue devices) → Middle Atlantic conditioner → boot Resi decoder +
    console interface. **Also physically reconnect power to the ATEM Advanced Panel** —
    the venue disconnects it and it has **no power switch** (boots on connection).
@@ -115,10 +145,18 @@ Full detail is in `index.html`. Quick primer:
 
 ## Working conventions
 
-- **Deliverable = `index.html`.** Edit it directly; it's hand-authored HTML/CSS with
-  inline styles, theme-aware (light/dark), and a top nav that jumps to each section.
-- **Keep it self-contained** — no external fonts/scripts/CDNs; it must open offline.
+- **Content changes go through `docs/MAINTENANCE.md` + `templates/`.** Read the
+  maintenance doc before editing any discipline file — it has the rules, recipes, and
+  verify checklist. Don't hand-roll new markup patterns; copy from `templates/`.
+- **`assets/production.css` and `assets/app.js` are structural, not content.** The only
+  content-shaped edit allowed in either is adding one line to the `NAV` array in
+  `assets/app.js` when a new page ships.
+- **Keep it self-contained** — no external fonts/scripts/CDNs across any file; every
+  page must open offline.
 - When content changes, that's a repo edit + push (which republishes), not an artifact
   update.
 - The user (Matt White, mwhite@elevationchurch.ca) is the church's production lead and
   knows this gear deeply — write at that level; use the room's vocabulary.
+- **The site is a resource for pros, not ground-up training.** It documents this room,
+  not the craft: never explain what an M/E, crosspoint, DMX universe, or gain stage is.
+  Every page answers "what do I do at this desk, right now."

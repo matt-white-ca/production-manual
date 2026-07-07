@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>production — Elevation Toronto East</title>
+<style>
+/* ==========================================================================
+   production platform — design mockup v2 (2026-07-07)
+   Elevation Toronto East · four-discipline team reference
+
+   Direction: "lights down." Dark is the default stage per the Production
+   Brand Guide (show up in the dark / keep it dark / low is our pro), with a
+   switchable light background — this is a reference; readability outranks
+   style. Each discipline owns one brand neon, used as tally light — never
+   flood:
+     video #00FFFC · audio #47FF91 · lighting #FDB2FF · cameras #FFD98E*
+   (*cameras is an extension — the guide defines three accents + black.)
+   On the light background each accent deepens to stay legible. Gradient
+   blue→green→pink reserved for platform-level moments only.
+
+   Type: Eina 01 semibold carries headings and brand labels; everywhere Eina
+   isn't installed the whole site resolves to the Helvetica family (Avenir
+   was tried as the stand-in and rejected). Body copy runs Helvetica Now /
+   Helvetica Neue at regular weight — the light weights read badly at
+   reference sizes and were dropped.
+
+   The logomark (three brand squares) is rebuilt as inline SVG from
+   Production_Logo_Square.png — exact brand hexes, crisp at any size, and
+   sanctioned on white per the guide, so it never theme-flips; only the
+   wordmark text does.
+
+   Self-contained: no external fonts, images, scripts.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  --sans-display: "Eina 01", "Helvetica Now Display", "Helvetica Neue",
+    Helvetica, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --sans: "Helvetica Now Text", "Helvetica Neue", Helvetica, system-ui,
+    -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Ink — white carries the copy (guide: body copy is white only) */
+  --ink-0: #f2f5f5;
+  --ink-1: rgba(242, 245, 245, 0.66);
+  --ink-2: rgba(242, 245, 245, 0.4);
+  --ink-3: rgba(242, 245, 245, 0.24);
+
+  /* Stage — cool near-blacks, biased toward the blue accent */
+  --bg-0: #08090b;
+  --bg-1: #0f1114;
+  --bg-2: #15181c;
+  --bg-3: #1c2025;
+  --line: rgba(242, 245, 245, 0.09);
+  --line-strong: rgba(242, 245, 245, 0.18);
+
+  /* Discipline tallies */
+  --acc-video: #00fffc;
+  --acc-audio: #47ff91;
+  --acc-lighting: #fdb2ff;
+  --acc-cameras: #ffd98e;
+  --grad: linear-gradient(90deg, #00fffc, #47ff91, #fdb2ff);
+
+  /* Semantic, kept apart from the tallies */
+  --warn: #ffb86b;
+  --err: #ff7373;
+
+  /* Type scale */
+  --t-0: 11px;   /* overlines, chips        */
+  --t-1: 13px;   /* meta, table small       */
+  --t-2: 15px;   /* body                    */
+  --t-3: 17px;   /* leads, card titles      */
+  --t-4: 21px;   /* section titles          */
+  --t-5: 27px;   /* page titles             */
+  --t-6: clamp(40px, 9vw, 64px); /* wordmark */
+
+  --r: 16px;
+  --r-sm: 10px;
+  --r-pill: 999px;
+
+  --gutter: clamp(16px, 4vw, 28px);
+  --rail-w: 248px;
+  --tabbar-h: 62px;
+
+  --ease: cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+/* Light background — the switch deepens every accent to keep it legible on
+   paper. Same components, same rules; only the tokens move. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --ink-0: #16181b;
+  --ink-1: rgba(22, 24, 27, 0.7);
+  --ink-2: rgba(22, 24, 27, 0.46);
+  --ink-3: rgba(22, 24, 27, 0.28);
+
+  --bg-0: #f4f5f6;
+  --bg-1: #ffffff;
+  --bg-2: #eceef0;
+  --bg-3: #e1e4e7;
+  --line: rgba(22, 24, 27, 0.1);
+  --line-strong: rgba(22, 24, 27, 0.22);
+
+  --acc-video: #00a8a5;
+  --acc-audio: #16ab5c;
+  --acc-lighting: #c261cb;
+  --acc-cameras: #bb862a;
+  --grad: linear-gradient(90deg, #00a8a5, #16ab5c, #c261cb);
+
+  --warn: #b5690f;
+  --err: #c53b3b;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg-0);
+  color: var(--ink-0);
+  font-family: var(--sans);
+  font-size: var(--t-2);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ type */
+h1, h2, h3, h4 {
+  font-family: var(--sans-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink-0);
+  margin: 0 0 0.45em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--t-5); }
+h2 { font-size: var(--t-4); }
+h3 { font-size: var(--t-3); }
+h4 { font-size: var(--t-2); }
+
+p { margin: 0 0 1em; max-width: 68ch; }
+p.lead { font-size: var(--t-3); color: var(--ink-1); font-weight: 400; max-width: 56ch; }
+small { font-size: var(--t-1); }
+strong, b { font-weight: 600; }
+ul, ol { margin: 0 0 1em; padding-left: 1.4em; }
+li { margin-bottom: 0.4em; max-width: 62ch; }
+a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+
+/* Brand voice runs in the display face; reading text stays in the body face */
+.overline, .dc-head, .chip, .tab, .rail-head, .wordmark, .wordmark-sm,
+.campus, .campus-line, .lane-tag, .page-nav a {
+  font-family: var(--sans-display);
+}
+
+/* Logomark: mark height = x-height of the lowercase logotype (guide rule),
+   baseline-aligned. Brand hexes are hard-coded — the mark never theme-flips. */
+.logomark {
+  height: 0.53em;
+  width: 0.795em; /* 3:2 mark */
+  margin-right: 0.3em;
+  vertical-align: baseline;
+}
+
+.overline {
+  display: block;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 10px;
+}
+.overline.tallied { display: inline-flex; align-items: center; gap: 8px; }
+
+code, .mono {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acc, var(--ink-0));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection { background: color-mix(in srgb, var(--acc-video) 28%, transparent); }
+
+/* ------------------------------------------------------------ app frame */
+.app {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+main {
+  padding: clamp(20px, 4vw, 44px) var(--gutter)
+    calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 40px);
+  max-width: 920px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* Desktop: rail appears, tab bar goes away */
+@media (min-width: 960px) {
+  .app { grid-template-columns: var(--rail-w) 1fr; }
+  main { padding-bottom: 72px; }
+}
+
+/* ---------------------------------------------------------------- rail */
+.rail {
+  display: none;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  background: var(--bg-0);
+  padding: 26px 18px 26px 22px;
+}
+@media (min-width: 960px) { .rail { display: block; } }
+
+.rail .wordmark-sm {
+  display: block;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  margin-bottom: 2px;
+}
+.rail .campus {
+  font-size: var(--t-0);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 22px;
+}
+.rail-rule {
+  height: 1px;
+  background: var(--grad);
+  opacity: 0.55;
+  border: 0;
+  margin: 0 0 22px;
+}
+
+.rail nav { display: flex; flex-direction: column; gap: 20px; }
+.rail-group { --acc: var(--ink-1); }
+.rail-group > .rail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+}
+.rail a.rl {
+  display: block;
+  padding: 5px 10px;
+  margin-left: -10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-1);
+  text-decoration: none;
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+.rail a.rl:hover { background: var(--bg-2); color: var(--ink-0); }
+.rail a.rl[aria-current="page"] {
+  color: var(--ink-0);
+  background: var(--bg-2);
+  box-shadow: inset 2px 0 0 var(--acc);
+}
+.rail a.rl.pending { color: var(--ink-3); }
+.rail a.rl.pending::after { content: " ·"; color: var(--ink-3); }
+
+/* tally dot */
+.tally {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 8px 1px color-mix(in srgb, var(--acc) 65%, transparent);
+  flex: none;
+}
+
+/* ------------------------------------------------------------- tab bar */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+  padding: 0 4px env(safe-area-inset-bottom, 0px);
+  background: color-mix(in srgb, var(--bg-1) 88%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 960px) { .tabbar { display: none; } }
+
+.tab {
+  --acc: var(--ink-1);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: 12px;
+  transition: color 140ms var(--ease);
+}
+.tab svg { width: 22px; height: 22px; display: block; }
+.tab[aria-current="page"] { color: var(--acc); }
+.tab[aria-current="page"] svg {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--acc) 70%, transparent));
+}
+
+/* --------------------------------------------------------------- views */
+.view { display: none; }
+.view.active { display: block; animation: rise 340ms var(--ease) both; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-1);
+  color: var(--ink-2);
+  margin-bottom: 22px;
+}
+.crumb a { color: var(--ink-1); text-decoration: none; }
+.crumb a:hover { color: var(--ink-0); text-decoration: underline; }
+.crumb .sep { color: var(--ink-3); }
+
+/* ---------------------------------------------------------------- home */
+.hero { padding: clamp(8px, 3vw, 36px) 0 clamp(28px, 5vw, 52px); }
+.hero .campus-line {
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  animation: rise 500ms var(--ease) both;
+}
+.hero .wordmark {
+  font-size: var(--t-6);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  margin: 6px 0 14px;
+  animation: rise 500ms 60ms var(--ease) both;
+}
+/* Wraps wordmark + rule only: inline-grid shrinks the track to the widest
+   child's natural width (the logo+wordmark), so the rule always matches
+   the wordmark's actual rendered width — no guessed fixed px. */
+.hero .mark-rule {
+  display: inline-grid;
+}
+.hero .grad-rule {
+  height: 2px;
+  border: 0;
+  margin: 0 0 16px;
+  background: var(--grad);
+  transform-origin: left;
+  animation: draw 700ms 180ms var(--ease) both;
+}
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.hero p {
+  color: var(--ink-1);
+  font-size: var(--t-3);
+  max-width: 44ch;
+  margin: 0;
+  animation: rise 500ms 240ms var(--ease) both;
+}
+
+/* quick start band */
+.quickstart {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: linear-gradient(120deg,
+    color-mix(in srgb, var(--acc-video) 6%, transparent),
+    color-mix(in srgb, var(--acc-audio) 5%, transparent) 55%, transparent);
+  text-decoration: none;
+  margin-bottom: 34px;
+  transition: border-color 140ms var(--ease), background 140ms var(--ease);
+  animation: rise 500ms 320ms var(--ease) both;
+}
+.quickstart:hover { border-color: var(--line-strong); }
+.quickstart .qs-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-2);
+  color: var(--acc-video);
+}
+.quickstart .qs-icon svg { width: 20px; height: 20px; }
+.quickstart b { display: block; font-weight: 600; font-size: var(--t-3); }
+.quickstart span.sub { display: block; font-size: var(--t-1); color: var(--ink-1); }
+.quickstart .go { margin-left: auto; color: var(--ink-2); font-size: 20px; flex: none; }
+
+/* discipline launcher */
+.launcher {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 640px) { .launcher { grid-template-columns: 1fr 1fr; } }
+
+.disc-card {
+  --acc: var(--ink-1);
+  position: relative;
+  display: block;
+  padding: 22px 22px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-1);
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 160ms var(--ease), transform 160ms var(--ease),
+    background 160ms var(--ease);
+  animation: rise 480ms var(--ease) both;
+}
+.launcher .disc-card:nth-child(1) { animation-delay: 380ms; }
+.launcher .disc-card:nth-child(2) { animation-delay: 440ms; }
+.launcher .disc-card:nth-child(3) { animation-delay: 500ms; }
+.launcher .disc-card:nth-child(4) { animation-delay: 560ms; }
+.disc-card::after {
+  /* faint accent wash rising from the bottom edge, like console backlight */
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: linear-gradient(to top, color-mix(in srgb, var(--acc) 7%, transparent), transparent);
+  pointer-events: none;
+  opacity: 0.9;
+}
+.disc-card:hover {
+  border-color: color-mix(in srgb, var(--acc) 45%, var(--line));
+  background: var(--bg-2);
+  transform: translateY(-2px);
+}
+.disc-card .dc-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acc);
+  margin-bottom: 10px;
+}
+.disc-card h3 { font-size: var(--t-4); margin-bottom: 6px; }
+.disc-card p { font-size: var(--t-1); color: var(--ink-1); margin: 0 0 14px; max-width: 40ch; }
+.disc-card .dc-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-1);
+  background: var(--bg-3);
+  border-radius: var(--r-pill);
+  padding: 3px 10px;
+}
+.chip.live { color: var(--bg-0); background: var(--acc); }
+.chip.soon { color: var(--ink-2); background: transparent; box-shadow: inset 0 0 0 1px var(--line-strong); }
+
+/* ------------------------------------------------------ discipline hub */
+.hub-head { margin-bottom: 26px; }
+.hub-head .overline { color: var(--acc); }
+.hub-head p.lead { margin-bottom: 0; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 18px 0 8px;
+}
+@media (min-width: 640px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+
+a.page-card, div.page-card {
+  display: block;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg-1);
+  text-decoration: none;
+  transition: border-color 140ms var(--ease), background 140ms var(--ease);
+}
+a.page-card:hover {
+  border-color: color-mix(in srgb, var(--acc) 40%, var(--line));
+  background: var(--bg-2);
+}
+.page-card b { display: block; font-weight: 600; margin-bottom: 3px; }
+.page-card span { display: block; font-size: var(--t-1); color: var(--ink-1); }
+div.page-card { opacity: 0.55; }
+div.page-card b::after {
+  content: "pending";
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  padding: 1px 8px;
+  margin-left: 8px;
+  vertical-align: 2px;
+}
+
+.start-here {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--r-sm);
+  border: 1px solid color-mix(in srgb, var(--acc) 35%, var(--line));
+  background: linear-gradient(115deg, color-mix(in srgb, var(--acc) 8%, var(--bg-1)), var(--bg-1) 60%);
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: border-color 140ms var(--ease);
+}
+.start-here:hover { border-color: color-mix(in srgb, var(--acc) 60%, var(--line)); }
+.start-here .num {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: var(--t-1);
+  color: var(--acc);
+  border: 1.5px solid color-mix(in srgb, var(--acc) 60%, transparent);
+}
+.start-here b { display: block; font-weight: 600; }
+.start-here span { display: block; font-size: var(--t-1); color: var(--ink-1); }
+
+.scaffold-note {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  font-size: var(--t-1);
+  color: var(--ink-1);
+  margin-top: 22px;
+}
+.scaffold-note b { color: var(--ink-0); }
+
+/* ------------------------------------------------------ interior pages */
+.steps { display: flex; flex-direction: column; gap: 12px; margin: 20px 0 26px; }
+.step {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg-1);
+}
+.step .idx {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: var(--t-1);
+  color: var(--acc);
+  border: 1.5px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+.step h3 { margin-bottom: 2px; }
+.step .where {
+  font-size: var(--t-1);
+  color: var(--ink-2);
+  margin-bottom: 10px;
+}
+.step p, .step li { font-size: 14px; }
+.step ol, .step ul { margin-bottom: 6px; }
+
+.btnkey {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 2px 9px;
+  border-radius: 6px;
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  color: var(--ink-0);
+  white-space: nowrap;
+}
+.btnkey.g { color: var(--acc-audio); border-color: color-mix(in srgb, var(--acc-audio) 40%, var(--line-strong)); }
+.btnkey.t { color: var(--bg-0); background: var(--ink-0); border-color: var(--ink-0); }
+
+.note {
+  border-left: 2px solid var(--warn);
+  background: color-mix(in srgb, var(--warn) 6%, var(--bg-1));
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 12px 14px;
+  font-size: var(--t-1);
+  color: var(--ink-1);
+  margin: 10px 0 0;
+}
+.note b { color: var(--ink-0); }
+
+.twrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-sm); margin: 10px 0; }
+table { width: 100%; border-collapse: collapse; font-size: var(--t-1); }
+th {
+  text-align: left;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 7px;
+  vertical-align: -1px;
+  border: 1px solid var(--line-strong);
+}
+
+/* ---------------------------------------------------------- theme switch */
+.theme-btn {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg-1) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--ink-1);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color 140ms var(--ease), border-color 140ms var(--ease);
+}
+.theme-btn:hover { color: var(--ink-0); border-color: var(--ink-2); }
+.theme-btn svg { width: 18px; height: 18px; display: block; }
+.theme-btn .sun { display: none; }
+:root[data-theme="light"] .theme-btn .sun { display: block; }
+:root[data-theme="light"] .theme-btn .moon { display: none; }
+
+/* diagnostics accordions */
+details.symptom {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg-1);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+details.symptom summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  font-weight: 600;
+  font-size: var(--t-2);
+  transition: background 120ms var(--ease);
+}
+details.symptom summary::-webkit-details-marker { display: none; }
+details.symptom summary:hover { background: var(--bg-2); }
+details.symptom summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--ink-2);
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 160ms var(--ease);
+}
+details.symptom[open] summary::after { transform: rotate(45deg); }
+details.symptom .body { padding: 2px 18px 16px; border-top: 1px solid var(--line); }
+details.symptom .body ol { margin-top: 12px; }
+details.symptom .body li { font-size: 14px; margin-bottom: 8px; }
+.lane-tag {
+  flex: none;
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  background: var(--bg-3);
+  color: var(--ink-1);
+}
+
+/* lanes on signal flow */
+.lane {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-1);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.lane .lane-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.lane p { font-size: 14px; color: var(--ink-1); margin-bottom: 8px; }
+.lane .path {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-0);
+  background: var(--bg-0);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* prev/next footer */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  margin-top: 34px;
+  padding-top: 20px;
+}
+.page-nav a {
+  font-size: var(--t-1);
+  font-weight: 600;
+  color: var(--ink-1);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: var(--r-pill);
+  background: var(--bg-2);
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+.page-nav a:hover { background: var(--bg-3); color: var(--ink-0); }
+
+footer.colophon {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-1);
+  color: var(--ink-2);
+}
+footer.colophon a { color: var(--ink-1); }
+
+/* discipline accent scopes */
+[data-disc="video"]    { --acc: var(--acc-video); }
+[data-disc="audio"]    { --acc: var(--acc-audio); }
+[data-disc="lighting"] { --acc: var(--acc-lighting); }
+[data-disc="cameras"]  { --acc: var(--acc-cameras); }
+[data-disc="home"]     { --acc: var(--ink-0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ══════════════════════════════ desktop rail ═══════════════════════════ -->
+<aside class="rail">
+  <a class="wordmark-sm" href="#home"><svg class="logomark" viewBox="0 0 3 2" aria-hidden="true"><rect x="0" y="1" width="1" height="1" fill="#00fffc"/><rect x="1" y="0" width="1" height="1" fill="#47ff91"/><rect x="2" y="1" width="1" height="1" fill="#fdb2ff"/></svg>production</a>
+  <div class="campus">Toronto East</div>
+  <hr class="rail-rule">
+  <nav>
+    <div class="rail-group" data-disc="home">
+      <a class="rl" href="#home" data-route="home">Home</a>
+    </div>
+    <div class="rail-group" data-disc="video">
+      <div class="rail-head"><span class="tally"></span>Video Engineering</div>
+      <a class="rl" href="#video" data-route="video">Overview</a>
+      <a class="rl" href="#video-startup" data-route="video-startup">Startup Procedure</a>
+      <a class="rl" href="#video-flow" data-route="video-flow">Signal Flow</a>
+      <a class="rl" href="#video-diagnostics" data-route="video-diagnostics">Diagnose a Symptom</a>
+      <a class="rl pending" href="#video">Run of Show</a>
+      <a class="rl pending" href="#video">Cross-Points &amp; Keys</a>
+    </div>
+    <div class="rail-group" data-disc="audio">
+      <div class="rail-head"><span class="tally"></span>Audio</div>
+      <a class="rl" href="#audio" data-route="audio">Overview</a>
+      <a class="rl pending" href="#audio">Console Startup</a>
+      <a class="rl pending" href="#audio">Patch &amp; Gain</a>
+      <a class="rl pending" href="#audio">Diagnose a Symptom</a>
+    </div>
+    <div class="rail-group" data-disc="lighting">
+      <div class="rail-head"><span class="tally"></span>Lighting</div>
+      <a class="rl" href="#lighting" data-route="lighting">Overview</a>
+      <a class="rl pending" href="#lighting">Console Startup</a>
+      <a class="rl pending" href="#lighting">Looks &amp; Cue Stack</a>
+      <a class="rl pending" href="#lighting">Diagnose a Symptom</a>
+    </div>
+    <div class="rail-group" data-disc="cameras">
+      <div class="rail-head"><span class="tally"></span>Cameras</div>
+      <a class="rl" href="#cameras" data-route="cameras">Overview</a>
+      <a class="rl pending" href="#cameras">Builds &amp; Settings</a>
+      <a class="rl pending" href="#cameras">Positions &amp; Shot Sheet</a>
+      <a class="rl pending" href="#cameras">Tally &amp; Comms</a>
+    </div>
+    <div class="rail-group" data-disc="home">
+      <div class="rail-head">This Mockup</div>
+      <a class="rl" href="#notes" data-route="notes">Design Notes</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ═══════════════════════════════ content ═══════════════════════════════ -->
+<main>
+
+<!-- ─────────────────────────────── HOME ─────────────────────────────── -->
+<section class="view" id="home" data-disc="home" data-crumb="">
+  <div class="hero">
+    <div class="campus-line">Elevation Toronto East</div>
+    <div class="mark-rule">
+      <div class="wordmark"><svg class="logomark" viewBox="0 0 3 2" aria-hidden="true"><rect x="0" y="1" width="1" height="1" fill="#00fffc"/><rect x="1" y="0" width="1" height="1" fill="#47ff91"/><rect x="2" y="1" width="1" height="1" fill="#fdb2ff"/></svg>production</div>
+      <hr class="grad-rule">
+    </div>
+    <p>Every seat in the booth, one reference. Startup, signal flow, and symptom-based fixes for the whole team.</p>
+  </div>
+
+  <a class="quickstart" href="#video-startup" data-disc="video">
+    <span class="qs-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+    </span>
+    <span><b>Sunday? Start here.</b><span class="sub">Power up, fire the Elevation saved state, verify — five steps, ten minutes.</span></span>
+    <span class="go" aria-hidden="true">›</span>
+  </a>
+
+  <div class="launcher">
+    <a class="disc-card" href="#video" data-disc="video">
+      <span class="dc-head"><span class="tally"></span>Video Engineering</span>
+      <h3>Switch, route, capture</h3>
+      <p>ATEM, Videohub, graphics computers, Resi — the switched paths and the direct crosspoints.</p>
+      <span class="dc-meta"><span class="chip live">Live</span><span class="chip">9 pages</span></span>
+    </a>
+    <a class="disc-card" href="#audio" data-disc="audio">
+      <span class="dc-head"><span class="tally"></span>Audio</span>
+      <h3>Console, patch, monitors</h3>
+      <p>Front of house and broadcast mix, wireless, IEMs, and the Sonifex de-embed paths.</p>
+      <span class="dc-meta"><span class="chip soon">Scaffold</span><span class="chip">4 pages planned</span></span>
+    </a>
+    <a class="disc-card" href="#lighting" data-disc="lighting">
+      <span class="dc-head"><span class="tally"></span>Lighting</span>
+      <h3>Rig, looks, cues</h3>
+      <p>Console startup, the shared-venue rig, service looks, and house light control.</p>
+      <span class="dc-meta"><span class="chip soon">Scaffold</span><span class="chip">4 pages planned</span></span>
+    </a>
+    <a class="disc-card" href="#cameras" data-disc="cameras">
+      <span class="dc-head"><span class="tally"></span>Cameras</span>
+      <h3>Builds, shots, comms</h3>
+      <p>Camera settings and builds, positions and shot language, tally and talkback.</p>
+      <span class="dc-meta"><span class="chip soon">Scaffold</span><span class="chip">4 pages planned</span></span>
+    </a>
+  </div>
+
+  <footer class="colophon">
+    Design mockup v2 · dark by intent — <a href="#notes">read the design notes</a>. Content shown for Video is real; Audio, Lighting, and Cameras are structural scaffolds awaiting source material.
+  </footer>
+</section>
+
+<!-- ─────────────────────────── VIDEO HUB ────────────────────────────── -->
+<section class="view" id="video" data-disc="video" data-crumb="Video Engineering">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Video Engineering</span>
+    <h1>Switch, Route, Capture</h1>
+    <p class="lead">The permanent install in River's master control room. Fire the saved Elevation state, then run the service.</p>
+  </div>
+
+  <a class="start-here" href="#video-startup">
+    <span class="num">1</span>
+    <span><b>Startup Procedure</b><span>Run this first, every service — power, connect, Profile 44, macros, verify.</span></span>
+  </a>
+
+  <div class="card-grid">
+    <a class="page-card" href="#video-flow"><b>Signal Flow</b><span>Lane A / Lane B — which paths touch the ATEM, which never do.</span></a>
+    <a class="page-card" href="#video-diagnostics"><b>Diagnose a Symptom</b><span>Symptom-based checklists, worked top to bottom.</span></a>
+    <div class="page-card"><b>Sunday Run of Show</b><span>Expected ME1/2/3 state at each point in the service.</span></div>
+    <div class="page-card"><b>M/E Bus Map</b><span>What each M/E is for and where it routes.</span></div>
+    <div class="page-card"><b>Key Layers</b><span>ME3 / ME4 keyer assignments.</span></div>
+    <div class="page-card"><b>Input Cross-Points</b><span>Physical sources landing on the Videohub / ATEM.</span></div>
+    <div class="page-card"><b>Output Cross-Points</b><span>Where each Videohub output physically goes.</span></div>
+    <div class="page-card"><b>Unverified / Gaps</b><span>Not yet documented — can't diagnose these paths yet.</span></div>
+  </div>
+
+  <p style="font-size:13px;color:var(--ink-2);max-width:none;">Cards marked <i>pending</i> exist on the live site today and port over in Phase 1 — only three pages are built out in this mockup.</p>
+</section>
+
+<!-- ─────────────────────── VIDEO · STARTUP ──────────────────────────── -->
+<section class="view" id="video-startup" data-disc="video" data-crumb="Video Engineering / Startup">
+  <span class="overline tallied"><span class="tally"></span>Video Engineering</span>
+  <h1>Startup Procedure</h1>
+  <p class="lead">Run these in order at the start of a service. Each step assumes the one before it is done.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Power the Racks &amp; the ATEM Panel</h3>
+        <div class="where">Rack · brings up venue devices, rack gear, and the switcher panel</div>
+        <ol>
+          <li>Power on the <b>Furman</b> — this powers all the venue devices.</li>
+          <li>Power on the <b>Middle Atlantic</b> power conditioner.</li>
+          <li>Boot the <b>Resi decoder</b> and the <b>console interface</b>.</li>
+          <li><b>Physically reconnect power to the ATEM Advanced Panel.</b> The venue unplugs it between services and it has no power switch — it boots on connection. Do it early so it's up by step 3.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Connect the Elevation Macbooks</h3>
+        <div class="where">AJA ROI stack under the desk · match by SDI cable colour</div>
+        <div class="twrap">
+          <table>
+            <thead><tr><th>SDI cable</th><th>Computer</th><th>Lands on</th></tr></thead>
+            <tbody>
+              <tr><td><span class="swatch" style="background:#fff"></span>White</td><td>Resolume Mac (EC2)</td><td class="mono">IN 35</td></tr>
+              <tr><td><span class="swatch" style="background:#ffd400"></span>Yellow</td><td>CG2 Mac (EC3)</td><td class="mono">IN 36</td></tr>
+              <tr><td><span class="swatch" style="background:#ff7a1a"></span>Orange</td><td>CG1 Mac (EC4)</td><td class="mono">IN 37</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">Box labels are <b>pending</b> — cable colour is the interim reference. Verify in step 5.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Restore ATEM Profile 44</h3>
+        <div class="where">ATEM 2 M/E Advanced Panel 20 · reloads Elevation mapping, prefs &amp; macros</div>
+        <ol>
+          <li>Press <span class="btnkey">PROFILE</span>, then the <b>right arrow</b> to the profiles page.</li>
+          <li>Turn the soft knob to <b>Profile 44</b>.</li>
+          <li>Press <span class="btnkey">RESTORE</span>.</li>
+        </ol>
+        <div class="note">Orange text above the slot confirms it loaded. The manual claims a 10-profile limit; the firmware holds more and <b>44 was saved on this panel</b> — trust it's there.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Recall Videohub Macros</h3>
+        <div class="where">Videohub 40×40 12G front panel · macro lights green, TAKE applies</div>
+        <p style="margin-bottom:8px;">Standard startup — Elevation macros, one at a time:</p>
+        <p style="margin-bottom:6px;"><span class="btnkey g">STREAM</span> → <span class="btnkey t">TAKE</span> &nbsp;then&nbsp; <span class="btnkey g">CAM</span> → <span class="btnkey t">TAKE</span></p>
+        <div class="note"><b>After a dicey rental — River first.</b> Restore the venue's general state before ours: <span class="btnkey g">MON</span> → <span class="btnkey t">TAKE</span> · <span class="btnkey g">DECK</span> → <span class="btnkey t">TAKE</span> · <span class="btnkey g">EDIT</span> → <span class="btnkey t">TAKE</span>, then run the Elevation macros on top.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Verify on the Videohub Display</h3>
+        <div class="where">Front-panel video preview · after firing the macros</div>
+        <p>Confirm each Macbook landed on the right input — the picture on <span class="mono">IN 35 / 36 / 37</span> matches white → Resolume, yellow → CG2, orange → CG1. If two are swapped, re-seat the HDMI at the AJA stack per step 2 and re-check.</p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video">‹ Video overview</a>
+    <a href="#video-flow">Signal Flow ›</a>
+  </nav>
+</section>
+
+<!-- ──────────────────────── VIDEO · SIGNAL FLOW ─────────────────────── -->
+<section class="view" id="video-flow" data-disc="video" data-crumb="Video Engineering / Signal Flow">
+  <span class="overline tallied"><span class="tally"></span>Video Engineering</span>
+  <h1>Signal Flow</h1>
+  <p class="lead">Every path is in one of two lanes. Which lane the broken destination is on tells you whether the ATEM is even in play.</p>
+
+  <div class="lane">
+    <div class="lane-head"><span class="tally"></span>Lane A — Switched Program Paths</div>
+    <p>Sources pass through an ATEM M/E, come back out through the Videohub loopback, and land on a destination. An M/E problem can only ever break a Lane A destination.</p>
+    <div class="path">source → ATEM M/E → Videohub loopback → destination</div>
+    <p style="margin:10px 0 0;">ME1 → Makito capture (always Cam 1) · ME2 → Lobby · ME3 → Main Screen (the live switch) · ME4 → utility, expands raw Resolume full-screen via DVE Key 1.</p>
+  </div>
+
+  <div class="lane">
+    <div class="lane-head"><span class="tally" style="--acc: var(--ink-2)"></span>Lane B — Direct Crosspoints</div>
+    <p>Straight through the Videohub — the ATEM is never involved. Ground panels (raw Resolume, IN 35), confidence monitors, and the Sonifex audio de-embeds all live here.</p>
+    <div class="path">source → Videohub crosspoint → destination</div>
+  </div>
+
+  <div class="note" style="margin-top:16px;"><b>Fastest triage question:</b> is the broken destination Lane A or Lane B? Lane B rules out the switcher instantly — go straight to the crosspoint.</div>
+
+  <nav class="page-nav">
+    <a href="#video-startup">‹ Startup</a>
+    <a href="#video-diagnostics">Diagnose a Symptom ›</a>
+  </nav>
+</section>
+
+<!-- ─────────────────────── VIDEO · DIAGNOSTICS ──────────────────────── -->
+<section class="view" id="video-diagnostics" data-disc="video" data-crumb="Video Engineering / Diagnose">
+  <span class="overline tallied"><span class="tally"></span>Video Engineering</span>
+  <h1>Diagnose a Symptom</h1>
+  <p class="lead">Find the symptom, work the list top to bottom. Each list is ordered by likelihood × how fast it is to check.</p>
+
+  <details class="symptom">
+    <summary>Main screen is black or frozen <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <ol>
+        <li><b>Check ME3 program</b> on the panel — is a live source actually cut on the bottom bus?</li>
+        <li><b>Check the loopback</b> — confirm the ME3 output crosspoint back through the Videohub still points at the Main Screen output.</li>
+        <li><b>Fade-to-black</b> — make sure FTB isn't engaged on ME3.</li>
+        <li>If the panel itself is dark, it lost power — the venue unplugs it. Reconnect (startup step 1) and restore Profile 44.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lyrics missing during worship <span class="lane-tag">Lane A</span></summary>
+    <div class="body">
+      <ol>
+        <li><b>ME3 Key 1</b> (luma, CG1 centre) should be on-air for local worship — check the KEY 1 bus button.</li>
+        <li>During <b>Uplink</b>, lyrics ride <b>Key 2</b> (top-right) instead — confirm the right key for the moment you're in.</li>
+        <li>No fill at all? Confirm CG1 is alive on <span class="mono">IN 37</span> via the Videohub preview — orange SDI cable at the AJA stack.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Ground panels dark, main screen fine <span class="lane-tag">Lane B</span></summary>
+    <div class="body">
+      <ol>
+        <li>This is a <b>direct crosspoint</b> path — the ATEM is not involved; don't touch the switcher.</li>
+        <li>Confirm raw Resolume is alive on <span class="mono">IN 35</span> (white SDI cable, Videohub preview).</li>
+        <li>Re-fire the Elevation macros: <span class="btnkey g">STREAM</span> → <span class="btnkey t">TAKE</span>, <span class="btnkey g">CAM</span> → <span class="btnkey t">TAKE</span> — a rental may have stolen the crosspoint.</li>
+      </ol>
+    </div>
+  </details>
+
+  <p style="font-size:13px;color:var(--ink-2);margin-top:16px;max-width:none;">Three of ten symptom cards shown — the full set ports over from the live site in Phase 1.</p>
+
+  <nav class="page-nav">
+    <a href="#video-flow">‹ Signal Flow</a>
+    <a href="#video">Video overview ›</a>
+  </nav>
+</section>
+
+<!-- ─────────────────────────── AUDIO HUB ────────────────────────────── -->
+<section class="view" id="audio" data-disc="audio" data-crumb="Audio">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Audio</span>
+    <h1>Console, Patch, Monitors</h1>
+    <p class="lead">Front of house, broadcast, wireless, and the de-embed paths that hand audio to video.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="page-card"><b>Console Startup</b><span>Power order, show file recall, and the first line check.</span></div>
+    <div class="page-card"><b>Patch &amp; Gain</b><span>Input list, gain structure, and where every stage source lands.</span></div>
+    <div class="page-card"><b>Wireless &amp; IEMs</b><span>Frequencies, battery routine, and mix assignments.</span></div>
+    <div class="page-card"><b>Diagnose a Symptom</b><span>No FOH, no broadcast, no ears — symptom-based checklists.</span></div>
+  </div>
+
+  <div class="scaffold-note">
+    <b>Scaffold — structure agreed, content pending.</b> One path already crosses into video and is documented there: the <b>Sonifex de-embeds</b> ride Lane B direct crosspoints, so "no broadcast audio" triage will link across to <a href="#video-flow">Signal Flow</a>. Bring: console model &amp; show file name, power order, patch sheet, wireless coordination, and the top five Sunday failures.
+  </div>
+</section>
+
+<!-- ────────────────────────── LIGHTING HUB ──────────────────────────── -->
+<section class="view" id="lighting" data-disc="lighting" data-crumb="Lighting">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Lighting</span>
+    <h1>Rig, Looks, Cues</h1>
+    <p class="lead">Console startup, the shared-venue rig, and the looks that carry a Sunday.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="page-card"><b>Console Startup</b><span>Power order, show file, and handing the rig back to River after.</span></div>
+    <div class="page-card"><b>Rig &amp; Patch</b><span>What's ours vs the venue's, universes, and fixture addresses.</span></div>
+    <div class="page-card"><b>Looks &amp; Cue Stack</b><span>Worship, message, uplink — the looks and when to fire them.</span></div>
+    <div class="page-card"><b>Diagnose a Symptom</b><span>Dark rig, stuck look, house lights — checklists.</span></div>
+  </div>
+
+  <div class="scaffold-note">
+    <b>Scaffold — structure agreed, content pending.</b> The shared-venue split matters most here: like the Videohub macros, expect a "River state" vs "Elevation state" story. Bring: console model &amp; show file, DMX/network topology, fixture schedule, house light control, and the restore-for-River routine.
+  </div>
+</section>
+
+<!-- ────────────────────────── CAMERAS HUB ───────────────────────────── -->
+<section class="view" id="cameras" data-disc="cameras" data-crumb="Cameras">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>Cameras</span>
+    <h1>Builds, Shots, Comms</h1>
+    <p class="lead">Camera settings, positions and shot language, tally and talkback.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="page-card"><b>Builds &amp; Settings</b><span>Per-camera build: lens, paint, frame rate, and SDI return.</span></div>
+    <div class="page-card"><b>Positions &amp; Shot Sheet</b><span>Where each op stands and the shot vocabulary the director calls.</span></div>
+    <div class="page-card"><b>Tally &amp; Comms</b><span>Tally source, talkback channels, and who hears whom.</span></div>
+    <div class="page-card"><b>Diagnose a Symptom</b><span>No signal, no tally, no comms — checklists.</span></div>
+  </div>
+
+  <div class="scaffold-note">
+    <b>Scaffold — structure agreed, content pending.</b> One anchor already exists in video: <b>Cam 1 is always the ME1 → Makito capture source</b>, so builds here must stay consistent with that path. Bring: camera models &amp; counts, build cards, comms plan, and the op quick-reference you want new volunteers reading.
+  </div>
+</section>
+
+<!-- ────────────────────────── DESIGN NOTES ──────────────────────────── -->
+<section class="view" id="notes" data-disc="home" data-crumb="Design Notes">
+  <span class="overline">This Mockup</span>
+  <h1>Design Notes</h1>
+  <p class="lead">What this mockup commits to, what it borrows from the Production Brand Guide, and where it deliberately deviates.</p>
+
+  <h2>Dark by Default, Light on Demand</h2>
+  <p>The guide's thesis — <i>show up in the dark, keep it dark, low is our pro</i> — is also the room this site is read in, so the dark stage is the default. But this is a reference, and readability outranks style: the switch (top right) flips to a light background for daylight and bright-FOH use, and remembers the choice. On paper, every accent deepens so it stays legible; the rules don't change, only the tokens.</p>
+
+  <h2>Written for Pros</h2>
+  <p>This site documents <i>this room</i>, not the craft. It assumes the reader already knows what an M/E, a crosspoint, or a gain stage is — no page ever trains from the ground up. Content earns its place by answering "what do I do at this desk, right now."</p>
+
+  <h2>One Tally per Discipline</h2>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Discipline</th><th>On dark</th><th>On light</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Video Engineering</td><td><span class="swatch" style="background:#00fffc"></span><span class="mono">#00FFFC</span></td><td><span class="swatch" style="background:#00a8a5"></span><span class="mono">#00A8A5</span></td><td>Brand guide primary</td></tr>
+        <tr><td>Audio</td><td><span class="swatch" style="background:#47ff91"></span><span class="mono">#47FF91</span></td><td><span class="swatch" style="background:#16ab5c"></span><span class="mono">#16AB5C</span></td><td>Brand guide primary</td></tr>
+        <tr><td>Lighting</td><td><span class="swatch" style="background:#fdb2ff"></span><span class="mono">#FDB2FF</span></td><td><span class="swatch" style="background:#c261cb"></span><span class="mono">#C261CB</span></td><td>Brand guide primary</td></tr>
+        <tr><td>Cameras</td><td><span class="swatch" style="background:#ffd98e"></span><span class="mono">#FFD98E</span></td><td><span class="swatch" style="background:#bb862a"></span><span class="mono">#BB862A</span></td><td><b>Extension</b> — the guide defines three; a fourth was needed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Accents behave like tally lights: dots, eyebrows, glows, and focus rings — never floods, never body copy. On the light background each accent shifts to a mid-depth version of itself — dark enough to hold on paper, bright enough to still read as the brand neon. The blue→green→pink gradient is reserved for platform-level moments (the wordmark rule, home).</p>
+
+  <h2>The Mark</h2>
+  <p>The three-square logomark rides with the wordmark in the rail and on home, rebuilt as vector from the brand asset so it stays crisp at any size. Per the guide it's scaled to the x-height of the lowercase logotype and never changes colour — the guide sanctions the mark on both black and white, so only the wordmark text flips with the background.</p>
+
+  <h2>Type</h2>
+  <p>Two jobs, two faces, one family underneath. <b>Headings and brand labels</b> keep the guide's voice: <b>Eina 01 semibold</b>, title case (Eina is licensed, so not embedded — where it isn't installed, headings resolve to the same Helvetica family as everything else). <b>Reading text</b> runs <b>Helvetica Now Text → Helvetica Neue</b> at regular weight — the guide's light body weight was tried and dropped; it hampered readability at reference sizes, and on this site readability wins every tie. Lowercase stays reserved for the wordmark.</p>
+
+  <h2>Platform-First</h2>
+  <p>On a phone the site carries a bottom tab bar and safe-area padding — it reads as an app, and is one "Add to Home Screen" away from launching like one (a real manifest + offline cache is a roadmap phase). On desktop the same routes hang off a persistent rail, so the whole tree is always one click away.</p>
+
+  <h2>What Stayed from v1</h2>
+  <p>The bones the team already liked: hash-routed subpages, card menus, symptom accordions, numbered startup steps, mono crosspoints, and content that leads with the action instead of a qualifying paragraph.</p>
+
+  <nav class="page-nav">
+    <a href="#home">‹ Home</a>
+  </nav>
+</section>
+
+<!-- breadcrumb host (inserted above each view by the router) -->
+
+</main>
+</div>
+
+<button class="theme-btn" id="theme-btn" type="button" aria-label="Switch background">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+</button>
+
+<!-- ══════════════════════════════ tab bar ════════════════════════════════ -->
+<nav class="tabbar">
+  <a class="tab" href="#home" data-disc="home" data-tab="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/></svg>
+    Home
+  </a>
+  <a class="tab" href="#video" data-disc="video" data-tab="video">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+    Video
+  </a>
+  <a class="tab" href="#audio" data-disc="audio" data-tab="audio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v4M4 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM4 6v2M12 16v2M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12 6v0M20 12v6M20 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+    Audio
+  </a>
+  <a class="tab" href="#lighting" data-disc="lighting" data-tab="lighting">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.6 1 2.5h6c0-.9.2-1.8 1-2.5A6 6 0 0 0 12 3Z"/></svg>
+    Lighting
+  </a>
+  <a class="tab" href="#cameras" data-disc="cameras" data-tab="cameras">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+    Cameras
+  </a>
+</nav>
+
+<script>
+(function () {
+  var views = document.querySelectorAll("section.view");
+  var railLinks = document.querySelectorAll(".rail a.rl[data-route]");
+  var tabs = document.querySelectorAll(".tabbar a.tab[data-tab]");
+
+  // route id → owning tab/discipline for tab-bar highlighting
+  function discOf(id) {
+    if (id.indexOf("video") === 0) return "video";
+    if (id.indexOf("audio") === 0) return "audio";
+    if (id.indexOf("lighting") === 0) return "lighting";
+    if (id.indexOf("cameras") === 0) return "cameras";
+    return "home";
+  }
+
+  function render() {
+    var id = (location.hash || "#home").slice(1);
+    var target = document.getElementById(id);
+    if (!target || !target.classList.contains("view")) {
+      id = "home";
+      target = document.getElementById("home");
+    }
+    views.forEach(function (v) { v.classList.toggle("active", v === target); });
+
+    var disc = discOf(id);
+    tabs.forEach(function (t) {
+      if (t.dataset.tab === disc) t.setAttribute("aria-current", "page");
+      else t.removeAttribute("aria-current");
+    });
+    railLinks.forEach(function (l) {
+      if (l.dataset.route === id) l.setAttribute("aria-current", "page");
+      else l.removeAttribute("aria-current");
+    });
+
+    // breadcrumb: injected once per view, only on interior pages
+    var crumbText = target.dataset.crumb || "";
+    var existing = target.querySelector(":scope > .crumb");
+    if (crumbText && crumbText.indexOf("/") > -1 && !existing) {
+      var parts = crumbText.split("/");
+      var nav = document.createElement("nav");
+      nav.className = "crumb";
+      var hub = document.createElement("a");
+      hub.href = "#" + disc;
+      hub.textContent = parts[0].trim();
+      var sep = document.createElement("span");
+      sep.className = "sep";
+      sep.textContent = "›";
+      var here = document.createElement("span");
+      here.textContent = parts[1].trim();
+      nav.appendChild(hub); nav.appendChild(sep); nav.appendChild(here);
+      target.insertBefore(nav, target.firstChild);
+    }
+
+    window.scrollTo(0, 0);
+    document.title = (crumbText ? crumbText.split("/").pop().trim() + " — " : "") +
+      "production · Elevation Toronto East";
+  }
+
+  window.addEventListener("hashchange", render);
+  render();
+
+  // background switch — dark is the stage, light is one tap away
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("theme-btn");
+  function setTheme(t) {
+    root.setAttribute("data-theme", t);
+    try { localStorage.setItem("tea-theme", t); } catch (e) {}
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute("content", t === "light" ? "#f4f5f6" : "#08090b");
+  }
+  var stored = null;
+  try { stored = localStorage.getItem("tea-theme"); } catch (e) {}
+  setTheme(stored === "light" ? "light" : "dark");
+  themeBtn.addEventListener("click", function () {
+    setTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+  });
+})();
+</script>
+</body>
+</html>

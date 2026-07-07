@@ -1,14 +1,26 @@
 # Toronto East Production Redesign
 
-Video production reference for **Elevation Toronto East** — the permanent install in Whitby (relocated from the mobile fly pack).
+Production platform for **Elevation Toronto East** — the permanent install in Whitby
+(relocated from the mobile fly pack). Covers Video Engineering, Audio, Lighting, and
+Cameras: startup procedures, signal flow, and symptom-based diagnostics for the whole
+production team.
 
 ## What's here
 
-- **`index.html`** — the operator reference: startup procedure, signal flow, Sunday run of show, and symptom-based diagnostics. Self-contained (no external dependencies), works offline, and is deployable as a static page.
+- **`index.html`** — home / platform launcher.
+- **`video/`** — Video Engineering: startup, signal flow, Sunday run of show, symptom
+  diagnostics, and the full routing/key/cross-point reference. Fully built out.
+- **`audio/`, `lighting/`, `cameras/`** — scaffolds, awaiting source material.
+- **`assets/`** — the one shared stylesheet and JS shell every page uses.
+- **`v1/`** — the retired single-file version of this site, kept for history.
+
+Self-contained across every page (no external dependencies), works offline, deployable
+as a static site.
 
 ## Published page
 
-This repo publishes `index.html` as a static site (GitHub Pages). The live URL is the single, no-login link operators can open on any device in the venue:
+This repo publishes the site as-is (GitHub Pages, served from the repo root on `main`).
+The live URL is the single, no-login link operators can open on any device in the venue:
 
 **https://matt-white-ca.github.io/tea-production-redesign/**
 
@@ -19,4 +31,7 @@ This repo publishes `index.html` as a static site (GitHub Pages). The live URL i
 
 ## Editing
 
-`index.html` is the source of truth for the published page. Edit it directly, commit, and push — Pages redeploys automatically.
+Read **`docs/MAINTENANCE.md`** first — it's the contract for what's safe to edit and how.
+In short: content lives in each discipline's `index.html`; `assets/production.css` and
+`assets/app.js` are structural and shouldn't change for a content edit. Commit and push
+to `main` — Pages redeploys automatically.
