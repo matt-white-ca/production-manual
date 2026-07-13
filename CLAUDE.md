@@ -1,6 +1,11 @@
-# CLAUDE.md — Toronto East Production Redesign
+# CLAUDE.md — Production Manual (Elevation production platform)
 
 Context for Claude Code sessions working in this repo. Read this first.
+
+> **Renamed 2026-07-13:** this repo was `tea-production-redesign` until the v3
+> expansion; it is now `production-manual` and the local folder is
+> `~/Code/production-manual`. A stub repo at the old name redirects old Pages
+> bookmarks. The vault record and Drive folder keep the old project name.
 
 ## What this project is
 
@@ -57,8 +62,10 @@ their `index.html`). To publish a change:
 2. Commit + push to `main`.
 3. Pages redeploys automatically (~1 min), same URL.
 
-**Live URL:** https://matt-white-ca.github.io/tea-production-redesign/
-**GitHub repo:** https://github.com/matt-white-ca/tea-production-redesign (public)
+**Live URL:** https://matt-white-ca.github.io/production-manual/
+**GitHub repo:** https://github.com/matt-white-ca/production-manual (public)
+**Old URL** (pre-2026-07-13): https://matt-white-ca.github.io/tea-production-redesign/
+— still works via a stub redirect repo; don't publish it anywhere new.
 
 Commit trailer convention used here:
 ```

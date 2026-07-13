@@ -63,9 +63,11 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 
 **Open questions for v3 (Matt decides, before Phase 4 starts):**
 - **Campus 2's name and rooms** — needed to plan paths (`east/` + what?) and worksheets.
-- **Repo/URL rename** — `tea-production-redesign` stops being accurate at Phase 4.
-  Either a new repo (e.g. `elevation-production`) with a redirect page left behind, or
-  keep the URL and live with the name. Decide before campus-2 bookmarks exist.
+- ~~**Repo/URL rename**~~ — **resolved 2026-07-13:** renamed to `production-manual`
+  (live URL `matt-white-ca.github.io/production-manual/`). A stub repo left at
+  `tea-production-redesign` redirects the old URL, deep links included (its `404.html`
+  rewrites the path). Optional later upgrade: a custom domain (CNAME from
+  elevationchurch.ca DNS) would make the repo name permanently irrelevant to operators.
 
 ---
 

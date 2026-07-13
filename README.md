@@ -1,4 +1,4 @@
-# Toronto East Production Redesign
+# Production Manual
 
 Production platform for **Elevation Toronto East** — the permanent install in Whitby
 (relocated from the mobile fly pack). Covers Video Engineering, Audio, Lighting, and
@@ -22,7 +22,10 @@ as a static site.
 This repo publishes the site as-is (GitHub Pages, served from the repo root on `main`).
 The live URL is the single, no-login link operators can open on any device in the venue:
 
-**https://matt-white-ca.github.io/tea-production-redesign/**
+**https://matt-white-ca.github.io/production-manual/**
+
+(The repo was renamed from `tea-production-redesign` on 2026-07-13; a stub repo at the
+old name redirects old bookmarks — including deep links — to the URL above.)
 
 ## Related
 
