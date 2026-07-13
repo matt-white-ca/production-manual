@@ -84,8 +84,9 @@ old artifact in sync unless asked.
 
 ## Related locations (outside the repo)
 
-- **Vault project record:** `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/mattOS Vault/01_Atlas/Active/tea-production-redesign.md`
-  (the project's Why/Outcome, Log, and cross-links live here)
+- **Vault project record:** `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/mattOS Vault/01_Atlas/Active/production-knowledge-base.md`
+  (the successor project record — Why/Outcome, Log, cross-links. The original
+  `tea-production-redesign.md` record is archived under `01_Atlas/Archive/2026/`.)
 - **Drive folder (source materials & collaborative artifacts):**
   `~/My Drive/01_Project_Files/tea-production-redesign` — contains the routing sheets,
   the ATEM/Videohub manuals, the "Elevation Start Here" switcher XML states, `VideoHub
