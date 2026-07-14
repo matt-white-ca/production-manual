@@ -61,6 +61,12 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 | Capture mode | **Standard input = a long dictated note about the area/subject/topic, plus the relevant reference manuals handed over as resource material.** The Phase-3 worksheets formalize the prompts, but dictation is the expected form — Matt talks, the model authors. | Matt, 2026-07-13. Lowest-friction way to get what's in his head out of it; the manuals fill in what dictation skips. |
 | Guides expand, don't script | Pages are **well-resourced and clear without turning volunteers into mindless robots** — include enough why and point at the source manual so the operator understands the system, never a bare button-press script. | Matt, 2026-07-13. The goal is expanding volunteers' knowledge, not controlling what they do. Coexists with "pros, not training": don't teach the craft, *do* deepen understanding of this room. |
 
+## Design decisions added 2026-07-14 (readability pass)
+
+| Decision | Choice | Why |
+|---|---|---|
+| Type size & weight | Reading sizes moved up one notch (`--t-1/2/3`: 13/15/17 → **14/16/18px**, step text follows body, line-height 1.55 → 1.6). Dropped `-webkit-font-smoothing: antialiased` so Helvetica's regular weight renders with full stems. Secondary inks run hotter (dark `--ink-1/2`: 0.66/0.40 → **0.78/0.52**; light: 0.70/0.46 → **0.80/0.56**). Overlines/chips stay 11px — labels, not copy. | Matt, 2026-07-14: the type read too light to scan quickly at the desk. Same "readability wins every tie" rule that killed the light weights in v2 — this time applied to size, rendered stroke weight, and muted-text contrast. Verified at 390px: no wrap/overflow regressions. |
+
 **Open questions for v3 (Matt decides, before Phase 4 starts):**
 - **Campus 2's name and rooms** — needed to plan paths (`east/` + what?) and worksheets.
 - ~~**Repo/URL rename**~~ — **resolved 2026-07-13:** renamed to `production-manual`
