@@ -54,7 +54,7 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 
 | Decision | Choice | Why |
 |---|---|---|
-| Campus hierarchy | **Campus-first paths** (`east/video/`, not a campus toggle inside each discipline page). Home becomes the campus launcher. | Pages document *rooms*, and an operator stands at exactly one desk — the same blast-radius logic that split disciplines into separate files. |
+| Campus hierarchy | **Campus-first paths** (`tea/video/`, not a campus toggle inside each discipline page). Home becomes the campus launcher. | Pages document *rooms*, and an operator stands at exactly one desk — the same blast-radius logic that split disciplines into separate files. |
 | Institutional ≠ training | The pro-level voice rule survives the expansion. The institutional win is that the *rooms* and the *documentation method* stop living in Matt's head — not that the site teaches the craft. | Matt's original audience decision, reaffirmed. An optional "first Sunday at this desk" page per campus may later *sequence* existing pages in reading order — it never re-explains them. |
 | Shared standards | Where both campuses genuinely do something identically (vocabulary, show-calling shorthand), it lives once in the playbook layer and both campuses link to it. Only created when a fact is truly campus-agnostic — duplication is the default until proven shared. | Avoids a "standards" page that silently diverges from either room's reality. |
 | Sequencing | East finishes before the campus restructure. | Institutionalizing knowledge requires one *complete* worked example, and every East capture session road-tests the templates the next campus inherits. |
@@ -62,7 +62,10 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 | Guides expand, don't script | Pages are **well-resourced and clear without turning volunteers into mindless robots** — include enough why and point at the source manual so the operator understands the system, never a bare button-press script. | Matt, 2026-07-13. The goal is expanding volunteers' knowledge, not controlling what they do. Coexists with "pros, not training": don't teach the craft, *do* deepen understanding of this room. |
 
 **Open questions for v3 (Matt decides, before Phase 4 starts):**
-- **Campus 2's name and rooms** — needed to plan paths (`east/` + what?) and worksheets.
+- ~~**Campus 2's name and rooms**~~ — **resolved 2026-07-13:** campus codes are `tea`
+  (Toronto East) and `tor` (Toronto). Both have Supacode worktrees per discipline —
+  `tea/{video,audio,lighting}` and `tor/{video,audio,lighting,camera}`; Toronto East
+  has no camera discipline (intentional, not a gap to fill).
 - ~~**Repo/URL rename**~~ — **resolved 2026-07-13:** renamed to `production-manual`
   (live URL `matt-white-ca.github.io/production-manual/`). A stub repo left at
   `tea-production-redesign` redirects the old URL, deep links included (its `404.html`
@@ -95,11 +98,14 @@ v1/index.html           the retired single-page site (frozen)
 
 ```
 index.html              home / campus launcher + platform-level pages
-east/video/index.html   ┐
-east/audio/index.html   │ Toronto East rooms (today's video/ audio/ lighting/ cameras/,
-east/lighting/…         │ moved one level down; stub redirects left at the old paths)
-east/cameras/…          ┘
-<campus2>/…             campus 2 rooms, same four-discipline shape
+tea/video/index.html    ┐
+tea/audio/index.html    │ Toronto East rooms (today's video/ audio/ lighting/,
+tea/lighting/…          ┘ moved one level down; stub redirects left at the old paths;
+                          no tea/cameras — East has no camera discipline)
+tor/video/…             ┐
+tor/audio/…             │ Toronto rooms, same discipline shape
+tor/lighting/…          │ (video/audio/lighting/cameras — all four)
+tor/cameras/…           ┘
 playbook/index.html     the campus-agnostic layer: page shapes, capture worksheets,
                         writing rules, blank-campus kit (Phase 3 promotes docs/ +
                         templates/ content into this visible section)
