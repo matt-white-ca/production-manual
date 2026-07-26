@@ -16,8 +16,9 @@ Three layers:
 3. **The platform shell** — nav, theme, search, PWA. Built in Phase 1; needs one
    extension for the campus dimension (Phase 4).
 
-- **Status:** Phase 1 shipped 2026-07-07 (see the record below). Phase 2 (Toronto East
-  content authoring) is current. Phases 3–6 defined 2026-07-13.
+- **Status:** Phase 1 shipped 2026-07-07. **Phases 4 and 3 shipped 2026-07-26**, in that
+  order — see the sequencing note under Phase 3 for why they were swapped. Phase 2
+  (room content authoring) is current and now spans two campuses. Phases 5–6 open.
 - **Approved direction:** `design/mockup-v2.html` — the "lights down" design, frozen as
   a reference. The real site realizes it; the mockup file itself is never edited again.
 - **Executor:** phases are written so a future Claude session (including smaller models)
@@ -61,6 +62,15 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 | Capture mode | **Standard input = a long dictated note about the area/subject/topic, plus the relevant reference manuals handed over as resource material.** The Phase-3 worksheets formalize the prompts, but dictation is the expected form — Matt talks, the model authors. | Matt, 2026-07-13. Lowest-friction way to get what's in his head out of it; the manuals fill in what dictation skips. |
 | Guides expand, don't script | Pages are **well-resourced and clear without turning volunteers into mindless robots** — include enough why and point at the source manual so the operator understands the system, never a bare button-press script. | Matt, 2026-07-13. The goal is expanding volunteers' knowledge, not controlling what they do. Coexists with "pros, not training": don't teach the craft, *do* deepen understanding of this room. |
 
+## Design decisions added 2026-07-26 (the restructure)
+
+| Decision | Choice | Why |
+|---|---|---|
+| Toronto East has no camera seat | The `cameras/` scaffold shipped in v2 was **deleted**, not moved to `tea/cameras/`. Cameras exists only under `tor/`. `/cameras/` is left as a stub that lands on the launcher rather than redirecting a Toronto East bookmark into another campus's room. | Matt, 2026-07-26. The v2 launcher advertised four seats out of symmetry; East only ever had three. A scaffold for a seat that doesn't exist is a promise the room can't keep. |
+| Phase order swapped: 4 before 3 | The campus restructure ran **first**, then the playbook was extracted. | Phase 3's headline deliverable is the blank-campus kit. Written before the restructure it would have documented a path model that Phase 4 immediately invalidated. Restructuring first also cost less — three of the four rooms were 47-line scaffolds. |
+| Campus scoping is enforced, not just conventional | The rail and tab bar are filtered to the campus on `<html data-campus>`; rooms never link across campuses. Anything genuinely shared lives in `playbook/` and both campuses link there. | The blast-radius argument that split disciplines into separate files, applied one level up. An operator stands at exactly one desk, at exactly one campus. |
+| Clock Standards stays under `tea/video/` for now | Flagged in the sitemap as the first playbook-promotion candidate, but **not** promoted in this pass. | "Duplication is the default until proven shared" — one campus's clock standards aren't yet evidence of a shared standard. The call is Matt's, during the sitemap simplification pass. |
+
 ## Design decisions added 2026-07-14 (readability pass)
 
 | Decision | Choice | Why |
@@ -82,40 +92,33 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 
 ## Target architecture
 
-### Today (Phase 1 shipped — one campus, implicit)
+### Today — campus-first, shipped 2026-07-26
 
-One discipline = one HTML file. Shared skin = one CSS file. Shared shell = one JS file.
-
-```
-index.html              home / platform launcher
-video/index.html        hub + all 9 video subpages (hash-routed views, like v1) — LIVE
-audio/index.html        hub only — SCAFFOLD
-lighting/index.html     hub only — SCAFFOLD
-cameras/index.html      hub only — SCAFFOLD
-assets/production.css   ALL design tokens + components. Content edits never touch this.
-assets/app.js           router + injects tab bar & rail from one NAV config array
-templates/              copy-paste blocks for every repeating pattern
-docs/MAINTENANCE.md     the future-model playbook (recipes + verify checklist)
-design/mockup-v2.html   the approved mockup (frozen reference, never edited)
-v1/index.html           the retired single-page site (frozen)
-```
-
-### End state (after Phase 4 — campus-first)
+One room = one HTML file. Shared skin = one CSS file. Shared shell = one JS file.
 
 ```
-index.html              home / campus launcher + platform-level pages
-tea/video/index.html    ┐
-tea/audio/index.html    │ Toronto East rooms (today's video/ audio/ lighting/,
-tea/lighting/…          ┘ moved one level down; stub redirects left at the old paths;
-                          no tea/cameras — East has no camera discipline)
+index.html              campus launcher (campus groups, one card per seat)
+tea/video/index.html    hub + all 10 video subpages (hash-routed views) — LIVE
+tea/audio/index.html    hub only — SCAFFOLD
+tea/lighting/index.html hub only — SCAFFOLD
+                        (no tea/cameras — East has no camera seat, by decision)
 tor/video/…             ┐
-tor/audio/…             │ Toronto rooms, same discipline shape
+tor/audio/…             │ Toronto rooms, hub only — SCAFFOLD
 tor/lighting/…          │ (video/audio/lighting/cameras — all four)
 tor/cameras/…           ┘
-playbook/index.html     the campus-agnostic layer: page shapes, capture worksheets,
-                        writing rules, blank-campus kit (Phase 3 promotes docs/ +
-                        templates/ content into this visible section)
-assets/ templates/ docs/ design/ v1/   as today — still one CSS, one JS, one NAV array
+playbook/index.html     the campus-agnostic layer — LIVE: page shapes, capture
+                        worksheets, writing rules, blank-campus kit
+video/ audio/ lighting/ cameras/   redirect stubs for pre-restructure bookmarks;
+                        they carry the deep-link hash across. /cameras/ has no
+                        equivalent and lands on the launcher.
+assets/production.css   ALL design tokens + components. Content edits never touch this.
+assets/app.js           router + injects tab bar & rail from one CAMPUS map + NAV array
+templates/              copy-paste blocks for every repeating pattern
+docs/MAINTENANCE.md     the future-model contract (recipes + verify checklist)
+docs/SITEMAP.md         the whole site in editable form; regenerate after any
+                        structural change
+design/mockup-v2.html   the approved mockup (frozen reference, never edited)
+v1/index.html           the retired single-page site (frozen)
 ```
 
 Why this shape (it exists to serve goal 4):
@@ -180,13 +183,25 @@ Each discipline is **done when**: hub cards all link to real pages, its "Diagnos
 Symptom" page exists, its rail/tab entries drop the pending state, and its home-screen
 chip flips from *Scaffold* to *Live*.
 
-## Phase 3 — Extract the Playbook (after ≥2 East disciplines are live; capable model, ~1 session)
+## Phase 3 — Extract the Playbook — ✅ SHIPPED 2026-07-26 (ran *after* Phase 4)
 
-Promote what Phase 2 proved from internal tooling (`templates/`, `docs/MAINTENANCE.md`,
-the capture lists above) into a first-class, visible site section: `playbook/`. This is
-the knowledge-dissemination deliverable — documenting the *method*, not inventing one.
+Live at `playbook/`, four pages: The Three Page Shapes · Capture Worksheets · Writing
+Rules · Blank-Campus Kit. Promoted what was internal tooling (`templates/`,
+`docs/MAINTENANCE.md`, the capture lists above) into a first-class, visible site section.
+This is the knowledge-dissemination deliverable — documenting the *method*, not inventing
+one.
 
-Contents:
+**Two gates were deliberately overridden, both Matt's call 2026-07-26:**
+
+1. *"After ≥2 East disciplines are live"* — only `tea/video` is live. The method was
+   therefore extracted from **one** worked example. The shapes and writing rules are
+   solid (they describe rules already applied across 10 pages); the **audio, lighting,
+   and cameras worksheets are the weakest part** — they're derived from the Phase-2
+   capture lists rather than road-tested against a real capture session. Expect to
+   revise them after the first audio capture.
+2. *"Phase 3 before Phase 4"* — reversed. See the design-decisions table above.
+
+Contents as shipped:
 - **The three page shapes**, each shown with a filled example lifted from East.
 - **Capture worksheets, one per discipline** — the questions to ask a room, printable,
   written so someone who is not Matt can run a capture visit and hand the answers to a
@@ -197,29 +212,31 @@ Contents:
   source manual cited/linked — never a bare button-press sequence.
 - **The blank-campus kit** — step-by-step instructions a future session can follow to
   scaffold a new campus cold: folders, hub pages, NAV entries, done-criteria.
-- **Shared standards** (only as they prove out): show-calling vocabulary and anything
-  else genuinely identical across campuses, linked from both rather than duplicated.
+- **Shared standards** — *not created yet.* Clock Standards is the flagged candidate and
+  deliberately stayed under `tea/video/`. Duplication is still the default.
 
-**Done when:** a capture visit at a room Matt has never documented could proceed from
-the printed worksheets alone, and a fresh Claude session pointed at the blank-campus
-kit scaffolds a correct new campus without further instruction.
+**Still open against "done when":** the blank-campus kit has not yet been run cold by a
+session that didn't write it, and no capture visit has been run from the worksheets alone.
+Both are real tests and neither has happened.
 
-## Phase 4 — The campus dimension (capable model, ~1 session structure + capture visits)
+## Phase 4 — The campus dimension — ✅ STRUCTURE SHIPPED 2026-07-26
 
-Prerequisites: Phase 3 done; Matt has named campus 2 and decided the rename question.
+Ran *before* Phase 3. Structure is done; the capture visits are not.
 
-1. **Restructure campus-first:** move `video/ audio/ lighting/ cameras/` →
-   `east/video/` etc. Leave stub redirect pages at the old paths so bookmarks survive.
-2. **Extend the shell:** `assets/app.js` learns depth 2 and a campus level in `NAV`;
-   home becomes the campus launcher; breadcrumbs and the rail become campus-aware.
-   This is the only structural JS change in the whole roadmap — verify against every
-   existing East page before touching campus 2.
-3. **Scaffold campus 2** using the blank-campus kit — the kit's first real test.
-4. **Capture campus 2's rooms** — one discipline at a time, Phase-2 style, from the
-   playbook worksheets. Authored by small models; Matt (or a delegate with the
-   worksheets) supplies the facts.
-5. Update `docs/MAINTENANCE.md`, `templates/`, and `CLAUDE.md` for the two-level path
-   model in the same commits that change it.
+1. ✅ **Restructured campus-first:** `video/ audio/ lighting/` → `tea/*`. The `cameras/`
+   scaffold was **deleted**, not moved — East has no camera seat. Redirect stubs left at
+   all four old paths, carrying the deep-link hash across.
+2. ✅ **Extended the shell:** `assets/app.js` gained a `CAMPUS` map and a `campus` field
+   in `NAV`; depth is now 0/1/2; the rail and tab bar filter to the current campus; the
+   launcher renders campus groups. Verified against every page context — depth, campus
+   scoping, and per-campus tab lists all check out.
+3. ✅ **Scaffolded Toronto** — `tor/{video,audio,lighting,cameras}`, hub pages only.
+   Note this was built *alongside* the blank-campus kit rather than *from* it, so it is
+   not the clean test the kit still needs.
+4. ⬜ **Capture Toronto's rooms** — nothing captured. One discipline at a time, Phase-2
+   style, from the playbook worksheets.
+5. ✅ Updated `docs/MAINTENANCE.md`, `templates/`, and `CLAUDE.md` for the campus-first
+   path model in the same commit that changed it.
 
 ## Phase 5 — Platform polish (after Phase 4 structure, or earlier if East wants it)
 

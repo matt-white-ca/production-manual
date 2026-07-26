@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en" data-depth="1" data-disc="playbook">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>The Playbook — production · Elevation Canada</title>
+<link rel="stylesheet" href="../assets/production.css">
+<noscript><style>.view{display:block!important}.rail,.tabbar{display:none!important}</style></noscript>
+</head>
+<body>
+
+<button class="theme-btn" id="theme-btn" type="button" aria-label="Switch background">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+</button>
+
+<div class="app">
+<aside class="rail" id="rail"></aside>
+
+<main>
+
+<!-- ═══════════════════════════════ HUB ════════════════════════════════ -->
+<section class="view" id="playbook" data-disc="playbook">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>The Playbook</span>
+    <h1>How a Room Gets Documented</h1>
+    <p class="lead">The only campus-agnostic section on this site. Every other page documents a specific desk; these four document the method — so the next room can be written up by someone who isn't Matt.</p>
+  </div>
+
+  <div class="card-grid">
+    <a class="page-card" href="#playbook-shapes"><b>The Three Page Shapes</b><span>Procedure, diagnose, reference — and the rule that a page fitting none of them wants splitting.</span></a>
+    <a class="page-card" href="#playbook-capture"><b>Capture Worksheets</b><span>What to ask a room, per discipline. Take these into the booth.</span></a>
+    <a class="page-card" href="#playbook-writing"><b>Writing Rules</b><span>The voice: pros not trainees, expand knowledge, never script behaviour.</span></a>
+    <a class="page-card" href="#playbook-newcampus"><b>Blank-Campus Kit</b><span>Scaffold a campus that doesn't exist yet — folders, rows, hubs, done-criteria.</span></a>
+  </div>
+
+  <div class="note">
+    <b>How a room actually gets written.</b> Matt dictates a long note about one area, hands over that room's reference manuals, and a model authors the pages from the dictation using these four pages plus <span class="mono">templates/</span>. The worksheets below are the prompts for the dictation — not a form anybody fills in by hand.
+  </div>
+</section>
+
+<!-- ═════════════════════════════ SHAPES ═══════════════════════════════ -->
+<section class="view" id="playbook-shapes" data-disc="playbook" data-crumb="The Playbook / The Three Page Shapes">
+  <h1>The Three Page Shapes</h1>
+  <p class="lead">Every page on this site is one of three shapes. Pick the shape before writing a word — it decides the template, the ordering rule, and when the page is done.</p>
+
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Shape</th><th>Use it when</th><th>Ordered by</th><th>Template</th></tr></thead>
+      <tbody>
+        <tr><td><b>Procedure</b></td><td>There is one right order and the operator is standing there doing it</td><td>Time — step 1 happens first</td><td class="mono">startup-step.html</td></tr>
+        <tr><td><b>Diagnose</b></td><td>Something is already wrong and the operator needs the fastest path to a cause</td><td>Likelihood × speed-to-check</td><td class="mono">symptom.html</td></tr>
+        <tr><td><b>Reference</b></td><td>The answer is a lookup — a number, a destination, a state</td><td>The room's own order (IN 13 before IN 34)</td><td class="mono">subpage-view.html</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Procedure</h2>
+  <p>Numbered steps, each with a <b>where</b> line naming the device so the operator can find it without reading the step first. Actions lead with the verb. A caveat goes in a <span class="mono">.note</span> block, never in a qualifying paragraph before the step.</p>
+  <p>Worked example: <a href="../tea/video/index.html#video-startup">Toronto East · Video · Startup Procedure</a> — five steps, each one physically doable in order, ending in a verify step. <b>A procedure without a verify step isn't finished.</b></p>
+
+  <h2>Diagnose</h2>
+  <p>Accordions, one per symptom, with the summary written the way the operator would say it out loud — "Main Screen black / frozen / wrong source," not "PGM output anomaly." Inside: the fastest check first, then the next most likely cause, then the escalation or cross-link.</p>
+  <p>Worked example: <a href="../tea/video/index.html#video-diagnostics">Toronto East · Video · Diagnose a Symptom</a> — nine accordions, each tagged with the lane it lives on so the reader can skip six of them immediately.</p>
+  <div class="note"><b>The tag trick generalizes.</b> Video tags each symptom Lane A or Lane B because that one question halves the search. Every discipline has an equivalent split worth finding — ask for it during capture.</div>
+
+  <h2>Reference</h2>
+  <p>A table, in the room's own order. Include the "not filled in" rows rather than omitting them — a visible gap is a task; a missing row is a lie.</p>
+  <p>Worked example: <a href="../tea/video/index.html#video-outputs">Toronto East · Video · Output Cross-Points</a>, where three rows read <i>not filled in</i>, and <a href="../tea/video/index.html#video-gaps">Unverified / Gaps</a>, which exists only to hold them. That page shrinks as gaps close; when it's empty, it goes.</p>
+
+  <h2>When a page fits none of them</h2>
+  <p>It's two pages. The usual tell is a page that starts as a procedure and turns into a table halfway down — split at the seam and cross-link.</p>
+
+  <nav class="page-nav">
+    <a href="#playbook">‹ The Playbook</a>
+    <a href="#playbook-capture">Capture Worksheets ›</a>
+  </nav>
+</section>
+
+<!-- ═════════════════════════════ CAPTURE ══════════════════════════════ -->
+<section class="view" id="playbook-capture" data-disc="playbook" data-crumb="The Playbook / Capture Worksheets">
+  <h1>Capture Worksheets</h1>
+  <p class="lead">The questions to ask a room. Take one into the booth, get the answers however you like — dictation is the expected form — and hand them to a model with the room's manuals.</p>
+
+  <div class="note"><b>Ask for specifics, not summaries.</b> "We recall a saved state" is not an answer. "PROFILE, right arrow, knob to 44, RESTORE" is. If an answer could be true of any room in the country, it isn't captured yet.</div>
+
+  <h2>Every discipline — ask these first</h2>
+  <ol>
+    <li><b>Power order.</b> What gets switched on, in what order, and what has no power switch at all?</li>
+    <li><b>The saved state.</b> What's the "start here" configuration, where is it saved, and exactly which buttons recall it?</li>
+    <li><b>The shared-venue split.</b> What's ours, what's the venue's, and what has to be handed back after?</li>
+    <li><b>The verify step.</b> How does the operator know startup worked <i>before</i> the service starts?</li>
+    <li><b>The top five Sunday failures</b>, in the operator's own words, each with the fix.</li>
+    <li><b>The vocabulary.</b> Which words does this room use to mean something non-obvious?</li>
+  </ol>
+
+  <h2>Video Engineering</h2>
+  <ul>
+    <li>Switcher and router models; where saved states live and how they're recalled.</li>
+    <li>What each M/E is for, and where each one routes.</li>
+    <li>Keyer assignments — which key, what type, what content, when it's up.</li>
+    <li>Input cross-points: every physical source, its label, and where it lands.</li>
+    <li>Output cross-points: every destination, its device, and its source.</li>
+    <li>Which destinations bypass the switcher entirely — the direct-crosspoint lane.</li>
+    <li>Sunday run of show: expected bus state at each point in the service.</li>
+    <li>Any output whose source nobody has written down. These become the gaps page.</li>
+  </ul>
+
+  <h2>Audio</h2>
+  <ul>
+    <li>Console model, show file name, and the recall steps.</li>
+    <li>Patch sheet / input list; where every stage source lands.</li>
+    <li>Gain structure notes — anything set once that nobody should touch.</li>
+    <li>Wireless frequencies and the battery routine.</li>
+    <li>IEM mix assignments — who's on which mix.</li>
+    <li>The hand-off to video: which audio paths feed the broadcast or capture chain.</li>
+  </ul>
+
+  <h2>Lighting</h2>
+  <ul>
+    <li>Console model, show file, and power order.</li>
+    <li>The rig split — ours versus the venue's, fixture by fixture if it matters.</li>
+    <li>Universes, addresses, fixture schedule.</li>
+    <li>Service looks and their trigger points — which look, fired when, by whose call.</li>
+    <li>House light control: what controls it, and who's allowed to.</li>
+    <li>The hand-back routine — what state the venue expects the rig left in.</li>
+  </ul>
+
+  <h2>Cameras</h2>
+  <ul>
+    <li>Models and counts.</li>
+    <li>Per-camera build: lens, paint, frame rate, SDI return.</li>
+    <li>Positions, and the shot vocabulary exactly as the director calls it.</li>
+    <li>Tally source and comms channels — who hears whom.</li>
+    <li>Any camera with a fixed job that constrains the switcher (a locked capture source, for instance).</li>
+  </ul>
+
+  <div class="note"><b>Not every campus has every seat.</b> Toronto East has no camera desk, and that's a decision, not a gap. Record which seats a campus genuinely doesn't have, so nobody scaffolds one out of symmetry.</div>
+
+  <nav class="page-nav">
+    <a href="#playbook-shapes">‹ The Three Page Shapes</a>
+    <a href="#playbook-writing">Writing Rules ›</a>
+  </nav>
+</section>
+
+<!-- ═════════════════════════════ WRITING ══════════════════════════════ -->
+<section class="view" id="playbook-writing" data-disc="playbook" data-crumb="The Playbook / Writing Rules">
+  <h1>Writing Rules</h1>
+  <p class="lead">The voice, in six rules. They exist to settle arguments quickly, so apply them literally.</p>
+
+  <h2>1. Write for pros</h2>
+  <p>This site documents <i>this room</i>, not the craft. Never explain what an M/E, a crosspoint, a DMX universe, or a gain stage is — the reader already knows. If a draft starts teaching fundamentals, cut it.</p>
+
+  <h2>2. Expand knowledge; don't script behaviour</h2>
+  <p>A page should leave the operator understanding the system better than a button sequence would. Include enough <i>why</i> that they can improvise when reality differs, and point at the source manual. Never a bare press-this-then-that script.</p>
+  <p>These two rules are not in tension: don't teach the craft, <i>do</i> deepen understanding of this room.</p>
+
+  <h2>3. Lead with the action</h2>
+  <p>"Press <span class="btnkey">PROFILE</span>, then the right arrow." Never "In order to restore the profile, you will want to…".</p>
+
+  <h2>4. No qualifying paragraphs</h2>
+  <p>Context goes in a <span class="mono">.note</span> block or it gets cut. If a page opens with two sentences of throat-clearing before the first useful fact, delete them.</p>
+
+  <h2>5. Use the room's vocabulary, exactly</h2>
+  <p>Write the word the team says, then define it once where it first appears. At Toronto East "Resolume" means ME4, "Uplink" is the broadcast join on Resi, and macros are either River's or Elevation's. Another campus will have its own list — capture it rather than importing this one.</p>
+
+  <h2>6. Mark up consistently</h2>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Thing</th><th>Markup</th><th>Looks like</th></tr></thead>
+      <tbody>
+        <tr><td>Hardware button</td><td class="mono">&lt;span class="btnkey"&gt;</td><td><span class="btnkey">TAKE</span></td></tr>
+        <tr><td>Crosspoint, IN/OUT number, filename</td><td class="mono">class="mono"</td><td><span class="mono">IN 35</span></td></tr>
+        <tr><td>Body text</td><td>Sentence case</td><td>Restore Profile 44 on the panel.</td></tr>
+        <tr><td>Headings</td><td>Title case</td><td>Startup Procedure</td></tr>
+        <tr><td>The wordmark</td><td>Lowercase, always</td><td>production</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note"><b>Readability wins every tie.</b> This site has already rejected light font weights and small reading sizes twice. If a stylistic choice and legibility at the desk disagree, legibility wins — and that decision doesn't need re-litigating.</div>
+
+  <nav class="page-nav">
+    <a href="#playbook-capture">‹ Capture Worksheets</a>
+    <a href="#playbook-newcampus">Blank-Campus Kit ›</a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════════ BLANK CAMPUS ═══════════════════════════ -->
+<section class="view" id="playbook-newcampus" data-disc="playbook" data-crumb="The Playbook / Blank-Campus Kit">
+  <h1>Blank-Campus Kit</h1>
+  <p class="lead">Scaffold a campus that doesn't exist yet. Follow these seven steps in order and the new campus appears in the launcher, the rail, and the tab bar with no other file touched.</p>
+
+  <div class="note"><b>Before you start</b>, you need two things: the campus's short code (three letters, permanent — it's in every URL forever) and the list of seats that campus <i>actually</i> has. Don't invent a seat for symmetry.</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Register the Campus in the Shell</h3>
+        <div class="where"><span class="mono">assets/app.js</span> · the <span class="mono">CAMPUS</span> map, near the top</div>
+        <ol>
+          <li>Add one entry: the code as the key, with <span class="mono">label</span> (full name, shown in the rail), <span class="mono">short</span>, and <span class="mono">discs</span> — the seat list, in the order you want the rail to show them.</li>
+          <li>List only real seats. The campus's tab bar and rail are built from this array.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Create the Folders</h3>
+        <div class="where">Repo root</div>
+        <ol>
+          <li>One folder per seat: <span class="mono">&lt;code&gt;/video/</span>, <span class="mono">&lt;code&gt;/audio/</span>, and so on.</li>
+          <li>Nothing else goes in them. Assets stay shared at the root.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Copy a Hub Page per Seat</h3>
+        <div class="where"><span class="mono">&lt;code&gt;/&lt;seat&gt;/index.html</span></div>
+        <ol>
+          <li>Copy an existing scaffold hub from another campus — the same seat if it exists, so the card titles carry over.</li>
+          <li>Set the <span class="mono">&lt;html&gt;</span> tag: <span class="mono">data-depth="2"</span>, <span class="mono">data-campus="&lt;code&gt;"</span>, <span class="mono">data-disc="&lt;seat&gt;"</span>. That's the only per-file wiring a page needs.</li>
+          <li>Update the <span class="mono">&lt;title&gt;</span> to name the new campus.</li>
+          <li>Rewrite the scaffold note for this room. Never leave another campus's note in place — it names another room's gear.</li>
+        </ol>
+        <div class="note"><b>Do not copy content pages.</b> A scaffold hub is a promise of structure; a copied procedure is a wrong answer with confident formatting.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Add the NAV Rows</h3>
+        <div class="where"><span class="mono">assets/app.js</span> · the <span class="mono">NAV</span> array</div>
+        <ol>
+          <li>One row per page, each with <span class="mono">campus</span>, <span class="mono">disc</span>, <span class="mono">file</span> (full path from the repo root), <span class="mono">hash</span>, and <span class="mono">label</span>.</li>
+          <li>First row of each seat is the <b>Overview</b>, pointing at the hub's own hash.</li>
+          <li>Every page that doesn't exist yet gets <span class="mono">pending: true</span> and points at the hub. Flip it to a real hash the day the page ships.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Add the Launcher Group</h3>
+        <div class="where"><span class="mono">index.html</span> · the campus groups</div>
+        <ol>
+          <li>Copy an existing <span class="mono">&lt;div class="campus-group"&gt;</span> block, set its overline to the campus name and seat count.</li>
+          <li>One <span class="mono">.disc-card</span> per seat, each with a <span class="mono">Scaffold</span> chip and its planned page count.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">6</div>
+      <div>
+        <h3>Verify Before Capture</h3>
+        <div class="where">A local server at the repo root</div>
+        <ol>
+          <li>Run <span class="mono">python3 -m http.server 8000</span> and open the launcher.</li>
+          <li>Click into every new seat. The rail must show only this campus's seats; the tab bar too.</li>
+          <li>Check a narrow window, around 390px — tab bar appears, nothing scrolls sideways.</li>
+          <li>Confirm no page links into another campus. Rooms never cross-link across campuses; only the playbook is shared.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="idx">7</div>
+      <div>
+        <h3>Capture, One Seat at a Time</h3>
+        <div class="where"><a href="#playbook-capture">The capture worksheets</a></div>
+        <ol>
+          <li>Take the worksheet for one seat into that room. Get the answers plus the room's manuals.</li>
+          <li>Author the pages from the dictation, using <span class="mono">templates/</span> verbatim and the <a href="#playbook-shapes">three shapes</a>.</li>
+          <li>Ship the seat, then move to the next one. Don't half-fill four seats.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <h2>A seat is done when</h2>
+  <ul>
+    <li>Every hub card links to a real page — no pending placeholders left.</li>
+    <li>Its <b>Diagnose a Symptom</b> page exists. A room with no diagnose page is a room nobody can fix under pressure.</li>
+    <li>Its rail rows have dropped <span class="mono">pending</span>.</li>
+    <li>Its card on the launcher reads <b>Live</b>, with an accurate page count.</li>
+  </ul>
+
+  <div class="note"><b>Shared facts stay duplicated until proven shared.</b> When two campuses genuinely do something identically, it can move here and both link to it. Until then, write it twice. A shared page that quietly diverges from one room's reality is worse than two honest copies.</div>
+
+  <nav class="page-nav">
+    <a href="#playbook-writing">‹ Writing Rules</a>
+    <a href="#playbook">The Playbook ›</a>
+  </nav>
+</section>
+
+</main>
+</div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+<script src="../assets/app.js"></script>
+</body>
+</html>

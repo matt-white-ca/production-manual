@@ -10,23 +10,41 @@
    edited files. Everything else in this file is plumbing — leave it alone
    for a content change.
 
-   Path model: every page is either at the repo root (index.html) or one
-   folder deep (video/index.html, audio/index.html, ...). Each HTML file
-   declares its own depth and discipline once, on <html>:
-     <html data-depth="0" data-disc="home">   (root)
-     <html data-depth="1" data-disc="video">  (a discipline file)
+   Path model (campus-first since 2026-07-26): a page sits at one of three
+   depths. Each HTML file declares depth, campus, and discipline once, on
+   <html>:
+     <html data-depth="0" data-disc="home">                  (root launcher)
+     <html data-depth="1" data-disc="playbook">              (campus-agnostic)
+     <html data-depth="2" data-campus="tea" data-disc="video">  (a room)
    That's the only per-file wiring content pages need — this script reads
-   it to build correct relative links from either depth.
+   it to build correct relative links from any depth.
+
+   Campus codes are permanent: `tea` = Toronto East, `tor` = Toronto. A
+   campus lists its own disciplines, because they differ — Toronto East has
+   no camera seat, and that is intentional, not a gap waiting to be filled.
    ========================================================================== */
 (function () {
   "use strict";
 
-  var DEPTH = document.documentElement.getAttribute("data-depth") === "1" ? "../" : "";
-  var CURRENT_DISC = document.documentElement.getAttribute("data-disc") || "home";
-  var CURRENT_FILE = CURRENT_DISC === "home" ? "index.html" : CURRENT_DISC + "/index.html";
+  var ROOT = document.documentElement;
+  var DEPTH = new Array(parseInt(ROOT.getAttribute("data-depth"), 10) || 0).fill("../").join("");
+  var CURRENT_DISC = ROOT.getAttribute("data-disc") || "home";
+  var CURRENT_CAMPUS = ROOT.getAttribute("data-campus") || "";
+  var CURRENT_FILE =
+    CURRENT_DISC === "home" ? "index.html" :
+    CURRENT_CAMPUS ? CURRENT_CAMPUS + "/" + CURRENT_DISC + "/index.html" :
+    CURRENT_DISC + "/index.html";
+
+  /* CAMPUS — add a campus by adding one entry here (plus its folders and
+     NAV rows). `discs` is the campus's real seat list, in rail order. */
+  var CAMPUS = {
+    tea: { label: "Toronto East", short: "East", discs: ["video", "audio", "lighting"] },
+    tor: { label: "Toronto", short: "Toronto", discs: ["video", "audio", "lighting", "cameras"] }
+  };
 
   var HUB_HASH = {
     home: "home",
+    playbook: "playbook",
     video: "video",
     audio: "audio",
     lighting: "lighting",
@@ -34,47 +52,84 @@
   };
 
   var DISC_LABEL = {
+    playbook: "The Playbook",
     video: "Video Engineering",
     audio: "Audio",
     lighting: "Lighting",
     cameras: "Cameras"
   };
 
+  /* Bottom tab bar has room for one word; everything else derives from
+     DISC_LABEL's first word. */
+  var TAB_LABEL = { home: "Home", playbook: "Playbook" };
+
   /* NAV — single source of truth for the rail + tab bar. To add a page:
-     add one entry with the right file/hash/label, in the position you want
-     it to appear in the rail. `pending: true` renders it dimmed and points
-     it at the discipline hub — flip to a real hash once the page exists. */
+     add one entry with the right campus/file/hash/label, in the position
+     you want it to appear in the rail. `pending: true` renders it dimmed
+     and points it at the discipline hub — flip to a real hash once the
+     page exists. Rows with no `campus` are platform-level (home, playbook)
+     and show on every campus. */
   var NAV = [
     { disc: "home", file: "index.html", hash: "home", label: "Home" },
 
-    { disc: "video", file: "video/index.html", hash: "video", label: "Overview" },
-    { disc: "video", file: "video/index.html", hash: "video-startup", label: "Startup Procedure" },
-    { disc: "video", file: "video/index.html", hash: "video-flow", label: "Signal Flow" },
-    { disc: "video", file: "video/index.html", hash: "video-rundown", label: "Sunday Run of Show" },
-    { disc: "video", file: "video/index.html", hash: "video-clocks", label: "Clock Standards" },
-    { disc: "video", file: "video/index.html", hash: "video-diagnostics", label: "Diagnose a Symptom" },
-    { disc: "video", file: "video/index.html", hash: "video-me-bus", label: "M/E Bus Map" },
-    { disc: "video", file: "video/index.html", hash: "video-keys", label: "Key Layers" },
-    { disc: "video", file: "video/index.html", hash: "video-inputs", label: "Input Cross-Points" },
-    { disc: "video", file: "video/index.html", hash: "video-outputs", label: "Output Cross-Points" },
-    { disc: "video", file: "video/index.html", hash: "video-gaps", label: "Unverified / Gaps" },
+    /* ---- Toronto East ---------------------------------------------- */
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video", label: "Overview" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-startup", label: "Startup Procedure" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-flow", label: "Signal Flow" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-rundown", label: "Sunday Run of Show" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-clocks", label: "Clock Standards" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-diagnostics", label: "Diagnose a Symptom" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-me-bus", label: "M/E Bus Map" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-keys", label: "Key Layers" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-inputs", label: "Input Cross-Points" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-outputs", label: "Output Cross-Points" },
+    { campus: "tea", disc: "video", file: "tea/video/index.html", hash: "video-gaps", label: "Unverified / Gaps" },
 
-    { disc: "audio", file: "audio/index.html", hash: "audio", label: "Overview" },
-    { disc: "audio", file: "audio/index.html", hash: "audio", label: "Console Startup", pending: true },
-    { disc: "audio", file: "audio/index.html", hash: "audio", label: "Patch & Gain", pending: true },
-    { disc: "audio", file: "audio/index.html", hash: "audio", label: "Wireless & IEMs", pending: true },
-    { disc: "audio", file: "audio/index.html", hash: "audio", label: "Diagnose a Symptom", pending: true },
+    { campus: "tea", disc: "audio", file: "tea/audio/index.html", hash: "audio", label: "Overview" },
+    { campus: "tea", disc: "audio", file: "tea/audio/index.html", hash: "audio", label: "Console Startup", pending: true },
+    { campus: "tea", disc: "audio", file: "tea/audio/index.html", hash: "audio", label: "Patch & Gain", pending: true },
+    { campus: "tea", disc: "audio", file: "tea/audio/index.html", hash: "audio", label: "Wireless & IEMs", pending: true },
+    { campus: "tea", disc: "audio", file: "tea/audio/index.html", hash: "audio", label: "Diagnose a Symptom", pending: true },
 
-    { disc: "lighting", file: "lighting/index.html", hash: "lighting", label: "Overview" },
-    { disc: "lighting", file: "lighting/index.html", hash: "lighting", label: "Console Startup", pending: true },
-    { disc: "lighting", file: "lighting/index.html", hash: "lighting", label: "Rig & Patch", pending: true },
-    { disc: "lighting", file: "lighting/index.html", hash: "lighting", label: "Looks & Cue Stack", pending: true },
-    { disc: "lighting", file: "lighting/index.html", hash: "lighting", label: "Diagnose a Symptom", pending: true },
+    { campus: "tea", disc: "lighting", file: "tea/lighting/index.html", hash: "lighting", label: "Overview" },
+    { campus: "tea", disc: "lighting", file: "tea/lighting/index.html", hash: "lighting", label: "Console Startup", pending: true },
+    { campus: "tea", disc: "lighting", file: "tea/lighting/index.html", hash: "lighting", label: "Rig & Patch", pending: true },
+    { campus: "tea", disc: "lighting", file: "tea/lighting/index.html", hash: "lighting", label: "Looks & Cue Stack", pending: true },
+    { campus: "tea", disc: "lighting", file: "tea/lighting/index.html", hash: "lighting", label: "Diagnose a Symptom", pending: true },
 
-    { disc: "cameras", file: "cameras/index.html", hash: "cameras", label: "Overview" },
-    { disc: "cameras", file: "cameras/index.html", hash: "cameras", label: "Builds & Settings", pending: true },
-    { disc: "cameras", file: "cameras/index.html", hash: "cameras", label: "Positions & Shot Sheet", pending: true },
-    { disc: "cameras", file: "cameras/index.html", hash: "cameras", label: "Tally & Comms", pending: true }
+    /* Toronto East has no cameras seat — intentional, not a missing row. */
+
+    /* ---- Toronto ---------------------------------------------------- */
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Overview" },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Startup Procedure", pending: true },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Signal Flow", pending: true },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Sunday Run of Show", pending: true },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Diagnose a Symptom", pending: true },
+
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Overview" },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Console Startup", pending: true },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Patch & Gain", pending: true },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Wireless & IEMs", pending: true },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Diagnose a Symptom", pending: true },
+
+    { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Overview" },
+    { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Console Startup", pending: true },
+    { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Rig & Patch", pending: true },
+    { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Looks & Cue Stack", pending: true },
+    { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Diagnose a Symptom", pending: true },
+
+    { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Overview" },
+    { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Builds & Settings", pending: true },
+    { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Positions & Shot Sheet", pending: true },
+    { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Tally & Comms", pending: true },
+    { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Diagnose a Symptom", pending: true },
+
+    /* ---- Platform-level (no campus) --------------------------------- */
+    { disc: "playbook", file: "playbook/index.html", hash: "playbook", label: "Overview" },
+    { disc: "playbook", file: "playbook/index.html", hash: "playbook-shapes", label: "The Three Page Shapes" },
+    { disc: "playbook", file: "playbook/index.html", hash: "playbook-capture", label: "Capture Worksheets" },
+    { disc: "playbook", file: "playbook/index.html", hash: "playbook-writing", label: "Writing Rules" },
+    { disc: "playbook", file: "playbook/index.html", hash: "playbook-newcampus", label: "Blank-Campus Kit" }
   ];
 
   var ICONS = {
@@ -82,7 +137,8 @@
     video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>',
     audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v4M4 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM4 6v2M12 16v2M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12 6v0M20 12v6M20 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
     lighting: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.6 1 2.5h6c0-.9.2-1.8 1-2.5A6 6 0 0 0 12 3Z"/></svg>',
-    cameras: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>'
+    cameras: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    playbook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5Z"/></svg>'
   };
 
   var LOGOMARK = '<svg class="logomark" viewBox="0 0 3 2" aria-hidden="true">' +
@@ -94,13 +150,19 @@
     return DEPTH + item.file + "#" + item.hash;
   }
 
+  /* A row belongs in this rail if it is platform-level (no campus) or it
+     belongs to the campus whose room we are standing in. */
+  function inScope(item) {
+    return !item.campus || item.campus === CURRENT_CAMPUS;
+  }
+
   function renderRail() {
     var rail = document.getElementById("rail");
     if (!rail) return;
 
     var groups = [];
     var byDisc = {};
-    NAV.forEach(function (item) {
+    NAV.filter(inScope).forEach(function (item) {
       if (!byDisc[item.disc]) {
         byDisc[item.disc] = [];
         groups.push(item.disc);
@@ -108,8 +170,9 @@
       byDisc[item.disc].push(item);
     });
 
+    var campusLabel = CURRENT_CAMPUS && CAMPUS[CURRENT_CAMPUS] ? CAMPUS[CURRENT_CAMPUS].label : "Every Campus";
     var html = '<a class="wordmark-sm" href="' + DEPTH + 'index.html">' + LOGOMARK + "production</a>" +
-      '<div class="campus">Toronto East</div><hr class="rail-rule"><nav>';
+      '<a class="campus" href="' + DEPTH + 'index.html#home">' + campusLabel + "</a><hr class=\"rail-rule\"><nav>";
 
     groups.forEach(function (disc) {
       html += '<div class="rail-group" data-disc="' + disc + '">';
@@ -131,11 +194,18 @@
   function renderTabbar() {
     var bar = document.getElementById("tabbar");
     if (!bar) return;
-    var order = ["home", "video", "audio", "lighting", "cameras"];
+    /* Tabs follow the campus you are standing in; off-campus (home, the
+       playbook) the bar is the platform pair. */
+    var order = CURRENT_CAMPUS && CAMPUS[CURRENT_CAMPUS]
+      ? ["home"].concat(CAMPUS[CURRENT_CAMPUS].discs)
+      : ["home", "playbook"];
     var html = "";
     order.forEach(function (disc) {
-      var file = disc === "home" ? "index.html" : disc + "/index.html";
-      var label = disc === "home" ? "Home" : DISC_LABEL[disc].split(" ")[0];
+      var file =
+        disc === "home" ? "index.html" :
+        disc === "playbook" ? "playbook/index.html" :
+        CURRENT_CAMPUS + "/" + disc + "/index.html";
+      var label = TAB_LABEL[disc] || DISC_LABEL[disc].split(" ")[0];
       html += '<a class="tab" href="' + DEPTH + file + "#" + HUB_HASH[disc] + '" data-disc="' + disc + '">' +
         ICONS[disc] + label + "</a>";
     });
@@ -188,8 +258,10 @@
     }
 
     window.scrollTo(0, 0);
-    document.title = (crumbText ? crumbText.split("/").pop().trim() + " — " : "") +
-      "production · Elevation Toronto East";
+    var suffix = CURRENT_CAMPUS && CAMPUS[CURRENT_CAMPUS]
+      ? "production · Elevation " + CAMPUS[CURRENT_CAMPUS].label
+      : "production · Elevation Canada";
+    document.title = (crumbText ? crumbText.split("/").pop().trim() + " — " : "") + suffix;
   }
 
   function initTheme() {

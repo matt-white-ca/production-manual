@@ -273,13 +273,18 @@ main {
   text-decoration: none;
   margin-bottom: 2px;
 }
+/* The campus line is a link back to the launcher — one tap to change desks. */
 .rail .campus {
+  display: block;
   font-size: var(--t-0);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-2);
+  text-decoration: none;
   margin-bottom: 22px;
+  transition: color 0.15s ease;
 }
+.rail .campus:hover { color: var(--ink-0); }
 .rail-rule {
   height: 1px;
   background: var(--grad);
@@ -470,6 +475,20 @@ main {
   gap: 14px;
 }
 @media (min-width: 640px) { .launcher { grid-template-columns: 1fr 1fr; } }
+
+/* Campus groups on the launcher — one heading, then that campus's seats.
+   A campus lists only the seats it actually has. */
+.campus-group { margin-bottom: 30px; }
+.campus-group > .overline {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--ink-1);
+}
+.campus-group > .overline .count {
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-2);
+}
 
 .disc-card {
   --acc: var(--ink-1);

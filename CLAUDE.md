@@ -9,34 +9,55 @@ Context for Claude Code sessions working in this repo. Read this first.
 
 ## What this project is
 
-Video production reference for **Elevation Toronto East**. The campus ran on a mobile
-fly pack that has been relocated into a **permanent install in Whitby** (River's master
-control room — Elevation shares the venue with "River," another church). Elevation keeps
-its own computers on the desk and operates in front of River's gear, keeping the two
+The production reference for **Elevation Canada** — every campus, every discipline, plus
+a playbook for turning what Matt knows into something institutional. Two campuses are
+wired up today: **Toronto East** (`tea`) and **Toronto** (`tor`).
+
+Only one room is actually documented so far: **Toronto East video**. That campus ran on a
+mobile fly pack that has been relocated into a **permanent install in Whitby** (River's
+master control room — Elevation shares the venue with "River," another church). Elevation
+keeps its own computers on the desk and operates in front of River's gear, keeping the two
 setups cleanly separated.
 
 The switcher (ATEM) and Videohub router both support saved-state recall, so the operating
 model is: **fire a saved "Elevation start here" configuration, then run the service.**
 
-## What's in this repo (v2 — the production platform)
+Everything in the Domain reference section below describes **Toronto East video only**.
+None of it is safe to assume about Toronto.
 
-The site is a four-discipline team platform (Video Engineering · Audio · Lighting ·
-Cameras), shipped 2026-07-07. One HTML file per discipline, hash-routed to its own
-subpages, sharing one stylesheet and one JS shell — never a single monolithic file again.
+## What's in this repo (v3 — campus-first)
 
-- **`index.html`** — home / platform launcher.
-- **`video/index.html`** — Video Engineering. Fully ported, 9 real pages: Startup,
-  Signal Flow, Sunday Run of Show, Diagnose a Symptom, M/E Bus Map, Key Layers, Input
-  Cross-Points, Output Cross-Points, Unverified/Gaps.
-- **`audio/index.html`, `lighting/index.html`, `cameras/index.html`** — scaffolds: one
-  real hub page each, listing planned subpages and what Matt needs to bring. Not yet
-  live content.
+The site is a **campus × discipline** platform. Every room lives at
+`<campus>/<discipline>/index.html`, hash-routed to its own subpages, sharing one
+stylesheet and one JS shell — never a single monolithic file again.
+
+**Campus codes are permanent and appear in every URL:** `tea` = Toronto East,
+`tor` = Toronto.
+
+- **`index.html`** — the campus launcher. Campus groups, each listing that campus's seats.
+- **`tea/video/index.html`** — Toronto East Video Engineering. Fully ported, 10 real
+  pages: Startup, Signal Flow, Sunday Run of Show, Clock Standards, Diagnose a Symptom,
+  M/E Bus Map, Key Layers, Input Cross-Points, Output Cross-Points, Unverified/Gaps.
+  **This is the worked example** every other room is written against.
+- **`tea/audio/`, `tea/lighting/`** — scaffolds: one real hub page each, listing planned
+  subpages and what to bring. **Toronto East has no camera seat** — a decision
+  (2026-07-26), not a gap. Don't create one.
+- **`tor/video/`, `tor/audio/`, `tor/lighting/`, `tor/cameras/`** — Toronto scaffolds.
+  Nothing captured yet.
+- **`playbook/index.html`** — the campus-agnostic layer and the only shared content
+  section: the three page shapes, capture worksheets, writing rules, blank-campus kit.
+  **`#playbook-newcampus` is the authoritative procedure for adding a campus.**
+- **`video/`, `audio/`, `lighting/`, `cameras/`** (repo root) — redirect stubs for
+  pre-restructure bookmarks. They carry the deep-link hash across. Never put content in
+  them; `/cameras/` has no equivalent and lands on the launcher.
 - **`assets/production.css`** — the one shared stylesheet. Content edits never touch it.
-- **`assets/app.js`** — the shared shell: a `NAV` array (add a page = one entry here),
-  the rail/tab-bar renderer, the hash router, breadcrumbs, and the light/dark toggle.
-  Content edits touch only the `NAV` array in this file, nothing else in it.
+- **`assets/app.js`** — the shared shell: a `CAMPUS` map, a `NAV` array (add a page = one
+  entry here), the rail/tab-bar renderer, the hash router, breadcrumbs, and the
+  light/dark toggle. Content edits touch only the `NAV` array, nothing else in it.
 - **`docs/MAINTENANCE.md`** — **read this before touching content.** The content-editing
   contract: what's safe to edit, recipes for common changes, writing rules, verify steps.
+- **`docs/SITEMAP.md`** — the whole site in editable form. Matt edits it; the edits get
+  applied back to the real pages. Regenerate it after any structural change.
 - **`templates/`** — copy-paste-verbatim blocks for every repeating pattern (procedure
   step, symptom accordion, hub page-card, whole subpage). New content starts here.
 - **`design/mockup-v2.html`** — the frozen design reference. Never edited; the approved
@@ -105,7 +126,7 @@ python3 -m venv /tmp/pdfvenv && /tmp/pdfvenv/bin/pip install pymupdf
 
 ## Domain reference (so you understand what you're editing)
 
-Full detail is in `video/index.html`. Quick primer:
+Full detail is in `tea/video/index.html`. Quick primer:
 
 ### Terminology (show-calling shorthand)
 - **"Resolume"** always means **ME4** — the full-screen DVE-expanded version of the raw
@@ -129,7 +150,7 @@ Full detail is in `video/index.html`. Quick primer:
 - ME3 **Key 2** = luma, CG1 lyrics top-right (used during Uplink so lyrics stay visible).
 - ME4 **Key 1** = DVE, expands raw Resolume to full screen.
 
-### Startup procedure (5 steps, in `video/index.html#video-startup`)
+### Startup procedure (5 steps, in `tea/video/index.html#video-startup`)
 1. **Power** — Furman (venue devices) → Middle Atlantic conditioner → boot Resi decoder +
    console interface. **Also physically reconnect power to the ATEM Advanced Panel** —
    the venue disconnects it and it has **no power switch** (boots on connection).

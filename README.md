@@ -1,16 +1,24 @@
 # Production Manual
 
-Production platform for **Elevation Toronto East** — the permanent install in Whitby
-(relocated from the mobile fly pack). Covers Video Engineering, Audio, Lighting, and
-Cameras: startup procedures, signal flow, and symptom-based diagnostics for the whole
-production team.
+Production platform for **Elevation Canada** — startup procedures, signal flow, and
+symptom-based diagnostics for every production seat, at every campus. Organized
+campus-first: each room lives at `<campus>/<discipline>/`.
 
 ## What's here
 
-- **`index.html`** — home / platform launcher.
-- **`video/`** — Video Engineering: startup, signal flow, Sunday run of show, symptom
-  diagnostics, and the full routing/key/cross-point reference. Fully built out.
-- **`audio/`, `lighting/`, `cameras/`** — scaffolds, awaiting source material.
+- **`index.html`** — the campus launcher.
+- **`tea/`** — **Toronto East**, the permanent install in Whitby (relocated from the
+  mobile fly pack). `tea/video/` is fully built out: startup, signal flow, Sunday run of
+  show, clock standards, symptom diagnostics, and the full routing/key/cross-point
+  reference. `tea/audio/` and `tea/lighting/` are scaffolds awaiting source material.
+  Toronto East has no camera seat, by design.
+- **`tor/`** — **Toronto**: video, audio, lighting, and cameras, all scaffolds. Nothing
+  captured yet.
+- **`playbook/`** — how a room gets documented: the three page shapes, capture
+  worksheets, writing rules, and the kit for scaffolding a campus that doesn't exist yet.
+  The only campus-agnostic section.
+- **`video/`, `audio/`, `lighting/`, `cameras/`** — redirect stubs for bookmarks made
+  before the 2026-07-26 campus restructure. They carry deep-link hashes across.
 - **`assets/`** — the one shared stylesheet and JS shell every page uses.
 - **`v1/`** — the retired single-file version of this site, kept for history.
 
@@ -35,6 +43,10 @@ old name redirects old bookmarks — including deep links — to the URL above.)
 ## Editing
 
 Read **`docs/MAINTENANCE.md`** first — it's the contract for what's safe to edit and how.
-In short: content lives in each discipline's `index.html`; `assets/production.css` and
+In short: content lives in each room's `index.html`; `assets/production.css` and
 `assets/app.js` are structural and shouldn't change for a content edit. Commit and push
 to `main` — Pages redeploys automatically.
+
+**`docs/SITEMAP.md`** is the whole site in editable form — rename, reorder, add, cut, or
+split pages by editing that file and handing it back. Adding a whole campus has its own
+procedure, on the site itself at `playbook/#playbook-newcampus`.
