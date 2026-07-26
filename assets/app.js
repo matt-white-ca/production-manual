@@ -51,6 +51,7 @@
     { disc: "video", file: "video/index.html", hash: "video-startup", label: "Startup Procedure" },
     { disc: "video", file: "video/index.html", hash: "video-flow", label: "Signal Flow" },
     { disc: "video", file: "video/index.html", hash: "video-rundown", label: "Sunday Run of Show" },
+    { disc: "video", file: "video/index.html", hash: "video-clocks", label: "Clock Standards" },
     { disc: "video", file: "video/index.html", hash: "video-diagnostics", label: "Diagnose a Symptom" },
     { disc: "video", file: "video/index.html", hash: "video-me-bus", label: "M/E Bus Map" },
     { disc: "video", file: "video/index.html", hash: "video-keys", label: "Key Layers" },

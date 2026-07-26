@@ -36,6 +36,7 @@
   <div class="card-grid">
     <a class="page-card" href="#video-flow"><b>Signal Flow</b><span>Lane A / Lane B — which paths touch the ATEM, which never do.</span></a>
     <a class="page-card" href="#video-rundown"><b>Sunday Run of Show</b><span>Expected ME1/2/3 state at each point in the service.</span></a>
+    <a class="page-card" href="#video-clocks"><b>Clock Standards &amp; Transitions</b><span>Director's notes — what's on the clock, and when not to touch it.</span></a>
     <a class="page-card" href="#video-diagnostics"><b>Diagnose a Symptom</b><span>Symptom-based checklists, worked top to bottom.</span></a>
     <a class="page-card" href="#video-me-bus"><b>M/E Bus Map</b><span>What each M/E is for and where it routes.</span></a>
     <a class="page-card" href="#video-keys"><b>Key Layers</b><span>ME3 / ME4 keyer assignments.</span></a>
@@ -272,6 +273,130 @@
 
   <nav class="page-nav">
     <a href="#video-flow">‹ Signal Flow</a>
+    <a href="#video-clocks">Clock Standards ›</a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════════ CLOCK STANDARDS ════════════════════════ -->
+<section class="view" id="video-clocks" data-disc="video" data-crumb="Video Engineering / Clock Standards">
+  <h1>Clock Standards &amp; Transitions</h1>
+  <p class="lead">Director's notes for the clock. What's showing at each point in the experience, what fires it, and when it doesn't get touched.</p>
+
+  <div class="note"><b>Time of day is the default.</b> If an element isn't noted here, the clock shows time of day.</div>
+
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Clock</th><th>Direction</th><th>Fires on</th><th>What it's for</th></tr></thead>
+      <tbody>
+        <tr><td><b>Count-to experience start</b></td><td>Down to <span class="mono">0:00</span></td><td>Set to the agreed start time</td><td>Zero is the cue to fire the 2-minute countdown</td></tr>
+        <tr><td><b>Time of day</b></td><td class="dim">—</td><td>After zero, and anywhere unnoted</td><td>The resting state for the whole experience</td></tr>
+        <tr><td><b>Hosting segment clock</b></td><td>Down</td><td>The downbeat of the song out</td><td>Welcome, closing, any local hosting element</td></tr>
+        <tr><td><b>30 seconds to transition</b></td><td>Down from <span class="mono">0:30</span></td><td>Clock op's call, off the Resi cues</td><td>Flagging a handoff when we can't give a length</td></tr>
+        <tr><td><b>Sermon clock</b></td><td>Up from <span class="mono">0:00</span></td><td>Top of the message</td><td>Counts up — down only if it's preached in our room</td></tr>
+        <tr><td><b>UPLINK SAFE / EXTEND</b></td><td class="dim">Message, not a clock</td><td>The element before an uplink join</td><td>Says whether the Resi buffer is there yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Set the Count-To Timer</h3>
+        <div class="where">Pre-experience · the number is agreed, not assumed</div>
+        <ol>
+          <li>Agree the start time with the host, campus pastor, production, the director, and the GE lead. Adjust it as the morning needs it.</li>
+          <li>Load it as a count-to so the clock runs down to <span class="mono">0:00</span> at that time.</li>
+        </ol>
+        <div class="note">Zero is not the start of the experience — it's the moment we fire the 2-minute countdown.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>At Zero — Fire the Countdown, Go to Time of Day</h3>
+        <div class="where">Main screen takes the 2-minute countdown · clock goes neutral</div>
+        <ol>
+          <li>Fire the 2-minute countdown at <span class="mono">0:00</span>.</li>
+          <li>Put the clock straight to time of day and leave it there.</li>
+        </ol>
+        <div class="note">Don't mirror the 2-minute countdown on the clock — it's already on the main screen.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Fire Hosting Clocks on the Downbeat</h3>
+        <div class="where">Welcome, closing, any local hosting element</div>
+        <ol>
+          <li>Fire on the <b>downbeat of the song out</b> — the crash-out. Not when the host hits the stage.</li>
+          <li>Let it run over. Over is information, not a problem to fix on the fly.</li>
+        </ol>
+        <div class="note"><b>Never trim a clock because someone ran long.</b> Thirty seconds over is not an invitation to shorten the next experience — it stays at whatever it is. The number only changes after a conversation with the host.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Uplink Hosting — Time of Day</h3>
+        <div class="where">Any segment hosted from the uplink, not our stage</div>
+        <ol>
+          <li>Go to time of day for the whole segment — we don't control the pacing, and the uplink host is running to the main campus clock, not ours.</li>
+          <li>Read the Resi cues and adjust locally as it plays.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Call the Buffer — UPLINK SAFE or EXTEND</h3>
+        <div class="where">The element <b>before</b> the join · at least <span class="mono">2:00</span> banked on Resi</div>
+        <ol>
+          <li>Check the buffer during the element preceding the uplink. Going uplink for the welcome? Check during the song before it.</li>
+          <li>Two minutes means <span class="mono">2:00</span>, not <span class="mono">1:59</span>. Once it's there, show <b>UPLINK SAFE</b>.</li>
+          <li>Short of it, show <b>EXTEND</b> — and keep it up until the buffer arrives.</li>
+        </ol>
+        <div class="note">The buffer should be banked before we take anything. Extend is the exception, not the plan.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">6</div>
+      <div>
+        <h3>Use 30 Seconds to Transition for the Handoff</h3>
+        <div class="where">Stream Deck · a flat 30-second clock, fired off the Resi cues</div>
+        <ol>
+          <li>Fire it when the transition is 30 seconds out.</li>
+          <li>Use it whenever we can't say how long a segment runs but can still tell the room the handoff is coming — back to local, or on to the next element.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">7</div>
+      <div>
+        <h3>Sermon Clock Counts Up</h3>
+        <div class="where">Top of the message</div>
+        <ol>
+          <li>Start at <span class="mono">0:00</span> and count up. A countdown on a sermon is a distraction.</li>
+          <li>Count <b>down</b> only when the message is being preached in our room — that's the single exception.</li>
+          <li>Note how long it actually ran. That's what the next planning conversation works from.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">8</div>
+      <div>
+        <h3>Between Experiences — Reset the Count-To</h3>
+        <div class="where">As soon as the room clears</div>
+        <ol>
+          <li>Load the count-to for the next experience's 2-minute countdown.</li>
+          <li>Back to step 1 — the cycle is the same every service.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-rundown">‹ Sunday Run of Show</a>
     <a href="#video-diagnostics">Diagnose a Symptom ›</a>
   </nav>
 </section>
@@ -398,7 +523,7 @@
   </details>
 
   <nav class="page-nav">
-    <a href="#video-rundown">‹ Sunday Run of Show</a>
+    <a href="#video-clocks">‹ Clock Standards</a>
     <a href="#video-me-bus">M/E Bus Map ›</a>
   </nav>
 </section>
