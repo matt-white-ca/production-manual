@@ -29,7 +29,7 @@ old name redirects old bookmarks — including deep links — to the URL above.)
 
 ## Related
 
-- **Project record (vault):** `01_Atlas/Active/tea-production-redesign.md`
+- **Project record (vault):** `01_Atlas/Active/production-knowledge-base.md`
 - **Drive folder (collaborative artifacts):** `01_Project_Files/tea-production-redesign` — source routing sheets, ATEM/Videohub manuals, switcher XML states, and markdown reference docs.
 
 ## Editing
