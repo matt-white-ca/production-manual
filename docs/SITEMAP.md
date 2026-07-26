@@ -1,7 +1,8 @@
 # SITEMAP.md — the site as it stands, in editable form
 
-**Generated 2026-07-25** against `main` @ `8cd0c54`. This is a working document: edit it
-freely and hand it back, and the edits get applied to the real site.
+**Regenerated 2026-07-26** against `main` @ `a68feee`, after the campus-first restructure
+and the Playbook shipped. This is a working document: edit it freely and hand it back,
+and the edits get applied to the real site.
 
 ---
 
@@ -16,15 +17,18 @@ Every page is a block with the same fields. Change the fields, not the format.
 | **Add a page** | Paste a new block anywhere, set `status: proposed`, fill in whatever you know. `contents:` can be a rough dump — bullets, half-sentences, a dictation paste. |
 | **Delete a page** | Set `status: cut`. Don't delete the block — I need to know what to unwire. |
 | **Move a page to another discipline** | Cut the block, paste it under the new discipline, add `moved from: video`. |
+| **Move a page to the Playbook** | Add `promote: playbook` to the block. That's the campus-agnostic layer — only for facts true at *every* campus. |
 | **Split a page in two** | Duplicate the block, add `split from: <id>` to the new one, and divide the `contents:` bullets between them. |
+| **Merge two pages** | Add `merge into: <id>` to the one that disappears. |
 | **Change what's on a page** | Edit the `contents:` bullets. Add, delete, reword — that's the content spec. |
+| **Add or remove a whole seat** | Add or cut the discipline heading and its blocks. Say which campus. |
 | **Flag something you're unsure about** | Start the line with `?` — I'll ask instead of guessing. |
 
 Anything you write in a `notes:` line is instruction to me, not site copy.
 
 **Field meanings**
 
-- `id:` — the URL hash (`/video/#video-clocks`) and the anchor other pages link to.
+- `id:` — the URL hash (`/tea/video/#video-clocks`) and the anchor other pages link to.
 - `rail:` — label in the left rail (desktop) and the page tree. Kept short.
 - `card:` — the hub tile: bold title, then the one-line "what you'll find" blurb.
 - `shape:` — one of **procedure** (numbered steps) / **diagnose** (symptom accordions) /
@@ -39,39 +43,56 @@ Anything you write in a `notes:` line is instruction to me, not site copy.
 ## Site-wide
 
 - **Live:** https://matt-white-ca.github.io/production-manual/ — GitHub Pages off `main`, repo root.
-- **Structure:** one HTML file per discipline, hash-routed to its subpages. `/video/`,
-  `/audio/`, `/lighting/`, `/cameras/`, plus `/` for home.
-- **Chrome:** left rail (desktop) + bottom tab bar (mobile), both generated from one `NAV`
-  array in `assets/app.js`. Breadcrumbs and page titles come from each view's `data-crumb`.
+- **Structure:** campus-first. Every room is `<campus>/<discipline>/index.html`,
+  hash-routed to its subpages. Campus codes are permanent: **`tea`** = Toronto East,
+  **`tor`** = Toronto. Plus `/` for the launcher and `/playbook/` for the shared layer.
+- **Chrome:** left rail (desktop) + bottom tab bar (mobile), both generated from one
+  `CAMPUS` map and one `NAV` array in `assets/app.js`. **Both filter to the campus you're
+  standing in** — a Toronto East page never shows a Toronto seat. Breadcrumbs and page
+  titles come from each view's `data-crumb`.
 - **Shared:** one stylesheet (`assets/production.css`), one script, no external anything —
   every page opens offline.
 - **Voice:** written for pros who know the craft. Documents *this room*, not the discipline.
-- **Frozen, not in the map:** `/v1/` (retired single-page site, linked from the home footer)
-  and `design/mockup-v2.html`.
+- **Cross-campus linking is forbidden.** Rooms document rooms. A fact shared by both
+  campuses belongs in `/playbook/`, linked from both — and only once it's *proven* shared.
+- **Frozen, not in the map:** `/v1/` (retired single-page site, linked from the launcher
+  footer) and `design/mockup-v2.html`.
+- **Redirect stubs, not in the map:** `/video/`, `/audio/`, `/lighting/` forward to their
+  `tea/` equivalents carrying the hash; `/cameras/` forwards to the launcher.
 
 ---
 
-## Level 0 — Home
+## Level 0 — Launcher
 
 `index.html` · rail label **Home** · `id: home`
 
-- **Hero:** "Elevation Toronto East" → `production` wordmark → *"Every seat in the booth, one
-  reference. Startup, signal flow, and symptom-based fixes for the whole team."*
-- **Quickstart banner:** "Sunday? Start here." → jumps to Video Startup Procedure.
-  ? This points at video only. If Sunday should start somewhere cross-discipline, say so.
-- **Launcher:** four discipline cards, each with a status chip and page count.
-- **Footer:** scaffold explainer + the `/v1/` archive link.
+- **Hero:** "Elevation Canada" → `production` wordmark → *"Every seat in every booth, one
+  reference. Pick your campus, then your desk."*
+- **Quickstart banner:** "Sunday at Toronto East? Start here." → jumps to `tea` Video
+  Startup Procedure.
+  ? This is campus-specific on a cross-campus launcher. Options: leave it (East is the
+  only live room, so it's honest), drop it once Toronto goes live, or make it two banners.
+- **Campus groups:** Toronto East (3 seats) · Toronto (4 seats) · Every Campus (Playbook).
+- **Footer:** scaffold explainer, the no-camera-seat note, and the `/v1/` archive link.
 
-| Card | Tagline | Blurb | Status |
+| Group | Card | Tagline | Status |
 |---|---|---|---|
-| Video Engineering | Switch, route, capture | ATEM, Videohub, graphics computers, Resi — the switched paths and the direct crosspoints. | Live · 10 pages |
-| Audio | Console, patch, monitors | Front of house and broadcast mix, wireless, IEMs, and the Sonifex de-embed paths. | Scaffold · 4 planned |
-| Lighting | Rig, looks, cues | Console startup, the shared-venue rig, service looks, and house light control. | Scaffold · 4 planned |
-| Cameras | Builds, shots, comms | Camera settings and builds, positions and shot language, tally and talkback. | Scaffold · 4 planned |
+| Toronto East | Video Engineering | Switch, route, capture | Live · 10 pages |
+| Toronto East | Audio | Console, patch, monitors | Scaffold · 4 planned |
+| Toronto East | Lighting | Rig, looks, cues | Scaffold · 4 planned |
+| Toronto | Video Engineering | Switch, route, capture | Scaffold · 4 planned |
+| Toronto | Audio | Console, patch, monitors | Scaffold · 4 planned |
+| Toronto | Lighting | Rig, looks, cues | Scaffold · 4 planned |
+| Toronto | Cameras | Builds, shots, comms | Scaffold · 4 planned |
+| Every Campus | The Playbook | How a room gets documented | Live · 4 pages |
 
 ---
 
-## Level 1 — Video Engineering · `/video/` · **LIVE**
+# Campus: Toronto East (`tea`)
+
+Three seats. **No camera seat** — a decision, not a gap.
+
+## Video Engineering · `/tea/video/` · **LIVE**
 
 Hub: `id: video` · h1 **Switch, Route, Capture** · lead *"The permanent install in River's
 master control room. Fire the saved Elevation state, then run the service."*
@@ -98,7 +119,7 @@ Hub also carries the numbered **start-here** banner pointing at Startup Procedur
   - Lane A (switched): ME1 → Makito · ME2 → Lobby · ME3 → Main Screen · ME4 utility/DVE
   - Lane B (direct crosspoint): Resolume → Ground Panels · CG2 → top confidence · Clock Mac → bottom confidence · Resi → DEMBED 1 · CG1 → DEMBED 2
   - Closing note: "is the broken destination Lane A or Lane B?" as the first triage question
-- `linked from:` Audio hub, Cameras hub
+- `linked from:` tea Audio hub, Playbook (page shapes, as the worked reference example)
 
 ### 3. Sunday Run of Show
 - `id:` video-rundown
@@ -123,8 +144,11 @@ Hub also carries the numbered **start-here** banner pointing at Startup Procedur
   - 8 steps: set the count-to → fire at zero, go to time of day → hosting clocks on the
     downbeat (never trim for overrun) → uplink = time of day → SAFE/EXTEND buffer call at
     2:00 → 30-seconds-to-transition → sermon counts up → reset between experiences
-- `notes:` Deliberately campus-agnostic — no room wiring in it. Candidate to promote into
-  the shared playbook layer rather than living under Video forever.
+- `notes:` **Still the top promotion candidate.** Deliberately campus-agnostic — no room
+  wiring in it. Left under Video in the restructure because duplication is the default
+  until a fact is *proven* shared, and Toronto hasn't been captured yet. Add
+  `promote: playbook` here if you want it moved now; the alternative is to wait until
+  Toronto's capture confirms the same standards apply.
 
 ### 5. Diagnose a Symptom
 - `id:` video-diagnostics
@@ -173,14 +197,12 @@ Hub also carries the numbered **start-here** banner pointing at Startup Procedur
 - `contents:` OUT 21 Side Screens · OUT 32–37 Control Room TVs 1–6 · OUT 38 ASUS ProArt (TD1)
 - `notes:` This page shrinks as gaps close. When it's empty, it goes.
 
----
-
-## Level 1 — Audio · `/audio/` · **SCAFFOLD**
+## Audio · `/tea/audio/` · **SCAFFOLD**
 
 Hub: `id: audio` · h1 **Console, Patch, Monitors** · lead *"Front of house, broadcast,
 wireless, and the de-embed paths that hand audio to video."*
-Scaffold note on the hub says what to bring; cross-links to Video Signal Flow for the
-Sonifex de-embeds.
+Scaffold note says what to bring; cross-links to `tea` Video Signal Flow for the Sonifex
+de-embeds.
 
 ### 1. Console Startup
 - `id:` audio-startup *(not yet created)* · `rail:` Console Startup
@@ -206,9 +228,7 @@ Sonifex de-embeds.
 - `shape:` diagnose · `status:` scaffold
 - `contents:` ? top five Sunday failures · "no broadcast audio" links across to Video Lane B
 
----
-
-## Level 1 — Lighting · `/lighting/` · **SCAFFOLD**
+## Lighting · `/tea/lighting/` · **SCAFFOLD**
 
 Hub: `id: lighting` · h1 **Rig, Looks, Cues** · lead *"Console startup, the shared-venue
 rig, and the looks that carry a Sunday."*
@@ -240,68 +260,173 @@ Scaffold note flags the River-vs-Elevation split as the story that matters most 
 
 ---
 
-## Level 1 — Cameras · `/cameras/` · **SCAFFOLD**
+# Campus: Toronto (`tor`)
+
+Four seats, all scaffolds. **Nothing here has been captured** — every hub is a promise of
+structure, not a description of the room. The pages below exist as tiles only.
+
+## Video Engineering · `/tor/video/` · **SCAFFOLD**
+
+Hub: `id: video` · h1 **Switch, Route, Capture** · lead *"The switcher, the router, and
+where every source lands at Toronto."*
+Scaffold note warns that Toronto East's video pages document a different room — read them
+for the *shape* of the answer, never as this room's wiring.
+
+- **Startup Procedure** — `procedure` — Power order, saved-state recall, and the verify pass.
+- **Signal Flow** — `reference` — Which paths run through the switcher, and which never do.
+- **Sunday Run of Show** — `reference` — Expected bus state at each point in the service.
+- **Diagnose a Symptom** — `diagnose` — Symptom-based checklists, worked top to bottom.
+
+## Audio · `/tor/audio/` · **SCAFFOLD**
+
+Hub: `id: audio` · h1 **Console, Patch, Monitors** · lead *"Front of house, broadcast,
+wireless, and the hand-off to video."*
+
+- **Console Startup** — `procedure` — Power order, show file recall, and the first line check.
+- **Patch & Gain** — `reference` — Input list, gain structure, and where every stage source lands.
+- **Wireless & IEMs** — `reference` — Frequencies, battery routine, and mix assignments.
+- **Diagnose a Symptom** — `diagnose` — No FOH, no broadcast, no ears.
+
+## Lighting · `/tor/lighting/` · **SCAFFOLD**
+
+Hub: `id: lighting` · h1 **Rig, Looks, Cues** · lead *"Console startup, the rig, and the
+looks that carry a Sunday."*
+Scaffold note asks whether Toronto shares its venue the way East shares with River.
+
+- **Console Startup** — `procedure` — Power order, show file, and the state you leave behind.
+- **Rig & Patch** — `reference` — What's ours, universes, and fixture addresses.
+- **Looks & Cue Stack** — `reference` — The looks and when to fire them.
+- **Diagnose a Symptom** — `diagnose` — Dark rig, stuck look, house lights.
+
+## Cameras · `/tor/cameras/` · **SCAFFOLD**
 
 Hub: `id: cameras` · h1 **Builds, Shots, Comms** · lead *"Camera settings, positions and
 shot language, tally and talkback."*
-Scaffold note anchors on the existing constraint: Cam 1 is always the ME1 → Makito source.
+Scaffold note flags that East has no camera seat, so this one has no sibling to borrow from.
 
-### 1. Builds & Settings
-- `id:` cameras-builds *(not yet created)* · `rail:` Builds & Settings
-- `card:` Builds & Settings — Per-camera build: lens, paint, frame rate, and SDI return.
-- `shape:` reference · `status:` scaffold
-- `contents:` ? models & counts · per-camera build cards
+- **Builds & Settings** — `reference` — Per-camera build: lens, paint, frame rate, SDI return.
+- **Positions & Shot Sheet** — `reference` — Where each op stands and the shot vocabulary.
+- **Tally & Comms** — `reference` — Tally source, talkback channels, who hears whom.
+- **Diagnose a Symptom** — `diagnose` — No signal, no tally, no comms.
 
-### 2. Positions & Shot Sheet
-- `id:` cameras-positions *(not yet created)* · `rail:` Positions & Shot Sheet
-- `card:` Positions & Shot Sheet — Where each op stands and the shot vocabulary the director calls.
-- `shape:` reference · `status:` scaffold
-- `contents:` ? positions · shot vocabulary as the director calls it
+---
 
-### 3. Tally & Comms
-- `id:` cameras-tally *(not yet created)* · `rail:` Tally & Comms
-- `card:` Tally & Comms — Tally source, talkback channels, and who hears whom.
-- `shape:` reference · `status:` scaffold
-- `contents:` ? tally source · comms channels · who hears whom
+# Every Campus — The Playbook · `/playbook/` · **LIVE**
 
-### 4. Diagnose a Symptom
-- `id:` cameras-diagnostics *(not yet created)* · `rail:` Diagnose a Symptom
-- `card:` Diagnose a Symptom — No signal, no tally, no comms — checklists.
-- `shape:` diagnose · `status:` scaffold
-- `contents:` ? top five failures
+Hub: `id: playbook` · h1 **How a Room Gets Documented** · lead *"The only campus-agnostic
+section on this site."* Hub carries a note describing capture mode: Matt dictates, hands
+over the manuals, a model authors.
+
+### 1. The Three Page Shapes
+- `id:` playbook-shapes · `rail:` The Three Page Shapes
+- `card:` The Three Page Shapes — Procedure, diagnose, reference — and the rule that a page fitting none of them wants splitting.
+- `shape:` reference · `status:` live
+- `contents:` shape-selection table (use it when / ordered by / template) · a section per
+  shape with a worked example linked into `tea/video` · the "tag trick generalizes" note ·
+  when a page fits none of them
+
+### 2. Capture Worksheets
+- `id:` playbook-capture · `rail:` Capture Worksheets
+- `card:` Capture Worksheets — What to ask a room, per discipline. Take these into the booth.
+- `shape:` reference · `status:` live
+- `contents:` "ask for specifics, not summaries" note · six questions every discipline
+  answers first · per-discipline lists for video, audio, lighting, cameras · the
+  not-every-campus-has-every-seat note
+- `notes:` **Weakest page on the site.** The video list is derived from a real documented
+  room; audio, lighting, and cameras are derived from the roadmap's capture lists and have
+  never been road-tested against an actual capture visit. Expect to rewrite after the
+  first audio session.
+
+### 3. Writing Rules
+- `id:` playbook-writing · `rail:` Writing Rules
+- `card:` Writing Rules — The voice: pros not trainees, expand knowledge, never script behaviour.
+- `shape:` reference · `status:` live
+- `contents:` six rules — write for pros · expand knowledge don't script behaviour · lead
+  with the action · no qualifying paragraphs · use the room's vocabulary exactly · mark up
+  consistently (table) · the "readability wins every tie" note
+- `notes:` `docs/MAINTENANCE.md` carries a short form of this list. If the two disagree,
+  this page wins and the doc gets corrected in the same commit.
+
+### 4. Blank-Campus Kit
+- `id:` playbook-newcampus · `rail:` Blank-Campus Kit
+- `card:` Blank-Campus Kit — Scaffold a campus that doesn't exist yet — folders, rows, hubs, done-criteria.
+- `shape:` procedure · `status:` live
+- `contents:` 7 steps — register the campus in `CAMPUS` → create folders → copy a hub per
+  seat → add NAV rows → add the launcher group → verify before capture → capture one seat
+  at a time · "a seat is done when" list · the duplication-is-the-default note
+- `notes:` Not yet run cold. Toronto was scaffolded alongside this page rather than from
+  it, so the kit's real test hasn't happened.
 
 ---
 
 ## Cross-links between pages (the graph, not the tree)
 
-The tree above is navigation. These are the sideways links that make it a reference:
+The tree above is navigation. These are the sideways links that make it a reference.
+All of them stay inside one campus, or point at the Playbook.
 
 | From | To | Why |
 |---|---|---|
-| Home quickstart | Video → Startup Procedure | The Sunday entry point |
-| Video Diagnose (Main Screen) | Video → Input Cross-Points | "if PGM is wrong, go upstream" |
-| Audio hub | Video → Signal Flow | Sonifex de-embeds live on Lane B |
-| Cameras hub | Video → Signal Flow | Cam 1 = ME1 → Makito constraint |
+| Launcher quickstart | tea Video → Startup Procedure | The Sunday entry point |
+| tea Video Diagnose (Main Screen) | tea Video → Input Cross-Points | "if PGM is wrong, go upstream" |
+| tea Audio hub | tea Video → Signal Flow | Sonifex de-embeds live on Lane B |
+| Playbook → Shapes | tea Video → Startup / Diagnose / Outputs / Gaps | The worked examples of each shape |
+| Every `tor` hub | Playbook → Capture Worksheets | What to bring before this room can be written |
 
-? Worth adding, if you agree: Clock Standards ↔ Sunday Run of Show (the run of show says
-what's on the screens, the clock page says what's on the clock at the same moments).
+? Still worth adding, if you agree: Clock Standards ↔ Sunday Run of Show (the run of show
+says what's on the screens, the clock page says what's on the clock at the same moments).
+Carried over unanswered from the last sitemap.
 
 ---
 
-## Levels that don't exist yet
+## For the simplification pass
 
-Planned in `ROADMAP.md`, not built. Included so you can re-map *into* them.
+You said you wanted to look at a simplified structure. Here's where the fat actually is,
+ranked by how much it would simplify:
 
-- **Level 0 becomes a campus launcher.** Paths gain a campus segment —
-  `east/video/`, `<campus2>/video/`. Every discipline above moves down one level;
-  redirects stay behind at the old paths. Blocked on: naming campus 2 and its rooms.
-- **A playbook layer** (`playbook/`) — campus-agnostic: the three page shapes, capture
-  worksheets, the writing rules, the blank-campus kit. Anything genuinely identical across
-  campuses lives here once and both campuses link to it. **Clock Standards is the first
-  real candidate.**
-- **An all-team Sunday page, per campus** — one cross-discipline run of show: who fires
-  what, in order, across all four seats. Possible once a campus has audio + lighting live.
-- **Search and PWA** — quick-jump filter over the page index; offline install for the booth.
+1. **`tea/video` is 10 pages, and four of them are one-table lookups.** M/E Bus Map (4
+   rows), Key Layers (3 rows), Input Cross-Points (6 rows), Output Cross-Points (11 rows).
+   That's four rail entries and four clicks for 24 rows of reference. A single **Routing
+   Reference** page with four tables would cut the video rail by three entries and put
+   every lookup on one scrollable page — which is what someone at the desk actually wants.
+   `merge into:` is the field for this.
+2. **Unverified / Gaps duplicates rows that already exist elsewhere.** The three unfilled
+   outputs are already visible as "not filled in" in Output Cross-Points. The gaps page
+   exists so they're findable — but if the tables merge per (1), it stops earning a page.
+3. **Every scaffold seat plans exactly four pages, and three of the four names repeat
+   across disciplines** (Console Startup / … / Diagnose a Symptom). That symmetry was
+   assumed, not captured. Worth deciding *before* Toronto's capture whether a room really
+   needs four pages, or whether two — Startup + Diagnose, with reference tables folded in
+   — is the honest minimum.
+4. **The launcher now lists 8 cards across 3 groups.** Fine on desktop; on a phone it's a
+   long scroll before the one live room. Options: collapse a campus group by default, put
+   live rooms first regardless of campus, or let the quickstart banner carry more.
+5. **`tor` mirrors `tea`'s page names before anyone has seen the room.** Cheapest fix is
+   to cut `tor` back to hub-only — no planned page tiles — until capture, so the site
+   stops advertising a structure nobody has confirmed.
 
-? If you want a fifth discipline seat (Directing / Show Calling, ProPresenter / Graphics),
-add it here as a block and I'll scaffold it the same way as the other three.
+? Tell me which of these you want and I'll apply them. If you'd rather work top-down,
+just edit the blocks above and I'll reconcile.
+
+---
+
+## Planned but not built
+
+From `ROADMAP.md` — included so you can re-map *into* them.
+
+- **Phase 5 — PWA:** manifest + icons + cache-first service worker, so add-to-home-screen
+  launches full-screen and works offline in the booth.
+- **Phase 5 — Quick-jump search:** client-side filter over the page index, spanning
+  campuses. The index is already the `NAV` array.
+- **Phase 5 — All-team Sunday page, per campus:** one cross-discipline run of show — who
+  fires what, in order, across all four seats. Possible once a campus has audio + lighting.
+- **Phase 5 — Print styles:** a laminated-card `@media print` pass for startup procedures
+  and the capture worksheets.
+- **Shared standards in the Playbook:** beyond the method pages, the genuinely identical
+  facts. Clock Standards is candidate #1; show-calling vocabulary is candidate #2. Neither
+  moves until Toronto's capture confirms it's actually shared.
+- **Off GitHub Pages:** the vault record wants this on something like Cloudflare with a
+  general password, so the site isn't publicly indexed. Not in `ROADMAP.md` yet, not
+  started, and it's a hosting change rather than a structural one.
+
+? If you want a fifth seat (Directing / Show Calling, ProPresenter / Graphics), add it
+here as a block and say which campus — I'll scaffold it from the blank-campus kit.
