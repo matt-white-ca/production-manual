@@ -55,8 +55,10 @@ stylesheet and one JS shell — never a single monolithic file again.
   them; `/cameras/` has no equivalent and lands on the launcher.
 - **`assets/production.css`** — the one shared stylesheet. Content edits never touch it.
 - **`assets/app.js`** — the shared shell: a `CAMPUS` map, a `NAV` array (add a page = one
-  entry here), the rail/tab-bar renderer, the hash router, breadcrumbs, and the
-  light/dark toggle. Content edits touch only the `NAV` array, nothing else in it.
+  entry here), the rail/tab-bar renderer, the hash router, breadcrumbs, the light/dark
+  toggle, and the fuzzy site search (runtime-indexed from the real pages — no index file
+  exists or needs regenerating; symptom accordions rank first and open on arrival).
+  Content edits touch only the `NAV` array, nothing else in it.
 - **`docs/MAINTENANCE.md`** — **read this before touching content.** The content-editing
   contract: what's safe to edit, recipes for common changes, writing rules, verify steps.
 - **`docs/SITEMAP.md`** — the whole site in editable form. Matt edits it; the edits get

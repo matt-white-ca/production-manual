@@ -106,6 +106,23 @@ When its hub has no pending cards left: in `index.html` (launcher), find that ca
 Don't improvise it — follow `playbook/index.html#playbook-newcampus`, which is the
 authoritative seven-step procedure and is kept current with the shell.
 
+## Search (and what it means for content work)
+
+The site has fuzzy search (the magnifier next to the theme switch; `/` or `Cmd+K`).
+It's part of the shell in `assets/app.js` and **indexes the real pages at runtime** —
+the current page from its own DOM, every other page by fetching it. There is **no index
+file to regenerate**: ship a content edit and it's searchable.
+
+Two things content authors should know:
+
+- **Symptom summaries are the search surface.** Every `details.symptom` is indexed as
+  its own result and ranked above whole pages, and a hit opens that exact accordion.
+  Phrase the `<summary>` the way an operator would say the problem out loud — that was
+  already the writing rule; search is now the reason it pays.
+- **Results are campus-scoped** like the rail: standing in a room you get that campus
+  plus the playbook, never another campus's wiring. From the launcher, everything,
+  labelled by campus. Nothing to do per page — scoping comes from the NAV entry.
+
 ## Writing rules (goal 2 of the site)
 
 These are the short form. The full version, with worked examples, is a real page on the
@@ -140,6 +157,9 @@ python3 -m http.server 8000   # from the repo root
    no external resources may have crept in (offline requirement).
 6. Confirm the old-path redirect stubs still work: `/video/`, `/audio/`, `/lighting/`
    land on their `tea/` equivalents; `/cameras/` lands on the launcher.
+7. If you added or renamed content: press `/`, type a phrase from it (a symptom the way
+   an operator would say it), and confirm the result lands — a symptom hit must open
+   and highlight its accordion.
 7. If anything fails and the fix isn't obvious from this file: revert, report, stop.
 
 Then: commit + push to `main` **only when Matt asks** (that's what publishes it).

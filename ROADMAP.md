@@ -71,6 +71,15 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 | Campus scoping is enforced, not just conventional | The rail and tab bar are filtered to the campus on `<html data-campus>`; rooms never link across campuses. Anything genuinely shared lives in `playbook/` and both campuses link there. | The blast-radius argument that split disciplines into separate files, applied one level up. An operator stands at exactly one desk, at exactly one campus. |
 | Clock Standards stays under `tea/video/` for now | Flagged in the sitemap as the first playbook-promotion candidate, but **not** promoted in this pass. | "Duplication is the default until proven shared" — one campus's clock standards aren't yet evidence of a shared standard. The call is Matt's, during the sitemap simplification pass. |
 
+## Design decisions added 2026-08-25 (search)
+
+| Decision | Choice | Why |
+|---|---|---|
+| Search ships, diagnose-first | Fuzzy site search in the shell (`/` or `Cmd+K`, magnifier button injected by `app.js`). Symptom accordions are indexed **individually**, boosted above whole pages, and a hit opens + highlights the exact accordion. | Matt, 2026-08-25: the diagnose pages are the most valuable part of the site and need pushing forward — a volunteer types "resolume black screen" and lands inside the right checklist. |
+| Runtime index, not a static one | The Phase-5 sketch ("static index in the NAV array") was dropped. The current page is indexed from its own DOM; every other page is fetched and DOM-parsed when search first opens. No build step, no index file, nothing external — on `file://` it degrades to current-page-only. | An index that must be regenerated **will** drift from hand-authored HTML. Fetching the real pages means a content push is searchable the moment Pages deploys, and the maintenance contract ("content edits touch HTML only") survives untouched. |
+| Search respects campus scoping | Standing in a room, results cover that campus + the playbook only; the launcher searches everything, labelled by campus. Same filter as the rail. | The no-cross-campus rule exists so an operator never follows another room's wiring — search must not become the back door around it. |
+| Fuzzy = token-level tolerance, no library | Per-word exact/prefix/substring/one-typo matching with field weights (title ×3) and kind boosts (symptom ×1.6), grammatical stopwords dropped ("no"/"down"/"wrong" kept — they carry symptom meaning here). ~80 lines, dependency-free. | Volunteers type fast and inexactly; a full search library would be the site's first dependency for a corpus of a few dozen documents. |
+
 ## Design decisions added 2026-07-14 (readability pass)
 
 | Decision | Choice | Why |
@@ -243,8 +252,9 @@ Ran *before* Phase 3. Structure is done; the capture visits are not.
 - **PWA:** `manifest.webmanifest` + icons + a minimal cache-first service worker →
   add-to-home-screen launches full-screen and **works fully offline in the booth**.
   The biggest remaining "platform-first" win; restores the offline guarantee.
-- **Quick-jump search:** client-side filter over a static page index (title + keywords
-  per view), spanning campuses. No dependencies; the index lives in the `NAV` array.
+- ~~**Quick-jump search**~~ — **✅ SHIPPED 2026-08-25**, upgraded from the sketch: fuzzy,
+  diagnose-first, runtime-indexed from the real pages instead of a static index (see the
+  2026-08-25 design-decisions table).
 - **All-team Sunday page, per campus:** one cross-discipline run-of-show — who fires
   what, in order, across all four seats. Possible once a campus has audio + lighting live.
 - **Print styles:** a laminated-card `@media print` pass for startup procedures and the
