@@ -30,12 +30,81 @@
     <div class="page-card"><b>Console Startup</b><span>Power order, show file recall, and the first line check.</span></div>
     <div class="page-card"><b>Patch &amp; Gain</b><span>Input list, gain structure, and where every stage source lands.</span></div>
     <div class="page-card"><b>Wireless &amp; IEMs</b><span>Frequencies, battery routine, and mix assignments.</span></div>
-    <div class="page-card"><b>Diagnose a Symptom</b><span>No FOH, no broadcast, no ears — symptom-based checklists.</span></div>
+    <a class="page-card" href="#audio-click"><b>Click System</b><span>The stage A/B switch and both legs feeding it — Ableton and the Resi click.</span></a>
+    <a class="page-card" href="#audio-diagnostics"><b>Diagnose a Symptom</b><span>No head-amp control, popping after a restart — symptom-based checklists.</span></a>
   </div>
 
   <div class="scaffold-note">
-    <b>Scaffold — nothing in this room is documented yet.</b> Start with the console model and its show file — everything else hangs off that. The capture worksheet for this seat lives in <a href="../../playbook/index.html#playbook-capture">the Playbook</a>; bring the answers and the room's reference manuals, and the pages get authored from them.
+    <b>Scaffold — partially captured.</b> Click System and Diagnose a Symptom are real; console startup, patch, and wireless still need their capture pass. The worksheet for this seat lives in <a href="../../playbook/index.html#playbook-capture">the Playbook</a>; bring the answers and the room's reference manuals, and the remaining pages get authored from them.
   </div>
+</section>
+
+<!-- ══════════════════════════════ CLICK SYSTEM ════════════════════════ -->
+<section class="view" id="audio-click" data-disc="audio" data-crumb="Audio / Click System">
+  <h1>Click System</h1>
+  <p class="lead">The band mixes exactly one click channel. Which click is on it is decided at the A/B switch on stage — this is the whole path, both legs.</p>
+
+  <p>The switch is an XLR A/B switch living with the drummer at the Ableton station. Its output goes into the sub-snake on the line labelled <span class="mono">CLICK</span>, and that is the only click the band ever sees — everything upstream of the switch is invisible to them.</p>
+
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Leg</th><th>Source</th><th>Path</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>A</b></td><td>Ableton click</td><td>Ableton → PlayAUDIO <span class="mono">OUT 9</span> → ¼″ TRS breakout down to the rack → XLR back up the snake → switch input A</td></tr>
+        <tr><td class="mono"><b>B</b></td><td>Resi click (Uplink)</td><td>Resi feed → console → D2-Rack 2 <span class="mono">OUT 11</span> direct out → snake 2 line 11, reversed with gender benders → switch input B</td></tr>
+        <tr><td class="mono"><b>OUT</b></td><td>Selected click</td><td>Switch → sub-snake <span class="mono">CLICK</span> line → console → the band's click channel</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note"><b>Leg A — why the loop.</b> <span class="mono">OUT 9</span> is where click is mapped in every Ableton session. The PlayAUDIO's ¼″ TRS breakout runs down to the same point the track feeds enter the D2-Rack — then channel 9 alone turns around and rides back up the snake on its own XLR, so it lands physically at the switch.</div>
+
+  <div class="note"><b>Leg B — the gender-bender shenanigans.</b> The sub-snakes have no output lines, so one input line is sacrificed: snake 2 line 11 is reversed with a gender bender at each end. At the rack end, D2-Rack 2 <span class="mono">OUT 11</span> — the Resi click direct out — feeds it; at the stage end, another gender bender and an XLR into switch input B. This is the part that looks wrong when you stare at the patch: it's supposed to look like that.</div>
+
+  <div class="note">Snake 2 line 11 corresponds to D2-Rack 1 <span class="mono">IN 23</span> — that's the input given up to make the return.</div>
+
+  <nav class="page-nav">
+    <a href="#audio">‹ Audio overview</a>
+    <a href="#audio-diagnostics">Diagnose a Symptom ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ DIAGNOSTICS ═════════════════════════ -->
+<section class="view" id="audio-diagnostics" data-disc="audio" data-crumb="Audio / Diagnose">
+  <h1>Diagnose a Symptom</h1>
+  <p class="lead">Open the symptom that matches what you're hearing. Each checklist is worked top to bottom in order.</p>
+
+  <details class="symptom" open>
+    <summary>Inputs way down, gain does nothing — no head-amp control on the D2-Racks</summary>
+    <div class="body">
+      <div class="path">SD9 → network → D2-Rack 1 &amp; 2 head amps</div>
+      <ol>
+        <li><b>Prove it fast with tracks</b> — run tracks from Ableton. They land on the first inputs of the patch, so they're a constant, hands-free test signal. Spin the gain on one of those channels: if the level doesn't move, you've lost head-amp control.</li>
+        <li><b>Don't diagnose from the ears</b> — IEM channels sit at unity and barely feel this failure; they keep passing audio. It's the inputs, stuck at whatever gain they were left at (−6 or thereabouts), that give it away.</li>
+        <li><b>Don't reach for digital trim</b> — it boosts the signal, but it goes fizzy and weird because there's no real gain underneath it. That fizz is itself confirmation of this diagnosis.</li>
+        <li><b>Power everything down</b> — both D2-Racks <i>and</i> the SD9. Wait <b>10 minutes</b>: the caps have to fully discharge or the stale state survives the restart.</li>
+        <li><b>Racks up first</b> — power on both racks and give them at least two minutes to stabilise and find their internal clock.</li>
+        <li><b>Console last</b> — power on the SD9. Racks before console, always. Then re-check gain on the Ableton channels.</li>
+      </ol>
+      <div class="note"><b>Why this happens:</b> an abnormal console shutdown leaves the racks looking for an SD9 session that no longer exists on the network, so head-amp control never re-attaches until everything cold-starts.</div>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Lots of popping after a system restart</summary>
+    <div class="body">
+      <div class="path">SuperRack / SoundGrid master clock</div>
+      <ol>
+        <li><b>It's clocking, not cabling</b> — after a restart SuperRack's master clock defaults to whatever SoundGrid device is up on the network, usually the DiGiGrid MGB. The MGB references the console, which creates a clock loop — the slip is the popping you hear.</li>
+        <li><b>Fix it in SuperRack</b> — Setup tab → Inventory → I/O Devices → set <b>Master</b> to the <b>DiGiCo SD I/O (64-channel)</b>.</li>
+      </ol>
+    </div>
+  </details>
+
+  <nav class="page-nav">
+    <a href="#audio-click">‹ Click System</a>
+    <a href="#audio">Audio overview ›</a>
+  </nav>
 </section>
 </main>
 </div>

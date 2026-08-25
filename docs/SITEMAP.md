@@ -1,7 +1,8 @@
 # SITEMAP.md — the site as it stands, in editable form
 
 **Regenerated 2026-07-26** against `main` @ `a68feee`, after the campus-first restructure
-and the Playbook shipped. This is a working document: edit it freely and hand it back,
+and the Playbook shipped. **Updated 2026-08-25** with the first Toronto capture pass —
+Resolume, the click system, and both rooms' opening diagnostics. This is a working document: edit it freely and hand it back,
 and the edits get applied to the real site.
 
 ---
@@ -262,30 +263,80 @@ Scaffold note flags the River-vs-Elevation split as the story that matters most 
 
 # Campus: Toronto (`tor`)
 
-Four seats, all scaffolds. **Nothing here has been captured** — every hub is a promise of
-structure, not a description of the room. The pages below exist as tiles only.
+Four seats. Video and audio are **partially captured** (2026-08-25 brain-dump pass:
+Resolume, the click system, and the first diagnostics); lighting and cameras are still
+tiles only.
 
-## Video Engineering · `/tor/video/` · **SCAFFOLD**
+## Video Engineering · `/tor/video/` · **SCAFFOLD (partial)**
 
 Hub: `id: video` · h1 **Switch, Route, Capture** · lead *"The switcher, the router, and
 where every source lands at Toronto."*
 Scaffold note warns that Toronto East's video pages document a different room — read them
 for the *shape* of the answer, never as this room's wiring.
 
-- **Startup Procedure** — `procedure` — Power order, saved-state recall, and the verify pass.
-- **Signal Flow** — `reference` — Which paths run through the switcher, and which never do.
-- **Sunday Run of Show** — `reference` — Expected bus state at each point in the service.
-- **Diagnose a Symptom** — `diagnose` — Symptom-based checklists, worked top to bottom.
+- **Startup Procedure** — `procedure` — Power order, saved-state recall, and the verify pass. — `status:` scaffold
 
-## Audio · `/tor/audio/` · **SCAFFOLD**
+- **Signal Flow** — `reference` — Which paths run through the switcher, and which never do. — `status:` scaffold
+
+- **Sunday Run of Show** — `reference` — Expected bus state at each point in the service. — `status:` scaffold
+
+### 4. Resolume Comp Map
+- `id:` video-resolume · `rail:` Resolume Comp Map
+- `card:` Resolume Comp Map — The group stack — OUT RESO, FLOW, the LOOK groups — plus the DeckLink I/O.
+- `shape:` reference · `status:` live
+- `contents:` group stack table (OUT RESO 1 green → Main Screen / switcher "Reso 2" / ME1
+  background; OUT RESO 2 → Side Screen full 16:9 / switcher "Reso 1"; FLOW = 4 router-clip
+  layers carrying LOOK 1–4; RESO 3–5 spare/collapsed; LOOK 1–4 three layers each) · the
+  look → flow → out logic · names-cross-at-the-switcher note · DeckLink table (SDI 1 in ·
+  SDI 2 open · SDI 3 Main out, centre 4:1 crop · SDI 4 Side out, full 16:9; rear runs 1→4
+  right to left) · house standards (NDI alpha pre-multiplied · 1920×1080 · carried-over
+  edits from years of save-as)
+
+### 5. Resolume Timecode & MIDI
+- `id:` video-resolume-control · `rail:` Resolume Timecode & MIDI
+- `card:` Resolume Timecode & MIDI — SMPTE on a countdown clip, and mapping or fixing controls on the MIDI surface.
+- `shape:` procedure · `status:` live
+- `contents:` timecode: Arena Prefs → Audio, Scarlett 2i2 in + an output set too, SMPTE
+  timecode input 1 = Input 1, clip transport Timeline → SMPTE · MIDI: Shift+M shortcuts
+  layer, CC numbers, click-tile-touch-control assignment, range limits and abs/rel mode
+
+### 6. Diagnose a Symptom
+- `id:` video-diagnostics · `rail:` Diagnose a Symptom
+- `card:` Diagnose a Symptom — Nothing on screen, stray effects, dead controller — symptom-based checklists.
+- `shape:` diagnose · `status:` live
+- `contents:` visual dragged in but not on screen (group → masters → mislabelled Pixel
+  Bars fader → layers 27–28) · cropped/shifted/stray effect (FLOW router clip · width/height)
+  · NDI lyrics not keying (pre-multiplied alpha) · countdown ignores timecode · MIDI surface
+  dead or mislabelled (foreign comp after special events)
+
+## Audio · `/tor/audio/` · **SCAFFOLD (partial)**
 
 Hub: `id: audio` · h1 **Console, Patch, Monitors** · lead *"Front of house, broadcast,
 wireless, and the hand-off to video."*
 
-- **Console Startup** — `procedure` — Power order, show file recall, and the first line check.
-- **Patch & Gain** — `reference` — Input list, gain structure, and where every stage source lands.
-- **Wireless & IEMs** — `reference` — Frequencies, battery routine, and mix assignments.
-- **Diagnose a Symptom** — `diagnose` — No FOH, no broadcast, no ears.
+- **Console Startup** — `procedure` — Power order, show file recall, and the first line check. — `status:` scaffold
+
+- **Patch & Gain** — `reference` — Input list, gain structure, and where every stage source lands. — `status:` scaffold
+
+- **Wireless & IEMs** — `reference` — Frequencies, battery routine, and mix assignments. — `status:` scaffold
+
+### 4. Click System
+- `id:` audio-click · `rail:` Click System
+- `card:` Click System — The stage A/B switch and both legs feeding it — Ableton and the Resi click.
+- `shape:` reference · `status:` live
+- `contents:` A/B XLR switch at the drummer's Ableton station · leg A: Ableton → PlayAUDIO
+  OUT 9 → ¼″ breakout → XLR back up the snake · leg B: Resi click → console → D2-Rack 2
+  OUT 11 direct out → snake 2 line 11 reversed with gender benders · out: sub-snake CLICK
+  line → the band's one click channel · snake 2 line 11 = D2-Rack 1 IN 23, the input given up
+
+### 5. Diagnose a Symptom
+- `id:` audio-diagnostics · `rail:` Diagnose a Symptom
+- `card:` Diagnose a Symptom — No head-amp control, popping after a restart — symptom-based checklists.
+- `shape:` diagnose · `status:` live
+- `contents:` no head-amp control on the D2-Racks (prove with Ableton tracks · ears sit at
+  unity, not evidence · digital trim goes fizzy · full cold-start: racks + SD9 off 10 min,
+  racks up 2 min, console last) · popping after restart (SuperRack master clock defaults to
+  MGB → set DiGiCo SD I/O 64-channel)
 
 ## Lighting · `/tor/lighting/` · **SCAFFOLD**
 

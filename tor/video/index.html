@@ -30,12 +30,214 @@
     <div class="page-card"><b>Startup Procedure</b><span>Power order, saved-state recall, and the verify pass.</span></div>
     <div class="page-card"><b>Signal Flow</b><span>Which paths run through the switcher, and which never do.</span></div>
     <div class="page-card"><b>Sunday Run of Show</b><span>Expected bus state at each point in the service.</span></div>
-    <div class="page-card"><b>Diagnose a Symptom</b><span>Symptom-based checklists, worked top to bottom.</span></div>
+    <a class="page-card" href="#video-resolume"><b>Resolume Comp Map</b><span>The group stack — OUT RESO, FLOW, the LOOK groups — plus the DeckLink I/O.</span></a>
+    <a class="page-card" href="#video-resolume-control"><b>Resolume Timecode &amp; MIDI</b><span>SMPTE on a countdown clip, and mapping or fixing controls on the MIDI surface.</span></a>
+    <a class="page-card" href="#video-diagnostics"><b>Diagnose a Symptom</b><span>Nothing on screen, stray effects, dead controller — symptom-based checklists.</span></a>
   </div>
 
   <div class="scaffold-note">
-    <b>Scaffold — nothing in this room is documented yet.</b> Toronto East's video pages document a different room — read them for the <i>shape</i> of the answer, never as this room's wiring. The capture worksheet for this seat lives in <a href="../../playbook/index.html#playbook-capture">the Playbook</a>; bring the answers and the room's reference manuals, and the pages get authored from them.
+    <b>Scaffold — partially captured.</b> The Resolume pages and Diagnose a Symptom are real; startup, signal flow, and the run of show still need their capture pass. Toronto East's video pages document a different room — read them for the <i>shape</i> of the answer, never as this room's wiring. The worksheet for this seat lives in <a href="../../playbook/index.html#playbook-capture">the Playbook</a>.
   </div>
+</section>
+
+<!-- ═══════════════════════════ RESOLUME COMP MAP ══════════════════════ -->
+<section class="view" id="video-resolume" data-disc="video" data-crumb="Video Engineering / Resolume Comp Map">
+  <h1>Resolume Comp Map</h1>
+  <p class="lead">How the Toronto comp is put together, top of the stack to the bottom. When something isn't where it should be, trace this order.</p>
+
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Group</th><th>Layers</th><th>Feeds</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>OUT RESO 1</b> <span class="dim">(green)</span></td><td>1 Visuals · 2 Alpha Lyrics · 3 Lyrics Blend · 4 Float · 27–28 unlabelled, special effects</td><td>"Main Screen" in Advanced Output → main centre screen. Lands at the switcher as <span class="mono">Reso 2</span> — the background layer on ME1</td></tr>
+        <tr><td class="mono"><b>OUT RESO 2</b></td><td>Side-screen program</td><td>"Side Screen" in Advanced Output, full 16:9. Lands at the switcher as <span class="mono">Reso 1</span></td></tr>
+        <tr><td class="mono"><b>FLOW</b></td><td>4 layers of router clips — layer 1 carries LOOK 1's output, layer 2 LOOK 2's, and so on</td><td>One tile at a time onto layer 1 of <span class="mono">OUT RESO 1</span> / <span class="mono">2</span></td></tr>
+        <tr><td class="mono">RESO 3 · 4 · 5</td><td class="dim">Spare 16:9 output groups</td><td class="dim">Not in use — usually collapsed</td></tr>
+        <tr><td class="mono"><b>LOOK 1–4</b></td><td>Three layers each (<span class="mono">1.1 / 1.2 / 1.3</span> …) where a look's visuals are combined</td><td>Summed into its own FLOW layer</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The logic: a look is built in a LOOK group, shows up as one tile on its FLOW layer, and FLOW is what puts a single tile onto layer 1 of an OUT RESO group. The FLOW router clips take transforms and effects like any other clip — which is exactly where surprise treatment hides.</p>
+
+  <div class="note"><b>The names cross at the switcher.</b> <span class="mono">OUT RESO 1</span> arrives at the switcher as <span class="mono">Reso 2</span>, and <span class="mono">OUT RESO 2</span> arrives as <span class="mono">Reso 1</span>. Don't let the labels steer a trace wrong.</div>
+
+  <div class="twrap">
+    <table>
+      <thead><tr><th>DeckLink</th><th>Carries</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">SDI 1</td><td>Video input into the system</td></tr>
+        <tr><td class="mono">SDI 2</td><td class="dim">Open</td></tr>
+        <tr><td class="mono">SDI 3</td><td>Main Screen out (<span class="mono">OUT RESO 1</span> — centre 4:1 crop)</td></tr>
+        <tr><td class="mono">SDI 4</td><td>Side Screen out (<span class="mono">OUT RESO 2</span> — full 16:9)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">Looking at the rear of the DeckLink, the connectors run <span class="mono">1 → 4</span> right to left.</div>
+
+  <div class="note"><b>House standards worth re-checking:</b> any NDI lyrics input (Resolume or ProPresenter) — receive format Auto is fine, but Alpha type is always <b>Pre-multiplied</b>. Standard resolution is <span class="mono">1920 × 1080</span> — this comp has been opened, edited, and saved-as for years, so a copied clip can carry an old width/height edit forward without anyone noticing it's there.</div>
+
+  <nav class="page-nav">
+    <a href="#video">‹ Video overview</a>
+    <a href="#video-resolume-control">Resolume Timecode &amp; MIDI ›</a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════ RESOLUME TIMECODE & MIDI ═══════════════════ -->
+<section class="view" id="video-resolume-control" data-disc="video" data-crumb="Video Engineering / Resolume Timecode &amp; MIDI">
+  <h1>Resolume Timecode &amp; MIDI</h1>
+  <p class="lead">Two setups that break the same way — a countdown that should chase timecode, and a MIDI surface that should be moving the comp.</p>
+
+  <p><b>Timecode.</b> Any countdown clip that should follow timecode needs the clip and the audio device both configured:</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Point Arena at the Timecode Interface</h3>
+        <div class="where">Arena Preferences → Audio</div>
+        <ol>
+          <li>Set the input device to the <b>Scarlett 2i2</b> — the standard device.</li>
+          <li>Set an output device at the same time — Resolume wants both set, or the fields grey out.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Assign the SMPTE Input</h3>
+        <div class="where">Bottom of the same Audio pane</div>
+        <ol>
+          <li>Set <b>SMPTE timecode input 1</b> to <span class="mono">Input 1</span>. Input 2 can be assigned as well.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Set the Clip to SMPTE Transport</h3>
+        <div class="where">The countdown clip's transport controls</div>
+        <ol>
+          <li>Change the clip's transport mode from <b>Timeline</b> to <b>SMPTE</b>.</li>
+        </ol>
+        <div class="note">If SMPTE isn't offered on the clip, the timecode device isn't configured — go back to step 1.</div>
+      </div>
+    </div>
+  </div>
+
+  <p><b>MIDI mapping.</b> When a control needs to move — or the surface isn't doing what its labels say — this is the loop:</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Open the MIDI Shortcuts Layer</h3>
+        <div class="where">Resolume · <span class="btnkey">SHIFT</span> <span class="btnkey">M</span></div>
+        <ol>
+          <li>The whole interface lights up in tiles — every mappable parameter. Mapped ones show a <b>CC number</b>: that number is the control on the surface.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Assign or Re-Assign a Control</h3>
+        <div class="where">Still in the shortcuts layer</div>
+        <ol>
+          <li>Click the green tile for the parameter, then touch the control on the surface — the tile takes that control's number.</li>
+          <li>Faders and knobs track their value; a button maps as on/off with no adjustment.</li>
+        </ol>
+        <div class="note"><b>Example:</b> to give a song a bump, find the Boing button on the Liquid Soul plug-in of the clip you'll be touching and map it to a spare control.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Set Limits and Mode on a Mapped Control</h3>
+        <div class="where">Click an already-mapped element for its extra controls</div>
+        <ol>
+          <li>Set a range for a value — e.g. clamp transition speed between <span class="mono">0.5</span> and <span class="mono">3</span> so the fader can never leave that window.</li>
+          <li>Switch the control between <b>absolute</b> and <b>relative</b> if the pickup behaviour needs it.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#video-resolume">‹ Resolume Comp Map</a>
+    <a href="#video-diagnostics">Diagnose a Symptom ›</a>
+  </nav>
+</section>
+
+<!-- ══════════════════════════════ DIAGNOSTICS ═════════════════════════ -->
+<section class="view" id="video-diagnostics" data-disc="video" data-crumb="Video Engineering / Diagnose">
+  <h1>Diagnose a Symptom</h1>
+  <p class="lead">Open the symptom that matches what you're seeing. All Resolume so far — each checklist is worked top to bottom in order.</p>
+
+  <details class="symptom" open>
+    <summary>Dragged a visual in — nothing on the main screen</summary>
+    <div class="body">
+      <div class="path">LOOK group → FLOW router → OUT RESO 1 layer 1 → Main Screen (SDI 3)</div>
+      <ol>
+        <li><b>Right group?</b> Confirm the clip is in the LOOK group that FLOW is currently showing — trace the <a href="#video-resolume">comp map</a> top to bottom.</li>
+        <li><b>Masters on OUT RESO 1</b> — visuals are layer 1, lyrics are layers 2–3; the group master and any of those layer masters can be sitting down.</li>
+        <li><b>The surface can lie</b> — the controller fader labelled Pixel Bars is an old carryover and actually rides OUT RESO 2, so a mislabelled fader left down can take out something you didn't touch.</li>
+        <li><b>Layers 27–28</b> — the unlabelled special-effect layers at the top of OUT RESO 1 aren't predictable; check nothing is parked there over program.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>On screen, but cropped, shifted, or carrying an effect you didn't add</summary>
+    <div class="body">
+      <div class="path">FLOW router clip → OUT RESO layer 1</div>
+      <ol>
+        <li><b>Check the FLOW router clip</b> for the active look — router clips take transforms and effects like any other clip, and leftover treatment hides there.</li>
+        <li><b>Check width/height</b> — <span class="mono">1920 × 1080</span> is standard. The comp gets copied and saved-over continuously, and a clip pasted from a special-event comp carries its old resolution edits with it.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>NDI lyrics not keying cleanly over visuals</summary>
+    <div class="body">
+      <div class="path">ProPresenter / Resolume NDI → OUT RESO 1 layers 2–3</div>
+      <ol>
+        <li><b>Check the NDI source's Alpha type</b> — it must be <b>Pre-multiplied</b>, always. Receive format Auto is fine.</li>
+        <li><b>Confirm which lyrics layer is up</b> — Alpha Lyrics is layer 2, Lyrics Blend is layer 3 on OUT RESO 1.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>Countdown ignores timecode — or SMPTE won't assign on the clip</summary>
+    <div class="body">
+      <div class="path">Scarlett 2i2 → Arena Audio preferences → clip SMPTE transport</div>
+      <ol>
+        <li><b>SMPTE not offered on the clip?</b> That's the tell that the timecode device isn't configured — set it up per <a href="#video-resolume-control">Timecode &amp; MIDI</a>.</li>
+        <li><b>Check the Audio pane</b> — input device Scarlett 2i2, an output device also set (the fields grey out without one), SMPTE timecode input 1 on <span class="mono">Input 1</span>.</li>
+        <li><b>Check the clip's transport</b> — it must be on SMPTE, not Timeline.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="symptom">
+    <summary>MIDI surface does nothing — or not what its labels say</summary>
+    <div class="body">
+      <div class="path">MIDI surface → CC map → comp</div>
+      <ol>
+        <li><b>Suspect the comp, not the surface</b> — this usually follows a special event (Christmas, Easter) when a composition loaded from somewhere else arrives with foreign mappings, or none.</li>
+        <li><b>Press <span class="btnkey">SHIFT</span> <span class="btnkey">M</span></b> — mapped parameters show their CC numbers. Re-assign anything wrong: click the tile, touch the control. Full loop on <a href="#video-resolume-control">Timecode &amp; MIDI</a>.</li>
+        <li><b>Control moves but behaves oddly?</b> Click the mapped element and check its range limits and absolute/relative mode.</li>
+      </ol>
+    </div>
+  </details>
+
+  <nav class="page-nav">
+    <a href="#video-resolume-control">‹ Resolume Timecode &amp; MIDI</a>
+    <a href="#video">Video overview ›</a>
+  </nav>
 </section>
 </main>
 </div>

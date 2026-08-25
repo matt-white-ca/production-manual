@@ -43,7 +43,10 @@ stylesheet and one JS shell — never a single monolithic file again.
   subpages and what to bring. **Toronto East has no camera seat** — a decision
   (2026-07-26), not a gap. Don't create one.
 - **`tor/video/`, `tor/audio/`, `tor/lighting/`, `tor/cameras/`** — Toronto scaffolds.
-  Nothing captured yet.
+  First capture pass landed 2026-08-25: `tor/video/` has real Resolume pages (comp map,
+  timecode & MIDI, diagnostics) and `tor/audio/` has the click system and its first
+  diagnostics (DiGiCo SD9 + D2-Rack head-amp recovery, SuperRack clocking). Lighting and
+  cameras still empty.
 - **`playbook/index.html`** — the campus-agnostic layer and the only shared content
   section: the three page shapes, capture worksheets, writing rules, blank-campus kit.
   **`#playbook-newcampus` is the authoritative procedure for adding a campus.**

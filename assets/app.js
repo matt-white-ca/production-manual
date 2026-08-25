@@ -104,13 +104,16 @@
     { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Startup Procedure", pending: true },
     { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Signal Flow", pending: true },
     { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Sunday Run of Show", pending: true },
-    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video", label: "Diagnose a Symptom", pending: true },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video-resolume", label: "Resolume Comp Map" },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video-resolume-control", label: "Resolume Timecode & MIDI" },
+    { campus: "tor", disc: "video", file: "tor/video/index.html", hash: "video-diagnostics", label: "Diagnose a Symptom" },
 
     { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Overview" },
     { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Console Startup", pending: true },
     { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Patch & Gain", pending: true },
     { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Wireless & IEMs", pending: true },
-    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio", label: "Diagnose a Symptom", pending: true },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio-click", label: "Click System" },
+    { campus: "tor", disc: "audio", file: "tor/audio/index.html", hash: "audio-diagnostics", label: "Diagnose a Symptom" },
 
     { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Overview" },
     { campus: "tor", disc: "lighting", file: "tor/lighting/index.html", hash: "lighting", label: "Console Startup", pending: true },
