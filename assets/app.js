@@ -36,10 +36,12 @@
     CURRENT_DISC + "/index.html";
 
   /* CAMPUS — add a campus by adding one entry here (plus its folders and
-     NAV rows). `discs` is the campus's real seat list, in rail order. */
+     NAV rows). `discs` is the campus's real seat list, in rail order —
+     main-room seats first, then perimeter rooms (eKidz etc.), whose NAV
+     rows carry `section: "Perimeter"`. */
   var CAMPUS = {
     tea: { label: "Toronto East", short: "East", discs: ["video", "audio", "lighting"] },
-    tor: { label: "Toronto", short: "Toronto", discs: ["video", "audio", "lighting", "cameras"] }
+    tor: { label: "Toronto", short: "Toronto", discs: ["video", "audio", "lighting", "cameras", "ekidz"] }
   };
 
   var HUB_HASH = {
@@ -48,7 +50,8 @@
     video: "video",
     audio: "audio",
     lighting: "lighting",
-    cameras: "cameras"
+    cameras: "cameras",
+    ekidz: "ekidz"
   };
 
   var DISC_LABEL = {
@@ -56,7 +59,8 @@
     video: "Video Engineering",
     audio: "Audio",
     lighting: "Lighting",
-    cameras: "Cameras"
+    cameras: "Cameras",
+    ekidz: "eKidz Elementary"
   };
 
   /* Bottom tab bar has room for one word; everything else derives from
@@ -68,7 +72,9 @@
      you want it to appear in the rail. `pending: true` renders it dimmed
      and points it at the discipline hub — flip to a real hash once the
      page exists. Rows with no `campus` are platform-level (home, playbook)
-     and show on every campus. */
+     and show on every campus. A `section` field puts a seat under a rail
+     heading — "Perimeter" for rooms outside the main auditorium. Keep a
+     section's rows together, after the main-room seats. */
   var NAV = [
     { disc: "home", file: "index.html", hash: "home", label: "Home" },
 
@@ -127,6 +133,10 @@
     { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Tally & Comms", pending: true },
     { campus: "tor", disc: "cameras", file: "tor/cameras/index.html", hash: "cameras", label: "Diagnose a Symptom", pending: true },
 
+    /* ---- Toronto · Perimeter --------------------------------------- */
+    { campus: "tor", section: "Perimeter", disc: "ekidz", file: "tor/ekidz/index.html", hash: "ekidz", label: "Overview" },
+    { campus: "tor", section: "Perimeter", disc: "ekidz", file: "tor/ekidz/index.html", hash: "ekidz-startup", label: "Video Startup" },
+
     /* ---- Platform-level (no campus) --------------------------------- */
     { disc: "playbook", file: "playbook/index.html", hash: "playbook", label: "Overview" },
     { disc: "playbook", file: "playbook/index.html", hash: "playbook-shapes", label: "The Three Page Shapes" },
@@ -141,6 +151,7 @@
     audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v4M4 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM4 6v2M12 16v2M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM12 6v0M20 12v6M20 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
     lighting: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.6 1 2.5h6c0-.9.2-1.8 1-2.5A6 6 0 0 0 12 3Z"/></svg>',
     cameras: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    ekidz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="11" rx="1.5"/><path d="M2 20h20M6 20v-2.5M18 20v-2.5"/></svg>',
     playbook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5Z"/></svg>'
   };
 
@@ -165,10 +176,12 @@
 
     var groups = [];
     var byDisc = {};
+    var sectionOf = {};
     NAV.filter(inScope).forEach(function (item) {
       if (!byDisc[item.disc]) {
         byDisc[item.disc] = [];
         groups.push(item.disc);
+        sectionOf[item.disc] = item.section || "";
       }
       byDisc[item.disc].push(item);
     });
@@ -177,7 +190,16 @@
     var html = '<a class="wordmark-sm" href="' + DEPTH + 'index.html">' + LOGOMARK + "production</a>" +
       '<a class="campus" href="' + DEPTH + 'index.html#home">' + campusLabel + "</a><hr class=\"rail-rule\"><nav>";
 
+    var section = "";
     groups.forEach(function (disc) {
+      if (sectionOf[disc] !== section) {
+        /* entering a section prints its heading; leaving one prints a bare
+           rule, so platform rows (the playbook) never read as part of it */
+        html += sectionOf[disc]
+          ? '<div class="rail-section">' + sectionOf[disc] + "</div>"
+          : '<div class="rail-section" aria-hidden="true"></div>';
+      }
+      section = sectionOf[disc];
       html += '<div class="rail-group" data-disc="' + disc + '">';
       if (disc !== "home") {
         html += '<div class="rail-head"><span class="tally"></span>' + DISC_LABEL[disc] + "</div>";

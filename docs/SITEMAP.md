@@ -85,6 +85,7 @@ Anything you write in a `notes:` line is instruction to me, not site copy.
 | Toronto | Audio | Console, patch, monitors | Scaffold · 4 planned |
 | Toronto | Lighting | Rig, looks, cues | Scaffold · 4 planned |
 | Toronto | Cameras | Builds, shots, comms | Scaffold · 4 planned |
+| Toronto · Perimeter | eKidz Elementary | Elementary Theatre | Live · 1 page |
 | Every Campus | The Playbook | How a room gets documented | Live · 4 pages |
 
 ---
@@ -359,6 +360,25 @@ Scaffold note flags that East has no camera seat, so this one has no sibling to 
 - **Positions & Shot Sheet** — `reference` — Where each op stands and the shot vocabulary.
 - **Tally & Comms** — `reference` — Tally source, talkback channels, who hears whom.
 - **Diagnose a Symptom** — `diagnose` — No signal, no tally, no comms.
+
+## Perimeter — eKidz Elementary · `/tor/ekidz/` · **LIVE**
+
+Rail: under a **Perimeter** heading, after the main-room seats. Hub: `id: ekidz` · h1
+**Elementary Theatre** · lead *"Starting up and loading video in the Toronto Elementary
+Theatre."*
+
+- **Video Startup** — `procedure` — `id: ekidz-startup` · status: live · card: *"Projector
+  on, pull this week's elementary video from PLAYLISTER, play it full screen, reset for
+  11:30, shut down."*
+  - Intro note: one Mac + one projector; the weekly file carries its own countdown and
+    NEXT/NOW cues, so the file is the run of show.
+  - 1 Power on the projector (BenQ, white remote) · 2 Check the Mac is logged in
+    (Apple keyboard/mouse; login creds) · 3 Open PLAYLISTER (desktop screenshot; EM vs
+    PS filename note) · 4 Download the elementary file (clip; "Download anyway" on the
+    virus-scan warning; start early, ~6 GB; failed download → clear Downloads) · 5 Open in
+    QuickTime, play the most recent copy, full screen (clip) · 6 Reset for the 11:30 experience (why from 0:00) ·
+    7 Shut down the room (QuickTime, Chrome, projector off, Mac stays on, keyboard/mouse back).
+  - Media: `tor/ekidz/media/` — one PNG, two MP4s converted from the source GIFs.
 
 ---
 

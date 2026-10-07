@@ -1,0 +1,18 @@
+<!-- TEMPLATE: screen capture inside a procedure step — paste inside the
+     step's content <div>, after the <ol> it illustrates. Media lives next to
+     the room: <campus>/<discipline>/media/, referenced relatively.
+     Screenshot → <img>. Screen recording → convert to MP4 first, never ship
+     a GIF (a 20-second GIF is 50–200 MB; the same clip as H.264 is ~1–2 MB):
+       ffmpeg -i capture.gif -movflags +faststart -pix_fmt yuv420p \
+              -c:v libx264 -crf 28 -an media/name.mp4
+     Keep autoplay muted loop playsinline — that's what makes it behave like
+     a GIF on every phone. Edit the src, alt/aria-label and caption only. -->
+<figure class="shot">
+  <img src="media/name.png" alt="What the screenshot shows, in one line" loading="lazy">
+  <figcaption>One line: what to look for in this capture.</figcaption>
+</figure>
+
+<figure class="shot">
+  <video src="media/name.mp4" autoplay muted loop playsinline preload="metadata" aria-label="What the recording shows, in one line"></video>
+  <figcaption>One line: what to look for in this recording.</figcaption>
+</figure>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-depth="2" data-campus="tor" data-disc="ekidz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>eKidz Elementary — production · Elevation Toronto</title>
+<link rel="stylesheet" href="../../assets/production.css">
+<noscript><style>.view{display:block!important}.rail,.tabbar{display:none!important}</style></noscript>
+</head>
+<body>
+
+<button class="theme-btn" id="theme-btn" type="button" aria-label="Switch background">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+</button>
+
+<div class="app">
+<aside class="rail" id="rail"></aside>
+
+<main>
+<section class="view" id="ekidz" data-disc="ekidz">
+  <div class="hub-head">
+    <span class="overline tallied"><span class="tally"></span>eKidz Elementary · Perimeter</span>
+    <h1>Elementary Theatre</h1>
+    <p class="lead">Starting up and loading video in the Toronto Elementary Theatre.</p>
+  </div>
+
+  <div class="card-grid">
+    <a class="page-card" href="#ekidz-startup"><b>Video Startup</b><span>Projector on, pull this week's elementary video from PLAYLISTER, play it full screen, reset for 11:30, shut down.</span></a>
+  </div>
+
+</section>
+
+<section class="view" id="ekidz-startup" data-disc="ekidz" data-crumb="eKidz Elementary / Video Startup">
+  <h1>Video Startup</h1>
+  <p class="lead">Getting this week's elementary video on the projector, running it for both experiences, and leaving the room the way you found it.</p>
+
+  <div class="note"><b>The whole room is one Mac and one projector.</b> The video is a single file per week. It carries its own countdown and on-screen cues ("NEXT: Welcome to eKidz", "NOW: Room opening activities"), so the file <i>is</i> the room's run of show. Your job is to get the right file playing from the top, full screen, at the right time.</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="idx">1</div>
+      <div>
+        <h3>Power On the Projector</h3>
+        <div class="where">BenQ projector · the white BenQ remote</div>
+        <ol>
+          <li>Power on the <b>BenQ</b> projector with the <b>white BenQ remote</b>.</li>
+          <li>Let it finish its warm-up before you judge the picture. The Mac's desktop shows up once it's done.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">2</div>
+      <div>
+        <h3>Check the Mac Is Logged In</h3>
+        <div class="where">Elementary Theatre Mac · Apple keyboard and mouse</div>
+        <ol>
+          <li>Use the <b>Apple keyboard and mouse</b>. They're there for this Mac.</li>
+          <li>The Mac stays on between Sundays, so it should already be on the desktop. If it's at a login screen, sign in with username <span class="mono">production</span> and password <span class="mono">elevation123</span>, all lowercase, one word.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">3</div>
+      <div>
+        <h3>Open PLAYLISTER</h3>
+        <div class="where">Mac desktop · a Google Drive link that opens in Chrome</div>
+        <ol>
+          <li>Double-click <b>PLAYLISTER – Google Drive</b> on the desktop.</li>
+          <li>Chrome opens the shared PLAYLISTER folder. It holds that week's two files, <b>elementary</b> and <b>preschool</b>.</li>
+        </ol>
+        <figure class="shot">
+          <img src="media/desktop-playlister.png" alt="Mac desktop with the PLAYLISTER – Google Drive link highlighted" loading="lazy">
+          <figcaption>The PLAYLISTER link is the only file on the desktop.</figcaption>
+        </figure>
+        <div class="note"><b>Telling the two apart:</b> the filename carries month, room, and week. <span class="mono">EM</span> is elementary and <span class="mono">PS</span> is preschool, so <span class="mono">OCTEMWK1_90.mp4</span> is October, elementary, week 1. Preschool's file isn't for this room.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">4</div>
+      <div>
+        <h3>Download the Elementary File</h3>
+        <div class="where">Chrome · Google Drive, PLAYLISTER folder</div>
+        <ol>
+          <li>On the elementary file, click <b>More actions</b> (<b>⋮</b>) → <b>Download</b>.</li>
+          <li>Drive warns <b>"Can't scan file for viruses"</b> because the file is too big for it to scan. Click <b>Download anyway</b>. This is expected for every week's file.</li>
+        </ol>
+        <figure class="shot">
+          <video src="media/drive-download.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Google Drive: More actions, Download, then Download anyway on the virus-scan warning"></video>
+          <figcaption>More actions → Download → Download anyway.</figcaption>
+        </figure>
+        <div class="note"><b>Start this early.</b> The file is several gigabytes (6.3 GB in October week 1), so the download takes real time on the church network. It's the longest wait in this procedure.</div>
+        <div class="note"><b>If the download fails or won't start:</b> the Mac is probably out of space. Each week's file stays in Downloads, so empty the Downloads folder in Finder (and the Trash), then download again. Delete old copies whenever they pile up.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">5</div>
+      <div>
+        <h3>Open in QuickTime, Play, Full Screen</h3>
+        <div class="where">Chrome download list → QuickTime Player</div>
+        <ol>
+          <li>When the download finishes, open Chrome's <b>download list</b> (the download icon in the toolbar) and click the file to open it in <b>QuickTime</b>. If there's more than one copy, play the most recent one.</li>
+          <li>Press play, then put QuickTime in full screen (<span class="btnkey">⌃⌘F</span>, or View → Enter Full Screen).</li>
+        </ol>
+        <figure class="shot">
+          <video src="media/quicktime-play.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Chrome download history, the file in Finder's Downloads folder, then QuickTime playing full screen"></video>
+          <figcaption>Download list → the file in Downloads → QuickTime, play, full screen.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">6</div>
+      <div>
+        <h3>Reset for the 11:30 Experience</h3>
+        <div class="where">QuickTime · between experiences</div>
+        <ol>
+          <li>When the first experience is done, <b>pause</b> and <b>return to the start</b> of the video.</li>
+          <li>Hold it paused at the top, then play it again for the <b>11:30 experience</b>.</li>
+        </ol>
+        <div class="note"><b>Why from the top:</b> the countdown and the NEXT / NOW cues are part of the video, so they only line up with the room if every run starts from 0:00.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="idx">7</div>
+      <div>
+        <h3>Shut Down the Room</h3>
+        <div class="where">After the 11:30 experience</div>
+        <ol>
+          <li>Close <b>QuickTime</b>, then close <b>Chrome</b>.</li>
+          <li>Turn the projector off with the white BenQ remote. <b>Leave the Mac on.</b></li>
+          <li>Put the keyboard and mouse back on the Mac's side of the desk.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <nav class="page-nav">
+    <a href="#ekidz">‹ eKidz Elementary overview</a>
+  </nav>
+</section>
+</main>
+</div>
+
+<nav class="tabbar" id="tabbar"></nav>
+
+<script src="../../assets/app.js"></script>
+</body>
+</html>

@@ -189,7 +189,7 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
 
 /* Brand voice runs in the display face; reading text stays in the body face */
-.overline, .dc-head, .chip, .tab, .rail-head, .wordmark, .wordmark-sm,
+.overline, .dc-head, .chip, .tab, .rail-head, .rail-section, .wordmark, .wordmark-sm,
 .campus, .campus-line, .lane-tag, .page-nav a {
   font-family: var(--sans-display);
 }
@@ -306,6 +306,17 @@ main {
   color: var(--ink-2);
   margin-bottom: 6px;
 }
+/* section heading between seat groups — "Perimeter" rooms sit under it */
+.rail-section {
+  font-size: var(--t-0);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-top: 14px;
+  margin-bottom: -10px;
+  border-top: 1px solid var(--line);
+}
 .rail a.rl {
   display: block;
   padding: 5px 10px;
@@ -325,6 +336,19 @@ main {
 }
 .rail a.rl.pending { color: var(--ink-3); }
 .rail a.rl.pending::after { content: " ·"; color: var(--ink-3); }
+
+/* screen capture — a screenshot (<img>) or a looping capture (<video>) inside a step */
+.shot { margin: 12px 0 6px; }
+.shot img, .shot video {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.shot figcaption { font-size: var(--t-0); color: var(--ink-2); margin-top: 6px; }
 
 /* tally dot */
 .tally {
@@ -890,6 +914,7 @@ table.rundown .seg { font-weight: 600; white-space: nowrap; }
 [data-disc="audio"]    { --acc: var(--acc-audio); }
 [data-disc="lighting"] { --acc: var(--acc-lighting); }
 [data-disc="cameras"]  { --acc: var(--acc-cameras); }
+[data-disc="ekidz"]    { --acc: var(--acc-video); }  /* eKidz content is the video load */
 [data-disc="home"]     { --acc: var(--ink-0); }
 
 /* ---------------------------------------------------------------- search */

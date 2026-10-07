@@ -47,6 +47,11 @@ stylesheet and one JS shell — never a single monolithic file again.
   timecode & MIDI, diagnostics) and `tor/audio/` has the click system and its first
   diagnostics (DiGiCo SD9 + D2-Rack head-amp recovery, SuperRack clocking). Lighting and
   cameras still empty.
+- **`tor/ekidz/`** — **eKidz Elementary Theatre**, Toronto's first **Perimeter** room
+  (rooms outside the main auditorium, added 2026-10-07). Its NAV rows carry
+  `section: "Perimeter"`, which the rail renders as a heading below the main-room seats;
+  it also sits in `CAMPUS.tor.discs`, so it gets a tab. Scope today: the video startup /
+  load, captured from Matt's dictation. Accent borrows the video tally.
 - **`playbook/index.html`** — the campus-agnostic layer and the only shared content
   section: the three page shapes, capture worksheets, writing rules, blank-campus kit.
   **`#playbook-newcampus` is the authoritative procedure for adding a campus.**
@@ -64,7 +69,8 @@ stylesheet and one JS shell — never a single monolithic file again.
 - **`docs/SITEMAP.md`** — the whole site in editable form. Matt edits it; the edits get
   applied back to the real pages. Regenerate it after any structural change.
 - **`templates/`** — copy-paste-verbatim blocks for every repeating pattern (procedure
-  step, symptom accordion, hub page-card, whole subpage). New content starts here.
+  step, symptom accordion, hub page-card, whole subpage, screen capture — screenshots
+  and GIF-converted MP4 clips). New content starts here.
 - **`design/mockup-v2.html`** — the frozen design reference. Never edited; the approved
   direction ("lights down": dark default with a switchable light background, one
   brand-neon tally per discipline, Eina semibold headings over Helvetica Now/Neue body

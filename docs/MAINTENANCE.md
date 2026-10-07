@@ -36,6 +36,7 @@ covered here, stop and tell Matt what's missing rather than improvising.
 | Launcher / campus groups / discipline cards | `index.html` |
 | A Toronto East room | `tea/<discipline>/index.html` |
 | A Toronto room | `tor/<discipline>/index.html` |
+| A Toronto perimeter room (eKidz Elementary) | `tor/ekidz/index.html` |
 | The documentation method (shapes, worksheets, rules, new-campus kit) | `playbook/index.html` |
 | Tab bar / rail entries | the `NAV` array near the top of `assets/app.js` (the one allowed JS edit) |
 | Adding a whole new campus | follow `playbook/index.html#playbook-newcampus` — it is the authoritative procedure |
@@ -83,6 +84,11 @@ never touch it by hand. For links **you** write in content:
 ### Add a step to a procedure
 Copy `templates/startup-step.html` into the `.steps` container at the right position,
 then renumber every `.idx` in the container so they stay sequential.
+
+### Add a screenshot or screen recording to a step
+Copy `templates/screen-capture.html` into the step, after the list it illustrates. Media
+lives in the room's own `media/` folder. **Never ship a GIF** — convert screen recordings
+to MP4 with the ffmpeg line in the template (a 179 MB GIF became a 1.6 MB MP4).
 
 ### Add a whole new subpage to a room
 1. Copy `templates/subpage-view.html` to the bottom of that room's `index.html`

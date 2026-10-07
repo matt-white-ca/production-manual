@@ -71,6 +71,12 @@ old v1 archived (unchanged) at `/v1/`, linked from the new home page's footer.
 | Campus scoping is enforced, not just conventional | The rail and tab bar are filtered to the campus on `<html data-campus>`; rooms never link across campuses. Anything genuinely shared lives in `playbook/` and both campuses link there. | The blast-radius argument that split disciplines into separate files, applied one level up. An operator stands at exactly one desk, at exactly one campus. |
 | Clock Standards stays under `tea/video/` for now | Flagged in the sitemap as the first playbook-promotion candidate, but **not** promoted in this pass. | "Duplication is the default until proven shared" — one campus's clock standards aren't yet evidence of a shared standard. The call is Matt's, during the sitemap simplification pass. |
 
+## Design decisions added 2026-10-07 (perimeter rooms)
+
+| Decision | Choice | Why |
+|---|---|---|
+| Perimeter rooms are seats under a rail heading | The eKidz Elementary Theatre lives at `tor/ekidz/` as its own seat, not as a subpage of a discipline and not under a new room layer. Its NAV rows carry `section: "Perimeter"`; the rail prints a **Perimeter** heading above them and closes the section with a rule. The launcher gives it its own "Toronto · Perimeter" group. | Matt, 2026-10-07. One operator runs the whole room, so "one desk, one file" holds. A full room layer (`tor/main/…`) would have re-pathed every page for one side room. Accent reuses the video tally because the room's content is the video load. |
+
 ## Design decisions added 2026-08-25 (search)
 
 | Decision | Choice | Why |
